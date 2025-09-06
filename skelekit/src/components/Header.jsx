@@ -1,12 +1,12 @@
 // src/components/Header.jsx
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
-// ** STEP 1: Import your logo from the assets folder **
 import logo from '../assets/skelekit.png'; 
 
 const Header = () => {
   return (
-    <header className="flex items-center justify-between px-6 py-3 border-b border-neutral-900 bg-black/80 backdrop-blur-sm shrink-0">
+    // ** THIS IS THE CHANGE: Added relative and z-40 **
+    <header className="relative z-40 flex items-center justify-between px-6 py-3 border-b border-neutral-900 bg-black/80 backdrop-blur-sm shrink-0">
       <div className="flex items-center gap-8">
         
         <div className="flex items-center gap-2.5">

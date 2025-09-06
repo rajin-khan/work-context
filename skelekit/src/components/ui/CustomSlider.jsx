@@ -1,7 +1,7 @@
 // src/components/ui/CustomSlider.jsx
 import React from 'react';
 
-const CustomSlider = ({ label, value, max, onChange, style }) => {
+const CustomSlider = ({ label, value, max, onChange, onMouseUp, style }) => {
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-xs text-neutral-400 font-medium px-1">{label}</label>
@@ -15,6 +15,7 @@ const CustomSlider = ({ label, value, max, onChange, style }) => {
           max={max}
           value={value}
           onChange={onChange}
+          onMouseUp={onMouseUp}
           className="range-slider w-full"
         />
       </div>

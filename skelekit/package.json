@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
     "@uiw/react-color": "^2.8.0",
+    "chroma-js": "^3.1.2",
     "colord": "^2.9.3",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.542.0",

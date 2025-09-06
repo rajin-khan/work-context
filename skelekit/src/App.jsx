@@ -9,7 +9,7 @@ import { Search, Grid2X2 } from 'lucide-react';
 function ColorsPage() {
   return (
     <motion.main 
-      className="flex-1 p-8 overflow-y-auto bg-radial-gradient"
+      className="flex-1 p-8 overflow-y-auto"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -23,7 +23,7 @@ function App() {
   return (
     <div className="flex flex-col h-screen bg-black font-sans">
       <Header />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1">
         <Sidebar />
         <div className="flex-1 flex flex-col bg-[#050505]">
           <div className="flex items-center justify-between px-6 py-3 border-b border-neutral-900">
