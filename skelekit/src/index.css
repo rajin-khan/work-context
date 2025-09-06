@@ -1,0 +1,26 @@
+/* src/index.css */
+@import "tailwindcss";
+
+body {
+  @apply bg-black text-neutral-200 antialiased;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom scrollbar to match the new pitch-black theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626; /* neutral-800 */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #404040; /* neutral-700 */
+}
