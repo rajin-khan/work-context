@@ -1,58 +1,101 @@
 // src/components/ColorPickerComponent.jsx
 import React from 'react';
-import { RgbaStringColorPicker, RgbStringColorPicker, HslaStringColorPicker, HslStringColorPicker, HexColorPicker } from "react-colorful";
-import { colord } from 'colord';
+import { CustomPicker } from 'react-color';
+import { Saturation, Hue, Alpha } from 'react-color/lib/components/common';
+import CustomSlider from './ui/CustomSlider';
 
-// This map ensures the correct color string format is passed to each picker component
-const formatToConverter = {
-  HEX: (c) => c.toHex(),
-  HEXA: (c) => c.toHex(), // HexColorPicker handles both
-  RGB: (c) => c.toRgbString(),
-  RGBA: (c) => c.toRgbaString(),
-  HSL: (c) => c.toHslString(),
-  HSLA: (c) => c.toHslString(), // HslStringColorPicker handles both
-};
+const CustomColorPicker = ({ rgb, hsl, hsv, onChange, format }) => {
+  const showRgbSliders = ['HEX', 'HEXA', 'RGB', 'RGBA'].includes(format.toUpperCase());
+  const showHslSliders = ['HSL', 'HSLA'].includes(format.toUpperCase());
+  const showAlphaSlider = ['HEXA', 'RGBA', 'HSLA'].includes(format.toUpperCase());
 
-const ColorPickerComponent = ({ color, onChange, format }) => {
-  const pickerStyle = {
-    width: '260px',
-    padding: '16px',
-    borderRadius: '8px',
-    background: '#171717', // neutral-900
-    border: '1px solid #262626', // neutral-800
-    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3)',
+  const handleRgbChange = (channel, value) => {
+    const newRgb = { ...rgb, [channel]: Number(value) };
+    onChange(newRgb);
   };
 
-  const customStyles = `
-    .react-colorful { gap: 12px; }
-    .react-colorful__saturation { border-radius: 6px; border-bottom: 1px solid #262626; }
-    .react-colorful__hue, .react-colorful__alpha { height: 16px; border-radius: 99px; }
-    .react-colorful__hue .react-colorful__pointer, .react-colorful__alpha .react-colorful__pointer { width: 16px; height: 16px; border-width: 3px; }
-    .react-colorful__saturation-pointer { width: 22px; height: 22px; border-width: 3px; }
-  `;
+  // ** THIS IS THE CHANGE: New handler for HSL sliders **
+  const handleHslChange = (channel, value) => {
+    // Saturation and Lightness are 0-100, but the 'hsl' object expects 0-1.
+    const newHsl = { 
+      ...hsl, 
+      [channel]: channel === 'h' ? Number(value) : Number(value) / 100 
+    };
+    onChange(newHsl);
+  };
 
-  // Get the correct conversion function, defaulting to hex
-  const converter = formatToConverter[format.toUpperCase()] || formatToConverter.HEX;
-  const convertedColor = converter(colord(color));
+  const sliderTrackStyles = {
+    red: { background: `linear-gradient(to right, rgb(0, ${rgb.g}, ${rgb.b}), rgb(255, ${rgb.g}, ${rgb.b}))` },
+    green: { background: `linear-gradient(to right, rgb(${rgb.r}, 0, ${rgb.b}), rgb(${rgb.r}, 255, ${rgb.b}))` },
+    blue: { background: `linear-gradient(to right, rgb(${rgb.r}, ${rgb.g}, 0), rgb(${rgb.r}, ${rgb.g}, 255))` },
+    // ** THIS IS THE CHANGE: New gradients for HSL sliders **
+    hue: { background: `linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00)`},
+    saturation: { background: `linear-gradient(to right, hsl(${hsl.h}, 0%, ${hsl.l * 100}%), hsl(${hsl.h}, 100%, ${hsl.l * 100}%))`},
+    lightness: { background: `linear-gradient(to right, hsl(${hsl.h}, ${hsl.s * 100}%, 0%), hsl(${hsl.h}, ${hsl.s * 100}%, 50%), hsl(${hsl.h}, ${hsl.s * 100}%, 100%))`},
+  };
 
-  const renderPicker = () => {
-    switch (format.toUpperCase()) {
-      case 'RGB': return <RgbStringColorPicker style={pickerStyle} color={convertedColor} onChange={onChange} />;
-      case 'RGBA': return <RgbaStringColorPicker style={pickerStyle} color={convertedColor} onChange={onChange} />;
-      case 'HSL': return <HslStringColorPicker style={pickerStyle} color={convertedColor} onChange={onChange} />;
-      case 'HSLA': return <HslaStringColorPicker style={pickerStyle} color={convertedColor} onChange={onChange} />;
-      case 'HEX':
-      case 'HEXA':
-      default: return <HexColorPicker style={pickerStyle} color={convertedColor} onChange={onChange} />;
-    }
+  const DraggablePointer = () => (
+    <div 
+      className="w-4 h-4 rounded-full bg-white shadow-md transform -translate-x-1/2 -translate-y-1/2"
+      style={{ boxShadow: '0 0 0 1.5px rgba(0, 0, 0, 0.5)' }}
+    />
+  );
+  
+  const SaturationPointer = () => (
+    <div className="w-5 h-5 rounded-full bg-transparent border-2 border-white shadow-lg transform -translate-x-1/2 -translate-y-1/2" />
+  );
+
+  const reactColorSliderStyle = {
+    height: '10px',
+    borderRadius: '9999px',
   };
 
   return (
-    <>
-      <style>{customStyles}</style>
-      <div>{renderPicker()}</div>
-    </>
+    <div className="w-[280px] p-4 bg-neutral-900 rounded-lg border border-neutral-800 shadow-2xl flex flex-col gap-4">
+      <div className="relative w-full h-48 rounded-md overflow-hidden">
+        <Saturation hsl={hsl} hsv={hsv} onChange={onChange} pointer={SaturationPointer} />
+      </div>
+      
+      <div className="flex flex-col gap-3">
+
+        {/* The main Hue slider is now hidden when HSL sliders are active to avoid duplication */}
+        {!showHslSliders && (
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs text-neutral-400 font-medium px-1">Hue</label>
+            <div className="relative w-full h-4 flex items-center">
+              <Hue hsl={hsl} onChange={onChange} direction="horizontal" pointer={DraggablePointer} style={reactColorSliderStyle} />
+            </div>
+          </div>
+        )}
+
+        {showAlphaSlider && (
+           <div className="flex flex-col gap-1.5">
+            <label className="text-xs text-neutral-400 font-medium px-1">Alpha</label>
+            <div className="relative w-full h-4 flex items-center">
+              <Alpha rgb={rgb} hsl={hsl} onChange={onChange} pointer={DraggablePointer} style={reactColorSliderStyle} />
+            </div>
+           </div>
+        )}
+
+        {showRgbSliders && (
+          <div className="flex flex-col gap-3 pt-1">
+            <CustomSlider label="Red" value={rgb.r} max="255" onChange={(e) => handleRgbChange('r', e.target.value)} style={sliderTrackStyles.red} />
+            <CustomSlider label="Green" value={rgb.g} max="255" onChange={(e) => handleRgbChange('g', e.target.value)} style={sliderTrackStyles.green} />
+            <CustomSlider label="Blue" value={rgb.b} max="255" onChange={(e) => handleRgbChange('b', e.target.value)} style={sliderTrackStyles.blue} />
+          </div>
+        )}
+
+        {/* ** THIS IS THE CHANGE: Conditionally rendered HSL slider group ** */}
+        {showHslSliders && (
+          <div className="flex flex-col gap-3 pt-1">
+            <CustomSlider label="Hue" value={Math.round(hsl.h)} max="360" onChange={(e) => handleHslChange('h', e.target.value)} style={sliderTrackStyles.hue} />
+            <CustomSlider label="Saturation" value={Math.round(hsl.s * 100)} max="100" onChange={(e) => handleHslChange('s', e.target.value)} style={sliderTrackStyles.saturation} />
+            <CustomSlider label="Lightness" value={Math.round(hsl.l * 100)} max="100" onChange={(e) => handleHslChange('l', e.target.value)} style={sliderTrackStyles.lightness} />
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
-export default ColorPickerComponent;
+export default CustomPicker(CustomColorPicker);
