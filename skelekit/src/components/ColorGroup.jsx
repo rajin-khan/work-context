@@ -1,5 +1,5 @@
 // src/components/ColorGroup.jsx
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import { Plus, MoreVertical, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ColorRow from './ColorRow';
@@ -26,9 +26,9 @@ const getRandomPaletteSource = (exclude) => {
   };
 };
 
-const ColorGroup = () => {
-  const [groupName, setGroupName] = useState('Untitled');
-  const [colors, setColors] = useState([]);
+const defaultShadeTintConfig = { enabled: false, count: 8, palette: [] };
+
+const ColorGroup = ({ colors, setColors, groupName, setGroupName }) => {
   const paletteSourceRef = useRef(getRandomPaletteSource(null));
   const [hasBeenEdited, setHasBeenEdited] = useState(false);
 
@@ -43,30 +43,30 @@ const ColorGroup = () => {
     return colorToReturn;
   };
 
+  const createNewColor = (props) => ({
+    id: generateId(),
+    name: `--color-${colors.length + 1}`,
+    value: '#808080',
+    format: 'HEX',
+    shadesConfig: { ...defaultShadeTintConfig },
+    tintsConfig: { ...defaultShadeTintConfig },
+    transparentConfig: { enabled: false },
+    utilityConfig: { text: false, background: false, border: false, fill: false }, // New default config
+    ...props,
+  });
+
   const addSuggestedColor = () => {
-    const newColor = {
-      id: generateId(),
-      name: `--color-${colors.length + 1}`,
-      value: getNextBrewerColor(),
-      format: 'HEX',
-    };
+    const newColor = createNewColor({ value: getNextBrewerColor() });
     setColors([...colors, newColor]);
   };
 
   const addDefaultColor = () => {
-    const newColor = {
-      id: generateId(),
-      name: `--color-${colors.length + 1}`,
-      value: '#808080',
-      format: 'HEX',
-    };
+    const newColor = createNewColor({});
     setColors([...colors, newColor]);
   }
 
   const updateColor = (id, newProps) => {
-    if (!hasBeenEdited) {
-      setHasBeenEdited(true);
-    }
+    if (!hasBeenEdited) setHasBeenEdited(true);
     setColors(colors.map(c => c.id === id ? { ...c, ...newProps } : c));
   };
 
@@ -75,12 +75,10 @@ const ColorGroup = () => {
   };
 
   const handleCreateGroup = () => {
-    const firstColor = {
-      id: generateId(),
+    const firstColor = createNewColor({
       name: '--primary-500',
       value: getNextBrewerColor(),
-      format: 'HEX',
-    };
+    });
     setColors([firstColor]);
   };
 
@@ -142,7 +140,6 @@ const ColorGroup = () => {
                     animate={{ rotate: [-5, 5, -5], scale: [1, 1.1, 1] }}
                     transition={{ duration: 1, repeat: Infinity, repeatType: "mirror", ease: 'easeInOut' }}
                   >
-                    {/* ** THIS IS THE CHANGE: text-orange-400 is now text-neutral-200 ** */}
                     <Sparkles size={16} className="text-neutral-200" />
                   </motion.div>
                   <span>Suggest Color</span>

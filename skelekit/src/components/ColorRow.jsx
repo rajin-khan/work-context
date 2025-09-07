@@ -2,10 +2,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { colord } from 'colord';
 import chroma from 'chroma-js';
-import { ChevronDown, Trash2 } from 'lucide-react';
+import { ChevronDown, Trash2, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ColorPickerPopover from './ColorPickerPopover';
 import ShadeTintGenerator from './ShadeTintGenerator';
+import Switch from './ui/Switch';
+import UtilityClassGenerator from './ui/UtilityClassGenerator'; // Import the new component
 import toast from 'react-hot-toast';
 
 const formats = ['HEX', 'HEXA', 'RGB', 'RGBA', 'HSL', 'HSLA'];
@@ -37,38 +39,26 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
   const [isFormatDropdownOpen, setFormatDropdownOpen] = useState(false);
   const [isExpanded, setExpanded] = useState(false);
   const formatDropdownRef = useRef(null);
-
-  const [shadesConfig, setShadesConfig] = useState({ enabled: false, count: 8, palette: [] });
-  const [tintsConfig, setTintsConfig] = useState({ enabled: false, count: 8, palette: [] });
+  
   const [editingSwatch, setEditingSwatch] = useState({ isOpen: false, anchorEl: null, color: null, index: null, format: 'HEX', type: null });
-
-  useEffect(() => {
-    if (shadesConfig.enabled) {
-      setShadesConfig(prev => ({...prev, palette: generatePalette(color.value, prev.count, 'shades')}));
-    }
-    if (tintsConfig.enabled) {
-      setTintsConfig(prev => ({...prev, palette: generatePalette(color.value, prev.count, 'tints')}));
-    }
-  }, [color.value]);
   
   const handleConfigChange = (type, newValues) => {
-    const setConfig = type === 'shades' ? setShadesConfig : setTintsConfig;
-    const currentConfig = type === 'shades' ? shadesConfig : tintsConfig;
+    const configName = `${type}Config`;
+    const currentConfig = color[configName];
+    const newConfig = { ...currentConfig, ...newValues };
 
-    setConfig(prevConfig => {
-        const newConfig = { ...prevConfig, ...newValues };
-        
+    if (type === 'shades' || type === 'tints') {
         const justEnabled = newValues.enabled && !currentConfig.enabled;
         const countChanged = newValues.count && newValues.count !== currentConfig.count;
 
         if (justEnabled || (newConfig.enabled && countChanged)) {
-            newConfig.palette = generatePalette(color.value, newConfig.count, type);
+          newConfig.palette = generatePalette(color.value, newConfig.count, type);
         } else if (newValues.enabled === false) {
-            newConfig.palette = [];
+          newConfig.palette = [];
         }
-
-        return newConfig;
-    });
+    }
+    
+    onUpdate(color.id, { [configName]: newConfig });
   };
 
   const handleValueChange = (colorResult) => {
@@ -77,6 +67,25 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
     onUpdate(color.id, { value: newValue });
     setPickerState(prev => ({ ...prev, color: newValue }));
   };
+
+  useEffect(() => {
+    let updates = {};
+    if (color.shadesConfig?.enabled) {
+      updates.shadesConfig = {
+        ...color.shadesConfig,
+        palette: generatePalette(color.value, color.shadesConfig.count, 'shades')
+      };
+    }
+    if (color.tintsConfig?.enabled) {
+      updates.tintsConfig = {
+        ...color.tintsConfig,
+        palette: generatePalette(color.value, color.tintsConfig.count, 'tints')
+      };
+    }
+    if (Object.keys(updates).length > 0) {
+      onUpdate(color.id, updates);
+    }
+  }, [color.value]);
 
   const handleFormatChange = (newFormat) => {
     onUpdate(color.id, { format: newFormat });
@@ -125,12 +134,10 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
   const handleSwatchPickerClose = () => {
     if (editingSwatch.isOpen) {
       const { type, index, color: finalColor } = editingSwatch;
-      const setConfig = type === 'shades' ? setShadesConfig : setTintsConfig;
-      setConfig(prevConfig => {
-        const newPalette = [...prevConfig.palette];
-        newPalette[index] = chroma(finalColor).hex();
-        return { ...prevConfig, palette: newPalette };
-      });
+      const configToUpdate = type === 'shades' ? color.shadesConfig : color.tintsConfig;
+      const newPalette = [...configToUpdate.palette];
+      newPalette[index] = chroma(finalColor).hex();
+      onUpdate(color.id, { [`${type}Config`]: { ...configToUpdate, palette: newPalette } });
     }
     setEditingSwatch({ isOpen: false, anchorEl: null, color: null, index: null, format: 'HEX', type: null });
   };
@@ -148,7 +155,6 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
           onClick={(e) => setPickerState({ isOpen: true, anchorEl: e.currentTarget })}
         />
         
-        {/* ** THIS IS THE FIX: A properly styled container for the prefix and input ** */}
         <div className="flex items-center w-56 bg-neutral-900 border border-neutral-800 rounded-md px-3 focus-within:border-brand transition-colors">
             <span className="text-neutral-500 select-none">--</span>
             <input 
@@ -220,17 +226,32 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
           >
             <ShadeTintGenerator 
               type="shades"
-              baseColor={color.value}
               format={color.format}
-              config={{...shadesConfig, editingState: editingSwatch, setEditingState: setEditingSwatch}}
+              config={{...color.shadesConfig, editingState: editingSwatch, setEditingState: setEditingSwatch}}
               onConfigChange={(newValues) => handleConfigChange('shades', newValues)}
             />
             <ShadeTintGenerator
               type="tints"
-              baseColor={color.value}
               format={color.format}
-              config={{...tintsConfig, editingState: editingSwatch, setEditingState: setEditingSwatch}}
+              config={{...color.tintsConfig, editingState: editingSwatch, setEditingState: setEditingSwatch}}
               onConfigChange={(newValues) => handleConfigChange('tints', newValues)}
+            />
+            <div className="bg-neutral-950 p-4 border-t border-neutral-900">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <Layers size={16} className="text-neutral-400" />
+                        <h4 className="text-sm font-medium text-neutral-200">Generate Transparent Variants</h4>
+                    </div>
+                    <Switch 
+                        enabled={color.transparentConfig.enabled} 
+                        setEnabled={(enabled) => handleConfigChange('transparent', { enabled })} 
+                    />
+                </div>
+            </div>
+            
+            <UtilityClassGenerator 
+                config={color.utilityConfig}
+                onConfigChange={(newConfig) => onUpdate(color.id, { utilityConfig: newConfig })}
             />
           </motion.div>
         )}
@@ -243,7 +264,6 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
         color={color.value}
         format={color.format}
         onChange={handleValueChange}
-        onChangeComplete={() => {}}
       />
       
       <ColorPickerPopover
@@ -253,7 +273,6 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
         color={editingSwatch.color}
         format={editingSwatch.format}
         onChange={handleSwatchPickerChange}
-        onChangeComplete={() => {}}
       />
     </motion.div>
   );
