@@ -52,20 +52,24 @@ export const generateAndFormatCSS = async (colors) => {
   cssLines.push(':root {');
   
   const alphaSteps = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90];
-  const utilityClasses = [];
+  
+  const textClasses = [];
+  const backgroundClasses = [];
+  const borderClasses = [];
+  const fillClasses = [];
 
   colors.forEach(color => {
     const allVariants = [];
     
     // 1. Add base color
-    allVariants.push({ varName: color.name, value: formatColorValue(color) });
+    allVariants.push({ varName: color.name });
     cssLines.push(`  ${color.name}: ${formatColorValue(color)};`);
 
     // 2. Add shades
     if (color.shadesConfig?.enabled && color.shadesConfig?.palette?.length > 0) {
       color.shadesConfig.palette.forEach((shade, index) => {
         const varName = `${color.name}-d-${index + 1}`;
-        allVariants.push({ varName, value: formatSwatchColorValue(shade, color.format) });
+        allVariants.push({ varName });
         cssLines.push(`  ${varName}: ${formatSwatchColorValue(shade, color.format)};`);
       });
     }
@@ -74,7 +78,7 @@ export const generateAndFormatCSS = async (colors) => {
     if (color.tintsConfig?.enabled && color.tintsConfig?.palette?.length > 0) {
       color.tintsConfig.palette.forEach((tint, index) => {
         const varName = `${color.name}-l-${index + 1}`;
-        allVariants.push({ varName, value: formatSwatchColorValue(tint, color.format) });
+        allVariants.push({ varName });
         cssLines.push(`  ${varName}: ${formatSwatchColorValue(tint, color.format)};`);
       });
     }
@@ -84,32 +88,45 @@ export const generateAndFormatCSS = async (colors) => {
         alphaSteps.forEach(step => {
             const varName = `${color.name}-t-${step}`;
             const alphaValue = step / 100;
-            allVariants.push({ varName, value: formatTransparentValue(color.value, color.format, alphaValue) });
+            allVariants.push({ varName });
             cssLines.push(`  ${varName}: ${formatTransparentValue(color.value, color.format, alphaValue)};`);
         });
     }
 
-    // ** THIS IS THE CHANGE: Generate utility classes for all collected variants **
+    // Populate the new utility class arrays
     const { text, background, border, fill } = color.utilityConfig;
-    if (text || background || border || fill) {
-        allVariants.forEach(variant => {
-            // Convert CSS variable name like `--primary-500-d-1` to a class name like `primary-500-d-1`
-            const className = variant.varName.startsWith('--') ? variant.varName.slice(2) : variant.varName;
+    
+    allVariants.forEach(variant => {
+        const className = variant.varName.startsWith('--') ? variant.varName.slice(2) : variant.varName;
 
-            if (text) utilityClasses.push(`.text-${className} { color: var(${variant.varName}); }`);
-            if (background) utilityClasses.push(`.bg-${className} { background-color: var(${variant.varName}); }`);
-            if (border) utilityClasses.push(`.border-${className} { border-color: var(${variant.varName}); }`);
-            if (fill) utilityClasses.push(`.fill-${className} { fill: var(${variant.varName}); }`);
-        });
-    }
+        if (text) textClasses.push(`.text-${className} { color: var(${variant.varName}); }`);
+        if (background) backgroundClasses.push(`.bg-${className} { background-color: var(${variant.varName}); }`);
+        if (border) borderClasses.push(`.border-${className} { border-color: var(${variant.varName}); }`);
+        if (fill) fillClasses.push(`.fill-${className} { fill: var(${variant.varName}); }`);
+    });
   });
 
   cssLines.push('}'); // Close :root
 
-  // Append utility classes if any were generated
-  if (utilityClasses.length > 0) {
-      cssLines.push('\n/* Utility Classes */');
-      cssLines.push(...utilityClasses);
+  if ([...textClasses, ...backgroundClasses, ...borderClasses, ...fillClasses].length > 0) {
+    cssLines.push('\n/* Utility Classes */');
+    
+    if (textClasses.length > 0) {
+      cssLines.push('\n/* Text Colors */');
+      cssLines.push(...textClasses.sort());
+    }
+    if (backgroundClasses.length > 0) {
+      cssLines.push('\n/* Background Colors */');
+      cssLines.push(...backgroundClasses.sort());
+    }
+    if (borderClasses.length > 0) {
+      cssLines.push('\n/* Border Colors */');
+      cssLines.push(...borderClasses.sort());
+    }
+    if (fillClasses.length > 0) {
+      cssLines.push('\n/* Fill Colors */');
+      cssLines.push(...fillClasses.sort());
+    }
   }
 
   const rawCss = cssLines.join('\n');

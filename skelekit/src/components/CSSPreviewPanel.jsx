@@ -1,34 +1,32 @@
 // src/components/CSSPreviewPanel.jsx
-// ** THIS IS THE FIX: We now need `useState` and `useEffect` **
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Copy, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { generateAndFormatCSS } from '../utils/cssGenerator';
 import { downloadFile } from '../utils/download';
 
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism'; 
+
+
 const CSSPreviewPanel = ({ isOpen, onClose, colors, groupName }) => {
-  // ** THIS IS THE FIX: Use state to hold the generated CSS string **
   const [generatedCSS, setGeneratedCSS] = useState('/* Generating CSS... */');
 
-  // ** THIS IS THE FIX: Use an effect to run the async generation function **
   useEffect(() => {
-    // Only generate the CSS if the panel is open to save resources
     if (isOpen) {
-      // Create an async function inside the effect
       const generate = async () => {
         if (!colors || colors.length === 0) {
           setGeneratedCSS('/* Add some colors to generate CSS */');
           return;
         }
-        // Await the result of the formatting
         const css = await generateAndFormatCSS(colors);
         setGeneratedCSS(css);
       };
 
       generate();
     }
-  }, [isOpen, colors]); // Rerun this effect when the panel opens or the colors change
+  }, [isOpen, colors]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedCSS);
@@ -71,12 +69,25 @@ const CSSPreviewPanel = ({ isOpen, onClose, colors, groupName }) => {
               </button>
             </header>
             
-            <main className="flex-1 p-4 overflow-auto bg-black/20">
-              <pre className="text-sm h-full">
-                <code className="language-css text-neutral-300 whitespace-pre-wrap">
-                  {generatedCSS}
-                </code>
-              </pre>
+            <main className="flex-1 overflow-auto bg-black">
+              <SyntaxHighlighter
+                language="css"
+                style={tomorrow}
+                customStyle={{
+                  background: '#0e0e0e',
+                  margin: 0,
+                  padding: '1rem',
+                  height: '100%',
+                  fontSize: '13px',
+                }}
+                codeTagProps={{
+                    style: {
+                        fontFamily: '"Fira Code", "Dank Mono", monospace',
+                    }
+                }}
+              >
+                {generatedCSS}
+              </SyntaxHighlighter>
             </main>
 
             <footer className="p-4 border-t border-neutral-800 shrink-0 flex items-center justify-end gap-3">
@@ -89,7 +100,8 @@ const CSSPreviewPanel = ({ isOpen, onClose, colors, groupName }) => {
               </button>
                <button
                 onClick={handleDownload}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-brand rounded-md text-white hover:bg-brand-light transition-colors shadow-[0_0_15px_rgba(147,51,234,0.4)]"
+                // ** THIS IS THE FIX: Added border, hover, and active state classes for a beautiful effect **
+                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-brand text-white rounded-md border border-brand-light/50 hover:bg-brand-light hover:border-brand-light active:scale-95 transition-all duration-150 ease-in-out"
               >
                 <Download size={16} />
                 Download File
