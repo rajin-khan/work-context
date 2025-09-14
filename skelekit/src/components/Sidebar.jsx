@@ -3,9 +3,9 @@ import React from 'react';
 import { Palette, Type, StretchHorizontal, Component, Layout, SquareRadical, Text, FileText, Settings, Wrench } from 'lucide-react';
 
 const navItems = [
-  { icon: Palette, label: 'Colors', active: true },
+  { icon: Palette, label: 'Colors' },
   { icon: Type, label: 'Typography' },
-  { icon: StretchHorizontal, label: 'Spacing' },
+  { icon: StretchHorizontal, label: 'Spacing' }, // Added Spacing
   { icon: Component, label: 'Components' },
   { icon: Layout, label: 'Layouts' },
   { icon: Text, label: 'Fonts' },
@@ -18,9 +18,11 @@ const bottomNavItems = [
   { icon: Settings, label: 'Preferences' },
 ];
 
-const NavItem = ({ icon: Icon, label, active = false }) => (
+// ** THIS IS THE CHANGE: Added onClick and active prop **
+const NavItem = ({ icon: Icon, label, active = false, onClick }) => (
   <a
     href="#"
+    onClick={(e) => { e.preventDefault(); onClick(); }}
     className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
       active ? 'bg-neutral-900 text-white' : 'text-neutral-400 hover:bg-neutral-900 hover:text-white'
     }`}
@@ -30,14 +32,22 @@ const NavItem = ({ icon: Icon, label, active = false }) => (
   </a>
 );
 
-const Sidebar = () => {
+// ** THIS IS THE CHANGE: Added activePage and onNavigate props **
+const Sidebar = ({ activePage, onNavigate }) => {
   return (
     <aside className="w-60 bg-black border-r border-neutral-900 flex flex-col justify-between p-4 shrink-0">
       <nav className="flex flex-col gap-1.5">
-        {navItems.map((item) => <NavItem key={item.label} {...item} />)}
+        {navItems.map((item) => (
+            <NavItem 
+                key={item.label} 
+                {...item} 
+                active={activePage === item.label}
+                onClick={() => onNavigate(item.label)}
+            />
+        ))}
       </nav>
       <div className="flex flex-col gap-1.5">
-        {bottomNavItems.map((item) => <NavItem key={item.label} {...item} />)}
+        {bottomNavItems.map((item) => <NavItem key={item.label} {...item} onClick={() => {}} />)}
          <div className="text-xs text-neutral-600 px-3 pt-2">v1.0.0</div>
       </div>
     </aside>

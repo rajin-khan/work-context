@@ -5,15 +5,19 @@ import { motion } from 'framer-motion';
 const Switch = ({ enabled, setEnabled }) => {
   return (
     <div
-      className={`w-9 h-5 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ease-in-out ${
-        enabled ? 'bg-brand justify-end' : 'bg-neutral-700 justify-start'
-      }`}
       onClick={() => setEnabled(!enabled)}
+      // ** THIS IS THE CHANGE: Added border classes for a much clearer outline **
+      // The switch now has a 2px border that changes color with the state.
+      className={`relative w-10 h-5 flex items-center rounded-full p-0.5 cursor-pointer transition-colors duration-200 ease-in-out border-2 ${
+        enabled 
+          ? 'bg-brand justify-end border-brand-light/50' // Active state: brand bg with a lighter, glowing border
+          : 'bg-neutral-800 justify-start border-neutral-700' // Inactive state: neutral bg and border
+      }`}
     >
       <motion.div
         layout
         transition={{ type: 'spring', stiffness: 700, damping: 30 }}
-        className="w-3.5 h-3.5 bg-white rounded-full shadow-md"
+        className="w-3 h-3 bg-white rounded-full shadow-md"
       />
     </div>
   );
