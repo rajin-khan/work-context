@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const SelectorGroup = ({ group, onUpdate, onRemove, spacingVariableOptions, propertyOptions }) => {
 
   const handleAddRule = () => {
-    const newRule = { id: Date.now(), selector: '', property: '', values: [''] };
+    const newRule = { id: Date.now(), selector: '', property: '', value: '' };
     onUpdate({ ...group, rules: [...group.rules, newRule] });
   };
   

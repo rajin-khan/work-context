@@ -1,45 +1,20 @@
 // src/App.jsx
 import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import ColorGroup from './components/ColorGroup';
 import CSSPreviewPanel from './components/CSSPreviewPanel';
-import SpacingPage from './components/spacing/SpacingPage';
+import PageRenderer from './components/PageRenderer'; // Import the new renderer
 import { initialClassDefinitions } from './components/spacing/ClassGenerator';
 import { generateSpacingScale } from './utils/spacingCalculator';
 import { nanoid } from 'nanoid';
 import { Search, Grid2X2 } from 'lucide-react';
 
-// This is the original, working ColorsPage component from your file. It is untouched.
-function ColorsPage({ colors, setColors, groupName, setGroupName }) {
-  return (
-    <motion.main 
-      className="flex-1 p-8 overflow-y-auto"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      <ColorGroup 
-        colors={colors} 
-        setColors={setColors}
-        groupName={groupName}
-        setGroupName={setGroupName}
-      />
-    </motion.main>
-  );
-}
-
-const initializeGeneratorConfig = () => initialClassDefinitions.map(def => ({ ...def, enabled: true }));
-
 function App() {
-  // --- ORIGINAL, WORKING STATE FOR COLORS PAGE ---
+  // --- STATE MANAGEMENT (ALL IN ONE PLACE) ---
   const [colors, setColors] = useState([]);
   const [groupName, setGroupName] = useState('Untitled');
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [activePage, setActivePage] = useState('Colors');
-
-  // --- STATE FOR SPACING PAGE (LIFTED UP FROM YOUR WORKING SpacingPage.jsx) ---
   const [spacingSettings, setSpacingSettings] = useState({
     namingConvention: 'space', minSize: 16, maxSize: 28, minScaleRatio: 1.25,
     maxScaleRatio: 1.41, baseScaleIndex: 'm', negativeSteps: 4, positiveSteps: 4,
@@ -48,9 +23,10 @@ function App() {
   const [selectorGroups, setSelectorGroups] = useState([]);
   const [variableGroups, setVariableGroups] = useState([]);
   
-  // --- LOGIC FOR SPACING PAGE (LIFTED UP FROM YOUR WORKING SpacingPage.jsx) ---
+  // --- MEMOIZED CALCULATIONS ---
   const spacingScale = useMemo(() => generateSpacingScale(spacingSettings), [spacingSettings]);
   
+  // --- HANDLER FUNCTIONS ---
   const handleStepsChange = (type, amount) => {
     const key = type === 'negative' ? 'negativeSteps' : 'positiveSteps';
     const currentSteps = spacingSettings[key];
@@ -67,7 +43,7 @@ function App() {
     setGeneratorConfig(prev => prev.filter(item => item.id !== id));
   };
   const handleAddSelectorGroup = () => {
-    const newGroup = { id: nanoid(), name: 'Custom Selector Group', rules: [{ id: nanoid(), selector: '.class-name', property: '', values: [''] }] };
+    const newGroup = { id: nanoid(), name: 'Custom Selector Group', rules: [{ id: nanoid(), selector: '.class-name', property: '', value: '' }] };
     setSelectorGroups(prev => [...prev, newGroup]);
   };
   const handleUpdateSelectorGroup = (updatedGroup) => {
@@ -86,35 +62,6 @@ function App() {
   const handleRemoveVariableGroup = (id) => {
     setVariableGroups(prev => prev.filter(g => g.id !== id));
   };
-
-  const renderActivePage = () => {
-    switch (activePage) {
-      case 'Spacing':
-        // Pass all the lifted state and handlers down to the SpacingPage
-        return <SpacingPage
-            settings={spacingSettings}
-            onSettingsChange={setSpacingSettings}
-            scale={spacingScale}
-            onStepsChange={handleStepsChange}
-            generatorConfig={generatorConfig}
-            onGeneratorChange={handleGeneratorChange}
-            onAddClass={handleAddClass}
-            onRemoveClass={handleRemoveClass}
-            selectorGroups={selectorGroups}
-            onAddSelectorGroup={handleAddSelectorGroup}
-            onUpdateSelectorGroup={handleUpdateSelectorGroup}
-            onRemoveSelectorGroup={handleRemoveSelectorGroup}
-            variableGroups={variableGroups}
-            onAddVariableGroup={handleAddVariableGroup}
-            onUpdateVariableGroup={handleUpdateVariableGroup}
-            onRemoveVariableGroup={handleRemoveVariableGroup}
-          />;
-      case 'Colors':
-      default:
-        // This is your original, working Colors page component.
-        return <ColorsPage colors={colors} setColors={setColors} groupName={groupName} setGroupName={setGroupName} />;
-    }
-  }
 
   return (
     <div className="flex flex-col h-screen bg-black font-sans">
@@ -140,7 +87,15 @@ function App() {
               </button>
             </div>
           </div>
-          {renderActivePage()}
+          <PageRenderer 
+            activePage={activePage}
+            colors={colors} setColors={setColors} groupName={groupName} setGroupName={setGroupName}
+            spacingSettings={spacingSettings} onSettingsChange={setSpacingSettings}
+            scale={spacingScale} onStepsChange={handleStepsChange}
+            generatorConfig={generatorConfig} onGeneratorChange={handleGeneratorChange} onAddClass={handleAddClass} onRemoveClass={handleRemoveClass}
+            selectorGroups={selectorGroups} onAddSelectorGroup={handleAddSelectorGroup} onUpdateSelectorGroup={handleUpdateSelectorGroup} onRemoveSelectorGroup={handleRemoveSelectorGroup}
+            variableGroups={variableGroups} onAddVariableGroup={handleAddVariableGroup} onUpdateVariableGroup={handleUpdateVariableGroup} onRemoveVariableGroup={handleRemoveVariableGroup}
+          />
         </div>
       </div>
       <CSSPreviewPanel 
@@ -148,6 +103,11 @@ function App() {
         onClose={() => setIsPreviewOpen(false)}
         colors={colors}
         groupName={groupName}
+        spacingScale={spacingScale}
+        spacingSettings={spacingSettings}
+        generatorConfig={generatorConfig}
+        selectorGroups={selectorGroups}
+        variableGroups={variableGroups}
       />
     </div>
   );

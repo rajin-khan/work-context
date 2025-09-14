@@ -9,7 +9,6 @@ import VariableGroup from './VariableGroup';
 import { spacingProperties } from '../../utils/cssProperties';
 import { Plus } from 'lucide-react';
 
-// ** THE CHANGE: The component is now purely presentational, receiving all state and handlers as props **
 const SpacingPage = ({
   settings, onSettingsChange, scale, onStepsChange,
   generatorConfig, onGeneratorChange, onAddClass, onRemoveClass,
@@ -17,9 +16,25 @@ const SpacingPage = ({
   variableGroups, onAddVariableGroup, onUpdateVariableGroup, onRemoveVariableGroup
 }) => {
   
-  const spacingVariableOptions = useMemo(() => {
-    return scale.map(item => ({ label: `var(${item.name})`, value: `var(${item.name})` }));
-  }, [scale]);
+  // ** THIS IS THE CHANGE: Create a new memoized list of ALL variables **
+  const allVariableOptions = useMemo(() => {
+    // Start with the dynamic spacing scale variables
+    const scaleOptions = scale.map(item => ({ 
+      label: `var(${item.name})`, 
+      value: `var(${item.name})` 
+    }));
+    
+    // Flatten all custom variables from all groups into a single list
+    const customVarOptions = variableGroups.flatMap(group => 
+      group.variables.map(variable => ({
+        label: `var(${variable.name})`,
+        value: `var(${variable.name})`
+      }))
+    );
+    
+    // Combine them into one comprehensive list
+    return [...scaleOptions, ...customVarOptions];
+  }, [scale, variableGroups]);
   
   const propertyOptions = useMemo(() => {
     return spacingProperties.map(prop => ({ label: prop, value: prop }));
@@ -61,7 +76,7 @@ const SpacingPage = ({
             group={group}
             onUpdate={onUpdateSelectorGroup}
             onRemove={() => onRemoveSelectorGroup(group.id)}
-            spacingVariableOptions={spacingVariableOptions}
+            spacingVariableOptions={allVariableOptions}
             propertyOptions={propertyOptions}
           />
         ))}

@@ -10,23 +10,20 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism'; 
 
 
-const CSSPreviewPanel = ({ isOpen, onClose, colors, groupName }) => {
+const CSSPreviewPanel = ({ isOpen, onClose, colors, groupName, spacingScale, spacingSettings, generatorConfig, selectorGroups, variableGroups }) => {
   const [generatedCSS, setGeneratedCSS] = useState('/* Generating CSS... */');
 
   useEffect(() => {
     if (isOpen) {
       const generate = async () => {
-        if (!colors || colors.length === 0) {
-          setGeneratedCSS('/* Add some colors to generate CSS */');
-          return;
-        }
-        const css = await generateAndFormatCSS(colors);
+        // Pass all the data to the generator.
+        const css = await generateAndFormatCSS(colors, spacingScale, spacingSettings, generatorConfig, selectorGroups, variableGroups);
         setGeneratedCSS(css);
       };
 
       generate();
     }
-  }, [isOpen, colors]);
+  }, [isOpen, colors, spacingScale, spacingSettings, generatorConfig, selectorGroups, variableGroups]); // Add all props to the dependency array
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedCSS);
@@ -100,7 +97,6 @@ const CSSPreviewPanel = ({ isOpen, onClose, colors, groupName }) => {
               </button>
                <button
                 onClick={handleDownload}
-                // ** THIS IS THE FIX: Added border, hover, and active state classes for a beautiful effect **
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-brand text-white rounded-md border border-brand-light/50 hover:bg-brand-light hover:border-brand-light active:scale-95 transition-all duration-150 ease-in-out"
               >
                 <Download size={16} />
