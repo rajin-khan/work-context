@@ -3,8 +3,8 @@ import React from 'react';
 import GeneratorCard from './GeneratorCard';
 import { Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import FeatureHeader from '../ui/FeatureHeader';
 
-// ** CHANGE: Renamed to `initialClassDefinitions` and `id` is now a string **
 export const initialClassDefinitions = [
   { id: 'padding', className: '.padding-*', properties: ['padding'] },
   { id: 'padding-left', className: '.padding-left-*', properties: ['padding-left'] },
@@ -23,18 +23,14 @@ export const initialClassDefinitions = [
   { id: 'gap', className: '.gap-*', properties: ['gap'] },
 ];
 
-// ** CHANGE: Now accepts new handlers for adding/removing **
 const ClassGenerator = ({ config, onConfigChange, onAddClass, onRemoveClass }) => {
   return (
-    <div className="max-w-5xl mx-auto my-16 px-4">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-white tracking-tight">Class Generator</h2>
-        <p className="text-neutral-400 mt-2 max-w-2xl">
-          Enable and customize the utility classes that will be generated from your spacing scale. Add or remove CSS properties for complete control.
-        </p>
-      </div>
+    <div>
+      <FeatureHeader
+        title="Class Generator"
+        description="Enable and customize the utility classes that will be generated from your spacing scale. Add or remove CSS properties for complete control."
+      />
       <div className="space-y-4">
-        {/* ** CHANGE: Now iterates over the config state directly and wraps in AnimatePresence ** */}
         <AnimatePresence>
           {config.map(def => (
             <GeneratorCard
@@ -44,12 +40,11 @@ const ClassGenerator = ({ config, onConfigChange, onAddClass, onRemoveClass }) =
               properties={def.properties}
               enabled={def.enabled}
               onUpdate={onConfigChange}
-              onRemove={() => onRemoveClass(def.id)} // Pass the remove handler down
+              onRemove={() => onRemoveClass(def.id)}
             />
           ))}
         </AnimatePresence>
       </div>
-      {/* ** THIS IS NEW: The "Add Class Generator" button ** */}
       <div className="mt-6 flex justify-center">
         <button 
           onClick={onAddClass}

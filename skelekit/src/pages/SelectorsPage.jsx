@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import SelectorGroup from '../components/spacing/SelectorGroup';
 import { spacingProperties } from '../utils/cssProperties';
+import FeatureHeader from '../components/ui/FeatureHeader';
 
 const SelectorsPage = ({ selectorGroups, onAddSelectorGroup, onUpdateSelectorGroup, onRemoveSelectorGroup, scale, variableGroups }) => {
   const allVariableOptions = useMemo(() => {
@@ -17,7 +18,17 @@ const SelectorsPage = ({ selectorGroups, onAddSelectorGroup, onUpdateSelectorGro
   const propertyOptions = useMemo(() => spacingProperties.map(prop => ({ label: prop, value: prop })), []);
 
   return (
-    <motion.div className="p-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+    <motion.div 
+        className="max-w-5xl mx-auto p-8" 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ duration: 0.3 }}
+    >
+      <FeatureHeader
+        title="Custom Selectors"
+        description="Create reusable CSS rules for any selector. This is perfect for styling components or creating complex layouts that utilize your generated spacing and custom variables."
+      />
+
       <AnimatePresence>
         {selectorGroups.map(group => (
           <SelectorGroup key={group.id} group={group} onUpdate={onUpdateSelectorGroup} onRemove={() => onRemoveSelectorGroup(group.id)} spacingVariableOptions={allVariableOptions} propertyOptions={propertyOptions} />

@@ -10,7 +10,8 @@ const navItems = [
     icon: StretchHorizontal, 
     label: 'Spacing',
     subItems: [
-      { label: 'Engine & Generator' },
+      { label: 'Scales' }, // <-- THIS IS THE CHANGE
+      { label: 'Class Generator' },
       { label: 'Selectors' },
       { label: 'Variables' },
     ]
@@ -79,7 +80,7 @@ const Sidebar = ({ activePage, onNavigate }) => {
                   <NavItem 
                       key={item.label} 
                       {...item}
-                      active={item.label === 'Spacing' ? ['Engine & Generator', 'Selectors', 'Variables'].includes(activePage) : activePage === item.label}
+                      active={item.label === 'Spacing' ? ['Scales', 'Class Generator', 'Selectors', 'Variables'].includes(activePage) : activePage === item.label}
                       hasSubMenu={!!item.subItems}
                       onClick={() => handleNavigation(item.label)}
                   />
@@ -106,7 +107,10 @@ const Sidebar = ({ activePage, onNavigate }) => {
                 <ChevronLeft size={16} />
                 Back
               </button>
-              <h3 className="px-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">Spacing</h3>
+              <div className="flex items-center justify-between px-3 mb-1">
+                <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Spacing</h3>
+                <StretchHorizontal size={18} className="text-neutral-500" />
+              </div>
               {navItems.find(i => i.label === 'Spacing').subItems.map(subItem => (
                 <NavItem 
                   key={subItem.label} 

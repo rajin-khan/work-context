@@ -9,21 +9,40 @@ import { downloadFile } from '../utils/download';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism'; 
 
-
-const CSSPreviewPanel = ({ isOpen, onClose, colors, groupName, spacingScale, spacingSettings, generatorConfig, selectorGroups, variableGroups }) => {
+const CSSPreviewPanel = ({ 
+    isOpen, 
+    onClose, 
+    colors, 
+    groupName, 
+    isSpacingEnabled,
+    spacingScale, 
+    spacingSettings, 
+    generatorConfig, 
+    selectorGroups, 
+    variableGroups,
+    customCSS 
+}) => {
   const [generatedCSS, setGeneratedCSS] = useState('/* Generating CSS... */');
 
   useEffect(() => {
     if (isOpen) {
       const generate = async () => {
-        // Pass all the data to the generator.
-        const css = await generateAndFormatCSS(colors, spacingScale, spacingSettings, generatorConfig, selectorGroups, variableGroups);
+        const css = await generateAndFormatCSS(
+            colors, 
+            spacingScale, 
+            spacingSettings, 
+            generatorConfig, 
+            selectorGroups, 
+            variableGroups,
+            isSpacingEnabled,
+            customCSS 
+        );
         setGeneratedCSS(css);
       };
 
       generate();
     }
-  }, [isOpen, colors, spacingScale, spacingSettings, generatorConfig, selectorGroups, variableGroups]); // Add all props to the dependency array
+  }, [isOpen, colors, spacingScale, spacingSettings, generatorConfig, selectorGroups, variableGroups, isSpacingEnabled, customCSS]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedCSS);
@@ -39,7 +58,6 @@ const CSSPreviewPanel = ({ isOpen, onClose, colors, groupName, spacingScale, spa
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -48,7 +66,6 @@ const CSSPreviewPanel = ({ isOpen, onClose, colors, groupName, spacingScale, spa
             className="fixed inset-0 bg-black/60 z-40"
             onClick={onClose}
           />
-          {/* Panel */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}

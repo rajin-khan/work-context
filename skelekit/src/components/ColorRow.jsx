@@ -7,10 +7,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ColorPickerPopover from './ColorPickerPopover';
 import ShadeTintGenerator from './ShadeTintGenerator';
 import Switch from './ui/Switch';
-import UtilityClassGenerator from './ui/UtilityClassGenerator'; // Import the new component
+import UtilityClassGenerator from './ui/UtilityClassGenerator';
 import toast from 'react-hot-toast';
-
-const formats = ['HEX', 'HEXA', 'RGB', 'RGBA', 'HSL', 'HSLA'];
+import FormatDropdown from './ui/FormatDropdown'; // Import the new component
 
 const generatePalette = (baseColor, count, type) => {
     try {
@@ -38,7 +37,7 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
   const [pickerState, setPickerState] = useState({ isOpen: false, anchorEl: null });
   const [isFormatDropdownOpen, setFormatDropdownOpen] = useState(false);
   const [isExpanded, setExpanded] = useState(false);
-  const formatDropdownRef = useRef(null);
+  const formatButtonRef = useRef(null); // Ref for the format button
   
   const [editingSwatch, setEditingSwatch] = useState({ isOpen: false, anchorEl: null, color: null, index: null, format: 'HEX', type: null });
   
@@ -96,16 +95,6 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
     navigator.clipboard.writeText(displayedValue);
     toast.success('Color copied to clipboard!');
   };
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (formatDropdownRef.current && !formatDropdownRef.current.contains(event.target)) {
-        setFormatDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [formatDropdownRef]);
 
   const getDisplayedValue = () => {
     const c = colord(color.value);
@@ -174,30 +163,16 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
           onDoubleClick={handleCopy}
           className="flex-1 font-mono bg-neutral-900 rounded-md px-3 py-1.5 text-sm text-neutral-300 border border-neutral-800 focus:outline-none focus:border-brand"
         />
-        <div className="relative" ref={formatDropdownRef}>
+        <div className="relative">
           <button 
+            ref={formatButtonRef} // Attach ref to the button
             onClick={() => setFormatDropdownOpen(!isFormatDropdownOpen)}
             className="flex items-center justify-between w-24 px-3 py-1.5 text-sm bg-neutral-900 border border-neutral-800 rounded-md hover:bg-neutral-800 transition-colors"
           >
             {color.format}
             <ChevronDown size={16} className="text-neutral-500" />
           </button>
-          <AnimatePresence>
-            {isFormatDropdownOpen && (
-              <motion.div 
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                className="absolute z-30 w-full mt-1 bg-neutral-800 border border-neutral-700 rounded-md shadow-lg overflow-hidden"
-              >
-                {formats.map(f => (
-                  <a key={f} href="#" onClick={(e) => { e.preventDefault(); handleFormatChange(f); }} className="block px-3 py-2 text-sm text-neutral-300 hover:bg-brand hover:text-white">
-                    {f}
-                  </a>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* The dropdown is no longer rendered here */}
         </div>
         <button 
             className="p-2 text-neutral-600 rounded-md hover:bg-neutral-800 hover:text-red-500 opacity-0 group-hover/row:opacity-100 transition-opacity" 
@@ -257,6 +232,7 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
         )}
       </AnimatePresence>
       
+      {/* The popover and dropdown are now rendered at the end */}
       <ColorPickerPopover
         isOpen={pickerState.isOpen}
         anchorEl={pickerState.anchorEl}
@@ -273,6 +249,13 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
         color={editingSwatch.color}
         format={editingSwatch.format}
         onChange={handleSwatchPickerChange}
+      />
+
+      <FormatDropdown
+        isOpen={isFormatDropdownOpen}
+        anchorEl={formatButtonRef.current}
+        onClose={() => setFormatDropdownOpen(false)}
+        onFormatSelect={handleFormatChange}
       />
     </motion.div>
   );

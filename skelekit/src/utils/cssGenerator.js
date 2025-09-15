@@ -42,62 +42,59 @@ const formatTransparentValue = (baseColor, parentFormat, alpha) => {
     return c.toHex();
 }
 
-/**
- * Generates and formats a CSS string from the application's state.
- * @param {Array} colors - The main colors array.
- * @param {Array} spacingScale - The spacing scale array.
- * @param {object} spacingSettings - The settings for the spacing scale.
- * @param {Array} generatorConfig - The configuration for the spacing class generator.
- * @param {Array} selectorGroups - The configuration for custom selector groups.
- * @param {Array} variableGroups - The configuration for custom variable groups.
- * @returns {Promise<string>} A promise that resolves to a beautifully formatted CSS string.
- */
-export const generateAndFormatCSS = async (colors, spacingScale, spacingSettings, generatorConfig, selectorGroups, variableGroups) => {
+export const generateAndFormatCSS = async (
+  colors, 
+  spacingScale, 
+  spacingSettings, 
+  generatorConfig, 
+  selectorGroups, 
+  variableGroups,
+  isSpacingEnabled,
+  customCSS // <-- ADD NEW PARAMETER
+) => {
   let cssLines = [];
   cssLines.push(':root {');
 
-  // Static screen width variables
-  cssLines.push('  --min-screen-width: 320px;');
-  cssLines.push('  --max-screen-width: 1400px;');
-  cssLines.push(''); 
-
-  // Spacing System Variables
-  if (spacingScale && spacingScale.length > 0) {
-    cssLines.push('  /* Spacing System */');
-    spacingScale.forEach(space => {
-      const minRem = space.min / 16;
-      const maxRem = space.max / 16;
-      const vwCoefficient = (maxRem - minRem) * 1.48;
-      const remConstant = minRem * 0.85;
-      const clampValue = `clamp(${minRem}rem, calc(${vwCoefficient.toFixed(2)}vw + ${remConstant.toFixed(2)}rem), ${maxRem}rem)`;
-      cssLines.push(`  ${space.name}: ${clampValue};`);
-    });
+  if (isSpacingEnabled) {
+    cssLines.push('  --min-screen-width: 320px;');
+    cssLines.push('  --max-screen-width: 1400px;');
     cssLines.push(''); 
-  }
 
-  // Custom Variable Group Generation
-  if (variableGroups && variableGroups.length > 0) {
-      cssLines.push('  /* Custom Variables */');
-      variableGroups.forEach(group => {
-          group.variables.forEach(variable => {
-              if (variable.name && (variable.value || variable.mode === 'minmax')) {
-                  if (variable.mode === 'single') {
-                      cssLines.push(`  ${variable.name}: ${variable.value};`);
-                  } else {
-                      const minRem = (variable.minValue || 0) / 16;
-                      const maxRem = (variable.maxValue || 0) / 16;
-                      const vwCoefficient = (maxRem - minRem) * 1.48;
-                      const remConstant = minRem * 0.85;
-                      const clampValue = `clamp(${minRem}rem, calc(${vwCoefficient.toFixed(2)}vw + ${remConstant.toFixed(2)}rem), ${maxRem}rem)`;
-                      cssLines.push(`  ${variable.name}: ${clampValue};`);
-                  }
-              }
-          });
+    if (spacingScale && spacingScale.length > 0) {
+      cssLines.push('  /* Spacing System */');
+      spacingScale.forEach(space => {
+        const minRem = space.min / 16;
+        const maxRem = space.max / 16;
+        const vwCoefficient = (maxRem - minRem) * 1.48;
+        const remConstant = minRem * 0.85;
+        const clampValue = `clamp(${minRem}rem, calc(${vwCoefficient.toFixed(2)}vw + ${remConstant.toFixed(2)}rem), ${maxRem}rem)`;
+        cssLines.push(`  ${space.name}: ${clampValue};`);
       });
-      cssLines.push('');
+      cssLines.push(''); 
+    }
+
+    if (variableGroups && variableGroups.length > 0) {
+        cssLines.push('  /* Custom Variables */');
+        variableGroups.forEach(group => {
+            group.variables.forEach(variable => {
+                if (variable.name && (variable.value || variable.mode === 'minmax')) {
+                    if (variable.mode === 'single') {
+                        cssLines.push(`  ${variable.name}: ${variable.value};`);
+                    } else {
+                        const minRem = (variable.minValue || 0) / 16;
+                        const maxRem = (variable.maxValue || 0) / 16;
+                        const vwCoefficient = (maxRem - minRem) * 1.48;
+                        const remConstant = minRem * 0.85;
+                        const clampValue = `clamp(${minRem}rem, calc(${vwCoefficient.toFixed(2)}vw + ${remConstant.toFixed(2)}rem), ${maxRem}rem)`;
+                        cssLines.push(`  ${variable.name}: ${clampValue};`);
+                    }
+                }
+            });
+        });
+        cssLines.push('');
+    }
   }
   
-  // Color System Variables
   const alphaSteps = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90];
   const colorTextClasses = [], backgroundClasses = [], borderClasses = [], fillClasses = [];
   colors.forEach(color => {
@@ -136,52 +133,62 @@ export const generateAndFormatCSS = async (colors, spacingScale, spacingSettings
     });
   });
 
-  cssLines.push('}'); // Close :root
+  cssLines.push('}');
 
-  // Spacing Utility Class Generation
-  if (generatorConfig && spacingScale && spacingScale.length > 0) {
-    const spacingClasses = [];
-    generatorConfig.forEach(config => {
-      if (config.enabled && config.properties.length > 0 && config.properties.some(p => p.trim() !== '')) {
-        const baseClassName = config.className.slice(0, -2);
-        spacingScale.forEach(space => {
-          const className = `${baseClassName}-${space.id}`;
-          const properties = config.properties.map(prop => `  ${prop}: var(${space.name});`).join('\n');
-          spacingClasses.push(`${className} {\n${properties}\n}`);
-        });
-      }
-    });
-    if (spacingClasses.length > 0) {
-      cssLines.push('\n/* Spacing Utility Classes */');
-      cssLines.push(...spacingClasses);
-    }
-  }
-
-  // ** THE CHANGE: Simplified logic for Custom Selector Groups **
-  if (selectorGroups && selectorGroups.length > 0) {
-    const customSelectorClasses = [];
-    selectorGroups.forEach(group => {
-      group.rules.forEach(rule => {
-        // Check that all required fields have a value
-        if (rule.selector && rule.property && rule.value) {
-          customSelectorClasses.push(`${rule.selector} {\n  ${rule.property}: ${rule.value};\n}`);
+  if (isSpacingEnabled) {
+    if (generatorConfig && spacingScale && spacingScale.length > 0) {
+      const spacingClasses = [];
+      generatorConfig.forEach(config => {
+        if (config.enabled && config.properties.length > 0 && config.properties.some(p => p.trim() !== '')) {
+          const baseClassName = config.className.slice(0, -2);
+          spacingScale.forEach(space => {
+            const className = `${baseClassName}-${space.id}`;
+            const properties = config.properties.map(prop => `  ${prop}: var(${space.name});`).join('\n');
+            spacingClasses.push(`${className} {\n${properties}\n}`);
+          });
         }
       });
-    });
-    
-    if (customSelectorClasses.length > 0) {
-        cssLines.push('\n/* Custom Selector Classes */');
-        cssLines.push(...customSelectorClasses);
+      if (spacingClasses.length > 0) {
+        cssLines.push('\n/* Spacing Utility Classes */');
+        cssLines.push(...spacingClasses);
+      }
+    }
+
+    if (selectorGroups && selectorGroups.length > 0) {
+      const customSelectorClasses = [];
+      selectorGroups.forEach(group => {
+        group.rules.forEach(rule => {
+          if (rule.selector && rule.properties && rule.properties.length > 0) {
+            const validProperties = rule.properties
+              .filter(prop => prop.property && prop.value)
+              .map(prop => `  ${prop.property}: ${prop.value};`);
+            
+            if (validProperties.length > 0) {
+              customSelectorClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`);
+            }
+          }
+        });
+      });
+      
+      if (customSelectorClasses.length > 0) {
+          cssLines.push('\n/* Custom Selector Classes */');
+          cssLines.push(...customSelectorClasses);
+      }
     }
   }
 
-  // Color Utility Classes
   if ([...colorTextClasses, ...backgroundClasses, ...borderClasses, ...fillClasses].length > 0) {
     cssLines.push('\n/* Color Utility Classes */');
     if (colorTextClasses.length > 0) cssLines.push('\n/* Text Colors */', ...colorTextClasses.sort());
     if (backgroundClasses.length > 0) cssLines.push('\n/* Background Colors */', ...backgroundClasses.sort());
     if (borderClasses.length > 0) cssLines.push('\n/* Border Colors */', ...borderClasses.sort());
     if (fillClasses.length > 0) cssLines.push('\n/* Fill Colors */', ...fillClasses.sort());
+  }
+  
+  // --- NEW LOGIC TO APPEND CUSTOM CSS ---
+  if (customCSS && customCSS.trim() !== '' && !customCSS.includes('/* Your custom styles go here */')) {
+      cssLines.push('\n/* Custom User Stylesheet */');
+      cssLines.push(customCSS);
   }
 
   const rawCss = cssLines.join('\n');

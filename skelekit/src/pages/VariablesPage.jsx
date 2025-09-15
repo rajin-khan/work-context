@@ -3,6 +3,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import VariableGroup from '../components/spacing/VariableGroup';
+import FeatureHeader from '../components/ui/FeatureHeader';
 
 const VariablesPage = ({ 
   variableGroups, 
@@ -11,11 +12,16 @@ const VariablesPage = ({
   onRemoveVariableGroup 
 }) => (
   <motion.div 
-    className="p-8" 
+    className="max-w-5xl mx-auto p-8" 
     initial={{ opacity: 0 }} 
     animate={{ opacity: 1 }} 
     transition={{ duration: 0.3 }}
   >
+    <FeatureHeader
+        title="Custom Variables"
+        description="Define custom CSS variables for use in your selectors. Variables can be a single value (e.g., '1px solid black') or a fluid min/max value that scales with the viewport."
+      />
+      
     <AnimatePresence>
       {variableGroups.map(group => (
         <VariableGroup

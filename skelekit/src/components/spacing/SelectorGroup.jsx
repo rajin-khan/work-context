@@ -1,13 +1,15 @@
 // src/components/spacing/SelectorGroup.jsx
 import React from 'react';
 import { Plus, X } from 'lucide-react'; 
-import SelectorRow from './SelectorRow';
+import SelectorCard from './SelectorCard'; // <-- Import the new card component
 import { motion, AnimatePresence } from 'framer-motion';
+import { nanoid } from 'nanoid';
 
 const SelectorGroup = ({ group, onUpdate, onRemove, spacingVariableOptions, propertyOptions }) => {
 
   const handleAddRule = () => {
-    const newRule = { id: Date.now(), selector: '', property: '', value: '' };
+    // A new "rule" is now a card with one empty property to start
+    const newRule = { id: nanoid(), selector: '.new-selector', properties: [{ id: nanoid(), property: '', value: '' }] };
     onUpdate({ ...group, rules: [...group.rules, newRule] });
   };
   
@@ -46,7 +48,7 @@ const SelectorGroup = ({ group, onUpdate, onRemove, spacingVariableOptions, prop
           />
         </header>
 
-        <div className="p-6 space-y-3">
+        <div className="p-6 space-y-4"> {/* Increased space between cards */}
           <AnimatePresence>
             {group.rules.map(rule => (
               <motion.div 
@@ -57,7 +59,8 @@ const SelectorGroup = ({ group, onUpdate, onRemove, spacingVariableOptions, prop
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                <SelectorRow 
+                {/* Use SelectorCard instead of SelectorRow */}
+                <SelectorCard 
                   rule={rule}
                   onUpdate={handleUpdateRule}
                   onRemove={() => handleRemoveRule(rule.id)}
@@ -74,7 +77,7 @@ const SelectorGroup = ({ group, onUpdate, onRemove, spacingVariableOptions, prop
             onClick={handleAddRule}
             className="flex items-center gap-2 text-sm text-neutral-400 hover:text-white transition-colors"
           >
-            <Plus size={16} /> Add CSS Rule
+            <Plus size={16} /> Add Selector Rule
           </button>
         </footer>
       </div>

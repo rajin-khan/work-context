@@ -11,7 +11,6 @@ export default {
         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
       },
       colors: {
-        // A new, more sophisticated neutral palette based on black/white opacities
         'neutral': {
           '950': '#111111',
           '900': '#171717',
@@ -24,15 +23,13 @@ export default {
           '200': '#e5e5e5',
           '100': '#f5f5f5',
         },
-        // A vibrant, modern purple for primary actions and accents
         'brand': {
-          'DEFAULT': '#9333ea', // purple-600
-          'light': '#a855f7',   // purple-500
-          'dark': '#7e22ce',    // purple-700
+          'DEFAULT': '#9333ea',
+          'light': '#a855f7',
+          'dark': '#7e22ce',
         }
       },
       backgroundImage: {
-        // The subtle gradient for our main content area
         'radial-gradient': 'radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 40%)',
       },
       animation: {
@@ -46,5 +43,7 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'), // <-- ADD THIS LINE
+  ],
 }

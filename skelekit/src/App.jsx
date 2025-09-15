@@ -3,18 +3,21 @@ import React, { useState, useMemo } from 'react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import CSSPreviewPanel from './components/CSSPreviewPanel';
-import PageRenderer from './components/PageRenderer'; // Import the new renderer
+import PageRenderer from './components/PageRenderer';
 import { initialClassDefinitions } from './components/spacing/ClassGenerator';
 import { generateSpacingScale } from './utils/spacingCalculator';
 import { nanoid } from 'nanoid';
 import { Search, Grid2X2 } from 'lucide-react';
 
 function App() {
-  // --- STATE MANAGEMENT (ALL IN ONE PLACE) ---
+  // --- STATE MANAGEMENT ---
   const [colors, setColors] = useState([]);
   const [groupName, setGroupName] = useState('Untitled');
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [activePage, setActivePage] = useState('Colors');
+  const [isSpacingEnabled, setIsSpacingEnabled] = useState(false);
+  const handleEnableSpacing = () => setIsSpacingEnabled(true);
+  
   const [spacingSettings, setSpacingSettings] = useState({
     namingConvention: 'space', minSize: 16, maxSize: 28, minScaleRatio: 1.25,
     maxScaleRatio: 1.41, baseScaleIndex: 'm', negativeSteps: 4, positiveSteps: 4,
@@ -22,11 +25,12 @@ function App() {
   const [generatorConfig, setGeneratorConfig] = useState(initialClassDefinitions.map(def => ({ ...def, enabled: true })));
   const [selectorGroups, setSelectorGroups] = useState([]);
   const [variableGroups, setVariableGroups] = useState([]);
+  const [customCSS, setCustomCSS] = useState('/* Your custom styles go here */'); // <-- NEW STATE
+
+  const spacingScale = useMemo(() => {
+    return isSpacingEnabled ? generateSpacingScale(spacingSettings) : [];
+  }, [spacingSettings, isSpacingEnabled]);
   
-  // --- MEMOIZED CALCULATIONS ---
-  const spacingScale = useMemo(() => generateSpacingScale(spacingSettings), [spacingSettings]);
-  
-  // --- HANDLER FUNCTIONS ---
   const handleStepsChange = (type, amount) => {
     const key = type === 'negative' ? 'negativeSteps' : 'positiveSteps';
     const currentSteps = spacingSettings[key];
@@ -43,7 +47,15 @@ function App() {
     setGeneratorConfig(prev => prev.filter(item => item.id !== id));
   };
   const handleAddSelectorGroup = () => {
-    const newGroup = { id: nanoid(), name: 'Custom Selector Group', rules: [{ id: nanoid(), selector: '.class-name', property: '', value: '' }] };
+    const newGroup = { 
+      id: nanoid(), 
+      name: 'Custom Selector Group', 
+      rules: [{ 
+        id: nanoid(), 
+        selector: '.class-name', 
+        properties: [{ id: nanoid(), property: '', value: '' }] 
+      }] 
+    };
     setSelectorGroups(prev => [...prev, newGroup]);
   };
   const handleUpdateSelectorGroup = (updatedGroup) => {
@@ -90,11 +102,13 @@ function App() {
           <PageRenderer 
             activePage={activePage}
             colors={colors} setColors={setColors} groupName={groupName} setGroupName={setGroupName}
+            isSpacingEnabled={isSpacingEnabled} handleEnableSpacing={handleEnableSpacing}
             spacingSettings={spacingSettings} onSettingsChange={setSpacingSettings}
             scale={spacingScale} onStepsChange={handleStepsChange}
             generatorConfig={generatorConfig} onGeneratorChange={handleGeneratorChange} onAddClass={handleAddClass} onRemoveClass={handleRemoveClass}
             selectorGroups={selectorGroups} onAddSelectorGroup={handleAddSelectorGroup} onUpdateSelectorGroup={handleUpdateSelectorGroup} onRemoveSelectorGroup={handleRemoveSelectorGroup}
             variableGroups={variableGroups} onAddVariableGroup={handleAddVariableGroup} onUpdateVariableGroup={handleUpdateVariableGroup} onRemoveVariableGroup={handleRemoveVariableGroup}
+            customCSS={customCSS} setCustomCSS={setCustomCSS} // <-- PASS PROPS
           />
         </div>
       </div>
@@ -103,11 +117,13 @@ function App() {
         onClose={() => setIsPreviewOpen(false)}
         colors={colors}
         groupName={groupName}
+        isSpacingEnabled={isSpacingEnabled}
         spacingScale={spacingScale}
         spacingSettings={spacingSettings}
         generatorConfig={generatorConfig}
         selectorGroups={selectorGroups}
         variableGroups={variableGroups}
+        customCSS={customCSS} // <-- PASS PROP
       />
     </div>
   );
