@@ -3,11 +3,13 @@ import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import SelectorGroup from '../components/spacing/SelectorGroup';
-import { spacingProperties } from '../utils/cssProperties';
+import { spacingProperties, allCSSProperties } from '../utils/cssProperties'; // Use allCSSProperties for the dropdown
 import FeatureHeader from '../components/ui/FeatureHeader';
 
 const SelectorsPage = ({ selectorGroups, onAddSelectorGroup, onUpdateSelectorGroup, onRemoveSelectorGroup, scale, variableGroups }) => {
-  const allVariableOptions = useMemo(() => {
+  
+  // THIS IS THE CHANGE: Only spacing scale and spacing-specific variables are included.
+  const spacingVariableOptions = useMemo(() => {
     const scaleOptions = scale.map(item => ({ label: `var(${item.name})`, value: `var(${item.name})` }));
     const customVarOptions = variableGroups.flatMap(group => 
       group.variables.map(variable => ({ label: `var(${variable.name})`, value: `var(${variable.name})` }))
@@ -15,7 +17,8 @@ const SelectorsPage = ({ selectorGroups, onAddSelectorGroup, onUpdateSelectorGro
     return [...scaleOptions, ...customVarOptions];
   }, [scale, variableGroups]);
 
-  const propertyOptions = useMemo(() => spacingProperties.map(prop => ({ label: prop, value: prop })), []);
+  // We still provide all CSS properties for the property input field itself.
+  const propertyOptions = useMemo(() => allCSSProperties.map(prop => ({ label: prop, value: prop })), []);
 
   return (
     <motion.div 
@@ -25,13 +28,21 @@ const SelectorsPage = ({ selectorGroups, onAddSelectorGroup, onUpdateSelectorGro
         transition={{ duration: 0.3 }}
     >
       <FeatureHeader
-        title="Custom Selectors"
+        title="Spacing Selectors"
         description="Create reusable CSS rules for any selector. This is perfect for styling components or creating complex layouts that utilize your generated spacing and custom variables."
       />
 
       <AnimatePresence>
         {selectorGroups.map(group => (
-          <SelectorGroup key={group.id} group={group} onUpdate={onUpdateSelectorGroup} onRemove={() => onRemoveSelectorGroup(group.id)} spacingVariableOptions={allVariableOptions} propertyOptions={propertyOptions} />
+          <SelectorGroup 
+            key={group.id} 
+            group={group} 
+            onUpdate={onUpdateSelectorGroup} 
+            onRemove={() => onRemoveSelectorGroup(group.id)} 
+            // Pass the now-scoped list of variables
+            spacingVariableOptions={spacingVariableOptions} 
+            propertyOptions={propertyOptions} 
+          />
         ))}
       </AnimatePresence>
       <div className="max-w-5xl mx-auto my-8 px-4 flex items-center justify-center">

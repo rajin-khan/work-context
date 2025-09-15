@@ -8,8 +8,8 @@ import ClassGeneratorPage from '../pages/ClassGeneratorPage';
 import SelectorsPage from '../pages/SelectorsPage';
 import VariablesPage from '../pages/VariablesPage';
 import StylesheetsPage from '../pages/StylesheetsPage';
-import LayoutSelectorsPage from '../pages/LayoutSelectorsPage'; // Import new page
-import LayoutVariablesPage from '../pages/LayoutVariablesPage'; // Import new page
+import LayoutSelectorsPage from '../pages/LayoutSelectorsPage'; 
+import LayoutVariablesPage from '../pages/LayoutVariablesPage'; 
 import FeatureActivationScreen from './ui/FeatureActivationScreen';
 
 const PageRenderer = (props) => {
@@ -37,7 +37,8 @@ const PageRenderer = (props) => {
             onActivate={handleEnableSpacing}
           />
         );
-
+        
+      // THIS IS THE CHANGE: Use the unique pageId from the sidebar
       case 'Spacing Selectors':
         return isSpacingEnabled ? <SelectorsPage {...props} /> : (
           <FeatureActivationScreen
@@ -48,6 +49,7 @@ const PageRenderer = (props) => {
           />
         );
 
+      // THIS IS THE CHANGE: Use the unique pageId from the sidebar
       case 'Spacing Variables':
         return isSpacingEnabled ? <VariablesPage {...props} /> : (
           <FeatureActivationScreen
@@ -59,9 +61,11 @@ const PageRenderer = (props) => {
         );
       
       // LAYOUT SUB-PAGES (NEW)
+      // THIS IS THE CHANGE: Use the unique pageId from the sidebar
       case 'Layout Selectors':
         return <LayoutSelectorsPage {...props} />;
         
+      // THIS IS THE CHANGE: Use the unique pageId from the sidebar
       case 'Layout Variables':
         return <LayoutVariablesPage {...props} />;
 

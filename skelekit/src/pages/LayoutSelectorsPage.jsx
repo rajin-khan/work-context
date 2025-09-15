@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import SelectorGroup from '../components/spacing/SelectorGroup';
-import { allCSSProperties } from '../utils/cssProperties'; // Use the new comprehensive list
+import { allCSSProperties } from '../utils/cssProperties'; 
 import FeatureHeader from '../components/ui/FeatureHeader';
 
 const LayoutSelectorsPage = ({ 
@@ -12,24 +12,21 @@ const LayoutSelectorsPage = ({
   onUpdateLayoutSelectorGroup, 
   onRemoveLayoutSelectorGroup, 
   scale, 
-  variableGroups,
-  layoutVariableGroups // Also get layout-specific variables
+  layoutVariableGroups 
 }) => {
   
-  const allVariableOptions = useMemo(() => {
+  // THIS IS THE CHANGE: Only spacing scale and layout-specific variables are included.
+  const layoutVariableOptions = useMemo(() => {
+    // It can still see the foundational spacing scale
     const scaleOptions = scale.map(item => ({ label: `var(${item.name})`, value: `var(${item.name})` }));
     
-    const customVarOptions = variableGroups.flatMap(group => 
-      group.variables.map(variable => ({ label: `var(${variable.name})`, value: `var(${variable.name})` }))
-    );
-
-    // Add the new layout-specific variables to the options
+    // But it only gets variables from its own section
     const customLayoutVarOptions = layoutVariableGroups.flatMap(group =>
       group.variables.map(variable => ({ label: `var(${variable.name})`, value: `var(${variable.name})` }))
     );
 
-    return [...scaleOptions, ...customVarOptions, ...customLayoutVarOptions];
-  }, [scale, variableGroups, layoutVariableGroups]);
+    return [...scaleOptions, ...customLayoutVarOptions];
+  }, [scale, layoutVariableGroups]);
 
   const propertyOptions = useMemo(() => allCSSProperties.map(prop => ({ label: prop, value: prop })), []);
 
@@ -52,7 +49,8 @@ const LayoutSelectorsPage = ({
             group={group} 
             onUpdate={onUpdateLayoutSelectorGroup} 
             onRemove={() => onRemoveLayoutSelectorGroup(group.id)} 
-            spacingVariableOptions={allVariableOptions} 
+            // Pass the now-scoped list of variables
+            spacingVariableOptions={layoutVariableOptions} 
             propertyOptions={propertyOptions} 
           />
         ))}
