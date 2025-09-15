@@ -18,6 +18,7 @@ function App() {
   const [isSpacingEnabled, setIsSpacingEnabled] = useState(false);
   const handleEnableSpacing = () => setIsSpacingEnabled(true);
   
+  // Spacing State
   const [spacingSettings, setSpacingSettings] = useState({
     namingConvention: 'space', minSize: 16, maxSize: 28, minScaleRatio: 1.25,
     maxScaleRatio: 1.41, baseScaleIndex: 'm', negativeSteps: 4, positiveSteps: 4,
@@ -25,12 +26,19 @@ function App() {
   const [generatorConfig, setGeneratorConfig] = useState(initialClassDefinitions.map(def => ({ ...def, enabled: true })));
   const [selectorGroups, setSelectorGroups] = useState([]);
   const [variableGroups, setVariableGroups] = useState([]);
-  const [customCSS, setCustomCSS] = useState('/* Your custom styles go here */'); // <-- NEW STATE
+
+  // Layout State (NEW)
+  const [layoutSelectorGroups, setLayoutSelectorGroups] = useState([]);
+  const [layoutVariableGroups, setLayoutVariableGroups] = useState([]);
+  
+  // Stylesheet State
+  const [customCSS, setCustomCSS] = useState('/* Your custom styles go here */');
 
   const spacingScale = useMemo(() => {
     return isSpacingEnabled ? generateSpacingScale(spacingSettings) : [];
   }, [spacingSettings, isSpacingEnabled]);
   
+  // --- SPACING HANDLERS ---
   const handleStepsChange = (type, amount) => {
     const key = type === 'negative' ? 'negativeSteps' : 'positiveSteps';
     const currentSteps = spacingSettings[key];
@@ -75,6 +83,28 @@ function App() {
     setVariableGroups(prev => prev.filter(g => g.id !== id));
   };
 
+  // --- LAYOUT HANDLERS (NEW) ---
+  const handleAddLayoutSelectorGroup = () => {
+    const newGroup = { id: nanoid(), name: 'Layout Selector Group', rules: [{ id: nanoid(), selector: '.container', properties: [{ id: nanoid(), property: 'width', value: '100%' }] }] };
+    setLayoutSelectorGroups(prev => [...prev, newGroup]);
+  };
+  const handleUpdateLayoutSelectorGroup = (updatedGroup) => {
+    setLayoutSelectorGroups(prev => prev.map(g => g.id === updatedGroup.id ? updatedGroup : g));
+  };
+  const handleRemoveLayoutSelectorGroup = (id) => {
+    setLayoutSelectorGroups(prev => prev.filter(g => g.id !== id));
+  };
+  const handleAddLayoutVariableGroup = () => {
+    const newGroup = { id: nanoid(), name: 'Layout Variable Group', variables: [{ id: nanoid(), name: '--header-height', value: '60px', mode: 'single', minValue: 0, maxValue: 0 }] };
+    setLayoutVariableGroups(prev => [...prev, newGroup]);
+  };
+  const handleUpdateLayoutVariableGroup = (updatedGroup) => {
+    setLayoutVariableGroups(prev => prev.map(g => g.id === updatedGroup.id ? updatedGroup : g));
+  };
+  const handleRemoveLayoutVariableGroup = (id) => {
+    setLayoutVariableGroups(prev => prev.filter(g => g.id !== id));
+  };
+
   return (
     <div className="flex flex-col h-screen bg-black font-sans">
       <Header />
@@ -108,7 +138,10 @@ function App() {
             generatorConfig={generatorConfig} onGeneratorChange={handleGeneratorChange} onAddClass={handleAddClass} onRemoveClass={handleRemoveClass}
             selectorGroups={selectorGroups} onAddSelectorGroup={handleAddSelectorGroup} onUpdateSelectorGroup={handleUpdateSelectorGroup} onRemoveSelectorGroup={handleRemoveSelectorGroup}
             variableGroups={variableGroups} onAddVariableGroup={handleAddVariableGroup} onUpdateVariableGroup={handleUpdateVariableGroup} onRemoveVariableGroup={handleRemoveVariableGroup}
-            customCSS={customCSS} setCustomCSS={setCustomCSS} // <-- PASS PROPS
+            customCSS={customCSS} setCustomCSS={setCustomCSS}
+            // Pass Layout Props (NEW)
+            layoutSelectorGroups={layoutSelectorGroups} onAddLayoutSelectorGroup={handleAddLayoutSelectorGroup} onUpdateLayoutSelectorGroup={handleUpdateLayoutSelectorGroup} onRemoveLayoutSelectorGroup={handleRemoveLayoutSelectorGroup}
+            layoutVariableGroups={layoutVariableGroups} onAddLayoutVariableGroup={handleAddLayoutVariableGroup} onUpdateLayoutVariableGroup={handleUpdateLayoutVariableGroup} onRemoveLayoutVariableGroup={handleRemoveLayoutVariableGroup}
           />
         </div>
       </div>
@@ -123,7 +156,10 @@ function App() {
         generatorConfig={generatorConfig}
         selectorGroups={selectorGroups}
         variableGroups={variableGroups}
-        customCSS={customCSS} // <-- PASS PROP
+        customCSS={customCSS}
+        // Pass Layout Props to Preview (NEW)
+        layoutSelectorGroups={layoutSelectorGroups}
+        layoutVariableGroups={layoutVariableGroups}
       />
     </div>
   );

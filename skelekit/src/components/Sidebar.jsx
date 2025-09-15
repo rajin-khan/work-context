@@ -10,14 +10,21 @@ const navItems = [
     icon: StretchHorizontal, 
     label: 'Spacing',
     subItems: [
-      { label: 'Scales' }, // <-- THIS IS THE CHANGE
+      { label: 'Scales' },
       { label: 'Class Generator' },
-      { label: 'Selectors' },
-      { label: 'Variables' },
+      { label: 'Selectors', pageId: 'Spacing Selectors' }, // Unique ID for page rendering
+      { label: 'Variables', pageId: 'Spacing Variables' }, // Unique ID for page rendering
     ]
   },
   { icon: Component, label: 'Components' },
-  { icon: Layout, label: 'Layouts' },
+  { 
+    icon: Layout, 
+    label: 'Layouts', // RENAMED for clarity
+    subItems: [
+      { label: 'Selectors', pageId: 'Layout Selectors' }, // Unique ID for page rendering
+      { label: 'Variables', pageId: 'Layout Variables' }, // Unique ID for page rendering
+    ]
+  },
   { icon: Text, label: 'Fonts' },
   { icon: FileText, label: 'Stylesheets' },
   { icon: SquareRadical, label: 'Other' },
@@ -45,13 +52,14 @@ const NavItem = ({ icon: Icon, label, active = false, hasSubMenu = false, onClic
 );
 
 const Sidebar = ({ activePage, onNavigate }) => {
-  const [menu, setMenu] = useState('main');
+  const [menu, setMenu] = useState('main'); // Can be 'main', 'spacing', or 'layouts'
 
-  const handleNavigation = (page) => {
-    if (page === 'Spacing') {
-      setMenu('spacing');
+  const handleNavigation = (pageLabel) => {
+    const navItem = navItems.find(item => item.label === pageLabel);
+    if (navItem && navItem.subItems) {
+      setMenu(pageLabel.toLowerCase()); // e.g., 'spacing', 'layouts'
     } else {
-      onNavigate(page);
+      onNavigate(pageLabel);
     }
   };
 
@@ -61,9 +69,49 @@ const Sidebar = ({ activePage, onNavigate }) => {
     exit: (direction) => ({ x: direction === 'forward' ? '-100%' : '100%', opacity: 0 }),
   };
 
+  const isSpacingActive = ['Scales', 'Class Generator', 'Spacing Selectors', 'Spacing Variables'].includes(activePage);
+  const isLayoutsActive = ['Layout Selectors', 'Layout Variables'].includes(activePage);
+
+  const renderSubMenu = (menuKey, Icon) => {
+    const navItem = navItems.find(i => i.label.toLowerCase() === menuKey);
+    if (!navItem) return null;
+
+    return (
+        <motion.div
+            key={menuKey}
+            custom="forward"
+            variants={menuVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ type: 'tween', duration: 0.2, ease: 'easeInOut' }}
+            className="absolute top-4 left-4 right-4"
+        >
+            <nav className="flex flex-col gap-1.5">
+                <button onClick={() => setMenu('main')} className="flex items-center gap-2 px-3 py-2 text-sm text-neutral-400 hover:text-white mb-2">
+                    <ChevronLeft size={16} />
+                    Back
+                </button>
+                <div className="flex items-center justify-between px-3 mb-1">
+                    <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">{navItem.label}</h3>
+                    {Icon && <Icon size={18} className="text-neutral-500" />}
+                </div>
+                {navItem.subItems.map(subItem => (
+                    <NavItem 
+                        key={subItem.pageId || subItem.label} 
+                        {...subItem} 
+                        active={activePage === (subItem.pageId || subItem.label)}
+                        onClick={() => onNavigate(subItem.pageId || subItem.label)}
+                    />
+                ))}
+            </nav>
+        </motion.div>
+    );
+  };
+
   return (
     <aside className="relative w-60 bg-black border-r border-neutral-900 flex flex-col justify-between p-4 shrink-0 overflow-hidden">
-      <AnimatePresence initial={false} custom={menu === 'spacing' ? 'forward' : 'backward'}>
+      <AnimatePresence initial={false} custom={menu !== 'main' ? 'forward' : 'backward'}>
         {menu === 'main' ? (
           <motion.div
             key="main"
@@ -80,7 +128,11 @@ const Sidebar = ({ activePage, onNavigate }) => {
                   <NavItem 
                       key={item.label} 
                       {...item}
-                      active={item.label === 'Spacing' ? ['Scales', 'Class Generator', 'Selectors', 'Variables'].includes(activePage) : activePage === item.label}
+                      active={
+                        (item.label === 'Spacing' && isSpacingActive) ||
+                        (item.label === 'Layouts' && isLayoutsActive) ||
+                        activePage === item.label
+                      }
                       hasSubMenu={!!item.subItems}
                       onClick={() => handleNavigation(item.label)}
                   />
@@ -91,36 +143,10 @@ const Sidebar = ({ activePage, onNavigate }) => {
               <div className="text-xs text-neutral-600 px-3 pt-2">v1.0.0</div>
             </div>
           </motion.div>
+        ) : menu === 'spacing' ? (
+          renderSubMenu('spacing', StretchHorizontal)
         ) : (
-          <motion.div
-            key="spacing"
-            custom="forward"
-            variants={menuVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={{ type: 'tween', duration: 0.2, ease: 'easeInOut' }}
-            className="absolute top-4 left-4 right-4"
-          >
-            <nav className="flex flex-col gap-1.5">
-              <button onClick={() => setMenu('main')} className="flex items-center gap-2 px-3 py-2 text-sm text-neutral-400 hover:text-white mb-2">
-                <ChevronLeft size={16} />
-                Back
-              </button>
-              <div className="flex items-center justify-between px-3 mb-1">
-                <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Spacing</h3>
-                <StretchHorizontal size={18} className="text-neutral-500" />
-              </div>
-              {navItems.find(i => i.label === 'Spacing').subItems.map(subItem => (
-                <NavItem 
-                  key={subItem.label} 
-                  {...subItem} 
-                  active={activePage === subItem.label}
-                  onClick={() => onNavigate(subItem.label)}
-                />
-              ))}
-            </nav>
-          </motion.div>
+          renderSubMenu('layouts', Layout)
         )}
       </AnimatePresence>
     </aside>

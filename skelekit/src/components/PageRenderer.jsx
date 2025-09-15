@@ -7,7 +7,9 @@ import ScalesPage from '../pages/ScalesPage';
 import ClassGeneratorPage from '../pages/ClassGeneratorPage';
 import SelectorsPage from '../pages/SelectorsPage';
 import VariablesPage from '../pages/VariablesPage';
-import StylesheetsPage from '../pages/StylesheetsPage'; // <-- Import the new page
+import StylesheetsPage from '../pages/StylesheetsPage';
+import LayoutSelectorsPage from '../pages/LayoutSelectorsPage'; // Import new page
+import LayoutVariablesPage from '../pages/LayoutVariablesPage'; // Import new page
 import FeatureActivationScreen from './ui/FeatureActivationScreen';
 
 const PageRenderer = (props) => {
@@ -15,6 +17,7 @@ const PageRenderer = (props) => {
 
   const renderActivePage = () => {
     switch (activePage) {
+      // SPACING SUB-PAGES
       case 'Scales':
         return isSpacingEnabled ? <ScalesPage {...props} /> : (
           <FeatureActivationScreen
@@ -35,7 +38,7 @@ const PageRenderer = (props) => {
           />
         );
 
-      case 'Selectors':
+      case 'Spacing Selectors':
         return isSpacingEnabled ? <SelectorsPage {...props} /> : (
           <FeatureActivationScreen
             title="Spacing Features Not Enabled"
@@ -45,7 +48,7 @@ const PageRenderer = (props) => {
           />
         );
 
-      case 'Variables':
+      case 'Spacing Variables':
         return isSpacingEnabled ? <VariablesPage {...props} /> : (
           <FeatureActivationScreen
             title="Spacing Features Not Enabled"
@@ -55,7 +58,15 @@ const PageRenderer = (props) => {
           />
         );
       
-      case 'Stylesheets': // <-- ADD THIS CASE
+      // LAYOUT SUB-PAGES (NEW)
+      case 'Layout Selectors':
+        return <LayoutSelectorsPage {...props} />;
+        
+      case 'Layout Variables':
+        return <LayoutVariablesPage {...props} />;
+
+      // OTHER MAIN PAGES
+      case 'Stylesheets':
         return <StylesheetsPage {...props} />;
 
       case 'Colors':

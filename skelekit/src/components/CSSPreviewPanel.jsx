@@ -20,7 +20,9 @@ const CSSPreviewPanel = ({
     generatorConfig, 
     selectorGroups, 
     variableGroups,
-    customCSS 
+    customCSS,
+    layoutSelectorGroups, // <-- ADD PROP
+    layoutVariableGroups  // <-- ADD PROP
 }) => {
   const [generatedCSS, setGeneratedCSS] = useState('/* Generating CSS... */');
 
@@ -35,14 +37,16 @@ const CSSPreviewPanel = ({
             selectorGroups, 
             variableGroups,
             isSpacingEnabled,
-            customCSS 
+            customCSS,
+            layoutSelectorGroups, // <-- PASS PROP
+            layoutVariableGroups  // <-- PASS PROP
         );
         setGeneratedCSS(css);
       };
 
       generate();
     }
-  }, [isOpen, colors, spacingScale, spacingSettings, generatorConfig, selectorGroups, variableGroups, isSpacingEnabled, customCSS]);
+  }, [isOpen, colors, spacingScale, spacingSettings, generatorConfig, selectorGroups, variableGroups, isSpacingEnabled, customCSS, layoutSelectorGroups, layoutVariableGroups]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedCSS);

@@ -50,7 +50,9 @@ export const generateAndFormatCSS = async (
   selectorGroups, 
   variableGroups,
   isSpacingEnabled,
-  customCSS // <-- ADD NEW PARAMETER
+  customCSS,
+  layoutSelectorGroups,  // <-- ADD NEW PARAMETER
+  layoutVariableGroups   // <-- ADD NEW PARAMETER
 ) => {
   let cssLines = [];
   cssLines.push(':root {');
@@ -74,7 +76,7 @@ export const generateAndFormatCSS = async (
     }
 
     if (variableGroups && variableGroups.length > 0) {
-        cssLines.push('  /* Custom Variables */');
+        cssLines.push('  /* Custom Spacing Variables */');
         variableGroups.forEach(group => {
             group.variables.forEach(variable => {
                 if (variable.name && (variable.value || variable.mode === 'minmax')) {
@@ -93,6 +95,28 @@ export const generateAndFormatCSS = async (
         });
         cssLines.push('');
     }
+  }
+  
+  // --- NEW: Add Layout Variables ---
+  if (layoutVariableGroups && layoutVariableGroups.length > 0) {
+    cssLines.push('  /* Custom Layout Variables */');
+    layoutVariableGroups.forEach(group => {
+        group.variables.forEach(variable => {
+            if (variable.name && (variable.value || variable.mode === 'minmax')) {
+                if (variable.mode === 'single') {
+                    cssLines.push(`  ${variable.name}: ${variable.value};`);
+                } else {
+                    const minRem = (variable.minValue || 0) / 16;
+                    const maxRem = (variable.maxValue || 0) / 16;
+                    const vwCoefficient = (maxRem - minRem) * 1.48;
+                    const remConstant = minRem * 0.85;
+                    const clampValue = `clamp(${minRem}rem, calc(${vwCoefficient.toFixed(2)}vw + ${remConstant.toFixed(2)}rem), ${maxRem}rem)`;
+                    cssLines.push(`  ${variable.name}: ${clampValue};`);
+                }
+            }
+        });
+    });
+    cssLines.push('');
   }
   
   const alphaSteps = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90];
@@ -171,9 +195,32 @@ export const generateAndFormatCSS = async (
       });
       
       if (customSelectorClasses.length > 0) {
-          cssLines.push('\n/* Custom Selector Classes */');
+          cssLines.push('\n/* Custom Spacing Selectors */');
           cssLines.push(...customSelectorClasses);
       }
+    }
+  }
+
+  // --- NEW: Add Layout Selectors ---
+  if (layoutSelectorGroups && layoutSelectorGroups.length > 0) {
+    const customLayoutClasses = [];
+    layoutSelectorGroups.forEach(group => {
+      group.rules.forEach(rule => {
+        if (rule.selector && rule.properties && rule.properties.length > 0) {
+          const validProperties = rule.properties
+            .filter(prop => prop.property && prop.value)
+            .map(prop => `  ${prop.property}: ${prop.value};`);
+          
+          if (validProperties.length > 0) {
+            customLayoutClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`);
+          }
+        }
+      });
+    });
+    
+    if (customLayoutClasses.length > 0) {
+        cssLines.push('\n/* Custom Layout Selectors */');
+        cssLines.push(...customLayoutClasses);
     }
   }
 
@@ -185,7 +232,6 @@ export const generateAndFormatCSS = async (
     if (fillClasses.length > 0) cssLines.push('\n/* Fill Colors */', ...fillClasses.sort());
   }
   
-  // --- NEW LOGIC TO APPEND CUSTOM CSS ---
   if (customCSS && customCSS.trim() !== '' && !customCSS.includes('/* Your custom styles go here */')) {
       cssLines.push('\n/* Custom User Stylesheet */');
       cssLines.push(customCSS);
