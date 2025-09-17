@@ -1,6 +1,6 @@
 // src/components/ColorGroup.jsx
 import React, { useState, useRef } from 'react';
-import { Plus, MoreVertical, Sparkles } from 'lucide-react';
+import { Plus, X, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ColorRow from './ColorRow';
 import chroma from 'chroma-js';
@@ -28,7 +28,7 @@ const getRandomPaletteSource = (exclude) => {
 
 const defaultShadeTintConfig = { enabled: false, count: 8, palette: [] };
 
-const ColorGroup = ({ colors, setColors, groupName, setGroupName }) => {
+const ColorGroup = ({ group, onUpdateGroup, onRemoveGroup }) => {
   const paletteSourceRef = useRef(getRandomPaletteSource(null));
   const [hasBeenEdited, setHasBeenEdited] = useState(false);
 
@@ -45,75 +45,65 @@ const ColorGroup = ({ colors, setColors, groupName, setGroupName }) => {
 
   const createNewColor = (props) => ({
     id: generateId(),
-    name: `--color-${colors.length + 1}`,
+    name: `--color-${group.colors.length + 1}`,
     value: '#808080',
     format: 'HEX',
     shadesConfig: { ...defaultShadeTintConfig },
     tintsConfig: { ...defaultShadeTintConfig },
     transparentConfig: { enabled: false },
-    utilityConfig: { text: false, background: false, border: false, fill: false }, // New default config
+    utilityConfig: { text: false, background: false, border: false, fill: false },
     ...props,
   });
+  
+  const setColors = (newColors) => {
+    onUpdateGroup(group.id, { colors: newColors });
+  };
 
   const addSuggestedColor = () => {
     const newColor = createNewColor({ value: getNextBrewerColor() });
-    setColors([...colors, newColor]);
+    setColors([...group.colors, newColor]);
   };
 
   const addDefaultColor = () => {
+    // THIS IS THE FIX: Set hasBeenEdited to true
+    if (!hasBeenEdited) setHasBeenEdited(true);
     const newColor = createNewColor({});
-    setColors([...colors, newColor]);
+    setColors([...group.colors, newColor]);
   }
 
   const updateColor = (id, newProps) => {
+    // This correctly sets the edited flag on any change
     if (!hasBeenEdited) setHasBeenEdited(true);
-    setColors(colors.map(c => c.id === id ? { ...c, ...newProps } : c));
+    setColors(group.colors.map(c => c.id === id ? { ...c, ...newProps } : c));
   };
 
   const deleteColor = (id) => {
-    setColors(colors.filter(c => c.id !== id));
+    // THIS IS THE FIX: Set hasBeenEdited to true
+    if (!hasBeenEdited) setHasBeenEdited(true);
+    setColors(group.colors.filter(c => c.id !== id));
   };
-
-  const handleCreateGroup = () => {
-    const firstColor = createNewColor({
-      name: '--primary-500',
-      value: getNextBrewerColor(),
-    });
-    setColors([firstColor]);
-  };
-
-  if (colors.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <div className="bg-neutral-950 border border-neutral-900 p-8 rounded-lg max-w-md w-full text-center">
-          <h2 className="text-lg font-semibold text-white mb-2">No color groups</h2>
-          <p className="text-sm text-neutral-400 mb-6">Add a color group to get started.</p>
-          <button onClick={handleCreateGroup} className="flex items-center justify-center w-full px-4 py-2 text-sm font-semibold bg-neutral-900 border border-neutral-800 rounded-md text-neutral-200 hover:bg-neutral-800 transition-colors">
-            <Plus size={16} className="mr-2" />
-            Create new color group
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="animate-fade-in max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <input
-          type="text"
-          value={groupName}
-          onChange={(e) => setGroupName(e.target.value)}
-          className="text-2xl font-bold bg-transparent focus:outline-none focus:bg-neutral-900 rounded px-2 -mx-2 transition-colors"
-        />
-        <button className="p-2 text-neutral-500 rounded-md hover:bg-neutral-900 hover:text-white transition-colors">
-          <MoreVertical size={20} />
+    <div className="relative bg-black border border-neutral-800 rounded-xl shadow-2xl overflow-hidden p-6 group/group">
+        <button 
+          onClick={() => onRemoveGroup(group.id)}
+          className="absolute top-5 right-5 p-1.5 text-neutral-600 rounded-full hover:bg-neutral-800 hover:text-red-500 opacity-0 group-hover/group:opacity-100 transition-all z-10"
+          aria-label="Remove color group"
+        >
+          <X size={18} />
         </button>
-      </div>
+        <header className="flex items-center justify-between mb-6">
+          <input
+            type="text"
+            value={group.name}
+            onChange={(e) => onUpdateGroup(group.id, { name: e.target.value })}
+            className="text-2xl font-bold text-white tracking-tight bg-transparent focus:outline-none focus:bg-neutral-900 rounded px-2 -mx-2"
+          />
+        </header>
       
       <div className="space-y-2">
         <AnimatePresence>
-          {colors.map((color) => (
+          {group.colors.map((color) => (
             <ColorRow key={color.id} color={color} onUpdate={updateColor} onDelete={deleteColor} />
           ))}
         </AnimatePresence>
@@ -121,6 +111,7 @@ const ColorGroup = ({ colors, setColors, groupName, setGroupName }) => {
       
       <div className="mt-4 flex items-center justify-center">
         <AnimatePresence mode="wait">
+          {/* THIS IS THE FIX: The condition is now just !hasBeenEdited */}
           {!hasBeenEdited ? (
             <motion.div
               key="suggestion-buttons"

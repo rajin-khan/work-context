@@ -12,29 +12,29 @@ import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 const CSSPreviewPanel = ({ 
     isOpen, 
     onClose, 
-    colors, 
-    groupName, 
+    colorGroups, 
     isSpacingEnabled,
     spacingScale, 
-    spacingSettings, 
+    spacingGroups, // <-- THIS IS THE FIX: Receive the full array
     generatorConfig, 
     selectorGroups, 
     variableGroups,
     customCSS,
     layoutSelectorGroups,
     layoutVariableGroups,
-    designSelectorGroups, // <-- ADD PROP
-    designVariableGroups  // <-- ADD PROP
+    designSelectorGroups,
+    designVariableGroups
 }) => {
   const [generatedCSS, setGeneratedCSS] = useState('/* Generating CSS... */');
 
   useEffect(() => {
     if (isOpen) {
       const generate = async () => {
+        const allColors = colorGroups.flatMap(group => group.colors);
         const css = await generateAndFormatCSS(
-            colors, 
+            allColors,
             spacingScale, 
-            spacingSettings, 
+            spacingGroups, // <-- THIS IS THE FIX: Pass it to the generator
             generatorConfig, 
             selectorGroups, 
             variableGroups,
@@ -42,15 +42,15 @@ const CSSPreviewPanel = ({
             customCSS,
             layoutSelectorGroups,
             layoutVariableGroups,
-            designSelectorGroups, // <-- PASS PROP
-            designVariableGroups  // <-- PASS PROP
+            designSelectorGroups,
+            designVariableGroups
         );
         setGeneratedCSS(css);
       };
 
       generate();
     }
-  }, [isOpen, colors, spacingScale, spacingSettings, generatorConfig, selectorGroups, variableGroups, isSpacingEnabled, customCSS, layoutSelectorGroups, layoutVariableGroups, designSelectorGroups, designVariableGroups]);
+  }, [isOpen, colorGroups, spacingScale, spacingGroups, generatorConfig, selectorGroups, variableGroups, isSpacingEnabled, customCSS, layoutSelectorGroups, layoutVariableGroups, designSelectorGroups, designVariableGroups]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedCSS);
@@ -58,7 +58,7 @@ const CSSPreviewPanel = ({
   };
 
   const handleDownload = () => {
-    const fileName = `${groupName.toLowerCase().replace(/\s+/g, '-') || 'theme'}.css`;
+    const fileName = `theme.css`;
     downloadFile(generatedCSS, fileName);
   };
 

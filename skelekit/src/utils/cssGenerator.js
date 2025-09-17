@@ -2,11 +2,11 @@
 import { colord } from 'colord';
 import prettier from 'prettier/standalone';
 import * as parserPostCSS from 'prettier/plugins/postcss.js';
+import { generateSpacingScale } from './spacingCalculator';
 
 const formatColorValue = (color) => {
   const c = colord(color.value);
   if (!c.isValid()) return color.value;
-
   switch (color.format.toUpperCase()) {
     case 'HEX': return c.alpha(1).toHex();
     case 'HEXA': return c.toHex();
@@ -21,10 +21,8 @@ const formatColorValue = (color) => {
 const formatSwatchColorValue = (hexValue, parentFormat) => {
     const c = colord(hexValue);
     if (!c.isValid()) return hexValue;
-
     switch (parentFormat.toUpperCase()) {
-        case 'HEX': return c.alpha(1).toHex();
-        case 'HEXA': return c.toHex();
+        case 'HEX': return c.alpha(1).toHex(); case 'HEXA': return c.toHex();
         case 'RGB': return `rgb(${c.toRgb().r}, ${c.toRgb().g}, ${c.toRgb().b})`;
         case 'RGBA': return c.toRgbString();
         case 'HSL': return `hsl(${c.toHsl().h}, ${c.toHsl().s}%, ${c.toHsl().l}%)`;
@@ -36,7 +34,6 @@ const formatSwatchColorValue = (hexValue, parentFormat) => {
 const formatTransparentValue = (baseColor, parentFormat, alpha) => {
     const c = colord(baseColor).alpha(alpha);
     const format = parentFormat.toUpperCase();
-
     if (format.includes('HSL')) return c.toHslString();
     if (format.includes('RGB')) return c.toRgbString();
     return c.toHex();
@@ -44,8 +41,8 @@ const formatTransparentValue = (baseColor, parentFormat, alpha) => {
 
 export const generateAndFormatCSS = async (
   colors, 
-  spacingScale, 
-  spacingSettings, 
+  spacingScale,      // Correctly contains ALL variables for :root
+  spacingGroups,     // <-- THIS IS THE FIX: Now receiving the full groups array
   generatorConfig, 
   selectorGroups, 
   variableGroups,
@@ -53,8 +50,8 @@ export const generateAndFormatCSS = async (
   customCSS,
   layoutSelectorGroups,
   layoutVariableGroups,
-  designSelectorGroups, // <-- ADD NEW PARAMETER
-  designVariableGroups  // <-- ADD NEW PARAMETER
+  designSelectorGroups,
+  designVariableGroups
 ) => {
   let cssLines = [];
   cssLines.push(':root {');
@@ -63,15 +60,16 @@ export const generateAndFormatCSS = async (
     cssLines.push('  --min-screen-width: 320px;');
     cssLines.push('  --max-screen-width: 1400px;');
     cssLines.push(''); 
-
+    
+    // This part is correct and generates ALL variables from all groups
     if (spacingScale && spacingScale.length > 0) {
-      cssLines.push('  /* Spacing System */');
+      cssLines.push('  /* Spacing System Variables */');
       spacingScale.forEach(space => {
         const minRem = space.min / 16;
         const maxRem = space.max / 16;
-        const vwCoefficient = (maxRem - minRem) * 1.48;
-        const remConstant = minRem * 0.85;
-        const clampValue = `clamp(${minRem}rem, calc(${vwCoefficient.toFixed(2)}vw + ${remConstant.toFixed(2)}rem), ${maxRem}rem)`;
+        const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320);
+        const remConstant = minRem - (320 * vwCoefficient / 100);
+        const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`;
         cssLines.push(`  ${space.name}: ${clampValue};`);
       });
       cssLines.push(''); 
@@ -82,16 +80,7 @@ export const generateAndFormatCSS = async (
         variableGroups.forEach(group => {
             group.variables.forEach(variable => {
                 if (variable.name && (variable.value || variable.mode === 'minmax')) {
-                    if (variable.mode === 'single') {
-                        cssLines.push(`  ${variable.name}: ${variable.value};`);
-                    } else {
-                        const minRem = (variable.minValue || 0) / 16;
-                        const maxRem = (variable.maxValue || 0) / 16;
-                        const vwCoefficient = (maxRem - minRem) * 1.48;
-                        const remConstant = minRem * 0.85;
-                        const clampValue = `clamp(${minRem}rem, calc(${vwCoefficient.toFixed(2)}vw + ${remConstant.toFixed(2)}rem), ${maxRem}rem)`;
-                        cssLines.push(`  ${variable.name}: ${clampValue};`);
-                    }
+                    if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const minRem = (variable.minValue || 0) / 16; const maxRem = (variable.maxValue || 0) / 16; const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320); const remConstant = minRem - (320 * vwCoefficient / 100); const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`; cssLines.push(`  ${variable.name}: ${clampValue};`); }
                 }
             });
         });
@@ -101,44 +90,13 @@ export const generateAndFormatCSS = async (
   
   if (layoutVariableGroups && layoutVariableGroups.length > 0) {
     cssLines.push('  /* Custom Layout Variables */');
-    layoutVariableGroups.forEach(group => {
-        group.variables.forEach(variable => {
-            if (variable.name && (variable.value || variable.mode === 'minmax')) {
-                if (variable.mode === 'single') {
-                    cssLines.push(`  ${variable.name}: ${variable.value};`);
-                } else {
-                    const minRem = (variable.minValue || 0) / 16;
-                    const maxRem = (variable.maxValue || 0) / 16;
-                    const vwCoefficient = (maxRem - minRem) * 1.48;
-                    const remConstant = minRem * 0.85;
-                    const clampValue = `clamp(${minRem}rem, calc(${vwCoefficient.toFixed(2)}vw + ${remConstant.toFixed(2)}rem), ${maxRem}rem)`;
-                    cssLines.push(`  ${variable.name}: ${clampValue};`);
-                }
-            }
-        });
-    });
+    layoutVariableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const minRem = (variable.minValue || 0) / 16; const maxRem = (variable.maxValue || 0) / 16; const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320); const remConstant = minRem - (320 * vwCoefficient / 100); const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`; cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
     cssLines.push('');
   }
   
-  // --- NEW: Add Design Variables ---
   if (designVariableGroups && designVariableGroups.length > 0) {
     cssLines.push('  /* Custom Design Variables */');
-    designVariableGroups.forEach(group => {
-        group.variables.forEach(variable => {
-            if (variable.name && (variable.value || variable.mode === 'minmax')) {
-                if (variable.mode === 'single') {
-                    cssLines.push(`  ${variable.name}: ${variable.value};`);
-                } else {
-                    const minRem = (variable.minValue || 0) / 16;
-                    const maxRem = (variable.maxValue || 0) / 16;
-                    const vwCoefficient = (maxRem - minRem) * 1.48;
-                    const remConstant = minRem * 0.85;
-                    const clampValue = `clamp(${minRem}rem, calc(${vwCoefficient.toFixed(2)}vw + ${remConstant.toFixed(2)}rem), ${maxRem}rem)`;
-                    cssLines.push(`  ${variable.name}: ${clampValue};`);
-                }
-            }
-        });
-    });
+    designVariableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const minRem = (variable.minValue || 0) / 16; const maxRem = (variable.maxValue || 0) / 16; const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320); const remConstant = minRem - (320 * vwCoefficient / 100); const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`; cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
     cssLines.push('');
   }
 
@@ -148,28 +106,9 @@ export const generateAndFormatCSS = async (
     const allVariants = [];
     allVariants.push({ varName: color.name });
     cssLines.push(`  ${color.name}: ${formatColorValue(color)};`);
-    if (color.shadesConfig?.enabled && color.shadesConfig?.palette?.length > 0) {
-      color.shadesConfig.palette.forEach((shade, index) => {
-        const varName = `${color.name}-d-${index + 1}`;
-        allVariants.push({ varName });
-        cssLines.push(`  ${varName}: ${formatSwatchColorValue(shade, color.format)};`);
-      });
-    }
-    if (color.tintsConfig?.enabled && color.tintsConfig?.palette?.length > 0) {
-      color.tintsConfig.palette.forEach((tint, index) => {
-        const varName = `${color.name}-l-${index + 1}`;
-        allVariants.push({ varName });
-        cssLines.push(`  ${varName}: ${formatSwatchColorValue(tint, color.format)};`);
-      });
-    }
-    if (color.transparentConfig?.enabled) {
-        alphaSteps.forEach(step => {
-            const varName = `${color.name}-t-${step}`;
-            const alphaValue = step / 100;
-            allVariants.push({ varName });
-            cssLines.push(`  ${varName}: ${formatTransparentValue(color.value, color.format, alphaValue)};`);
-        });
-    }
+    if (color.shadesConfig?.enabled && color.shadesConfig?.palette?.length > 0) { color.shadesConfig.palette.forEach((shade, index) => { const varName = `${color.name}-d-${index + 1}`; allVariants.push({ varName }); cssLines.push(`  ${varName}: ${formatSwatchColorValue(shade, color.format)};`); }); }
+    if (color.tintsConfig?.enabled && color.tintsConfig?.palette?.length > 0) { color.tintsConfig.palette.forEach((tint, index) => { const varName = `${color.name}-l-${index + 1}`; allVariants.push({ varName }); cssLines.push(`  ${varName}: ${formatSwatchColorValue(tint, color.format)};`); }); }
+    if (color.transparentConfig?.enabled) { alphaSteps.forEach(step => { const varName = `${color.name}-t-${step}`; const alphaValue = step / 100; allVariants.push({ varName }); cssLines.push(`  ${varName}: ${formatTransparentValue(color.value, color.format, alphaValue)};`); }); }
     const { text, background, border, fill } = color.utilityConfig;
     allVariants.forEach(variant => {
         const className = variant.varName.startsWith('--') ? variant.varName.slice(2) : variant.varName;
@@ -183,90 +122,48 @@ export const generateAndFormatCSS = async (
   cssLines.push('}');
 
   if (isSpacingEnabled) {
-    if (generatorConfig && spacingScale && spacingScale.length > 0) {
-      const spacingClasses = [];
-      generatorConfig.forEach(config => {
-        if (config.enabled && config.properties.length > 0 && config.properties.some(p => p.trim() !== '')) {
-          const baseClassName = config.className.slice(0, -2);
-          spacingScale.forEach(space => {
+    // --- THIS IS THE FIX: The new generation logic for utility classes ---
+    const spacingClasses = [];
+    generatorConfig.forEach(config => {
+        if (!config.enabled || !config.scaleGroupId || config.properties.length === 0 || !config.properties.some(p => p.trim() !== '')) {
+            return;
+        }
+
+        const sourceGroup = spacingGroups.find(g => g.id === config.scaleGroupId);
+        if (!sourceGroup) return;
+
+        const scaleForThisGenerator = generateSpacingScale(sourceGroup.settings);
+        const baseClassName = config.className.slice(0, -2);
+        
+        scaleForThisGenerator.forEach(space => {
             const className = `${baseClassName}-${space.id}`;
             const properties = config.properties.map(prop => `  ${prop}: var(${space.name});`).join('\n');
             spacingClasses.push(`${className} {\n${properties}\n}`);
-          });
-        }
-      });
-      if (spacingClasses.length > 0) {
+        });
+    });
+
+    if (spacingClasses.length > 0) {
         cssLines.push('\n/* Spacing Utility Classes */');
         cssLines.push(...spacingClasses);
-      }
     }
 
     if (selectorGroups && selectorGroups.length > 0) {
       const customSelectorClasses = [];
-      selectorGroups.forEach(group => {
-        group.rules.forEach(rule => {
-          if (rule.selector && rule.properties && rule.properties.length > 0) {
-            const validProperties = rule.properties
-              .filter(prop => prop.property && prop.value)
-              .map(prop => `  ${prop.property}: ${prop.value};`);
-            
-            if (validProperties.length > 0) {
-              customSelectorClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`);
-            }
-          }
-        });
-      });
-      
-      if (customSelectorClasses.length > 0) {
-          cssLines.push('\n/* Custom Spacing Selectors */');
-          cssLines.push(...customSelectorClasses);
-      }
+      selectorGroups.forEach(group => { group.rules.forEach(rule => { if (rule.selector && rule.properties && rule.properties.length > 0) { const validProperties = rule.properties.filter(prop => prop.property && prop.value).map(prop => `  ${prop.property}: ${prop.value};`); if (validProperties.length > 0) { customSelectorClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`); } } }); });
+      if (customSelectorClasses.length > 0) { cssLines.push('\n/* Custom Spacing Selectors */'); cssLines.push(...customSelectorClasses); }
     }
   }
 
   if (layoutSelectorGroups && layoutSelectorGroups.length > 0) {
     const customLayoutClasses = [];
-    layoutSelectorGroups.forEach(group => {
-      group.rules.forEach(rule => {
-        if (rule.selector && rule.properties && rule.properties.length > 0) {
-          const validProperties = rule.properties
-            .filter(prop => prop.property && prop.value)
-            .map(prop => `  ${prop.property}: ${prop.value};`);
-          
-          if (validProperties.length > 0) {
-            customLayoutClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`);
-          }
-        }
-      });
-    });
-    
-    if (customLayoutClasses.length > 0) {
-        cssLines.push('\n/* Custom Layout Selectors */');
-        cssLines.push(...customLayoutClasses);
-    }
+    layoutSelectorGroups.forEach(group => { group.rules.forEach(rule => { if (rule.selector && rule.properties && rule.properties.length > 0) { const validProperties = rule.properties.filter(prop => prop.property && prop.value).map(prop => `  ${prop.property}: ${prop.value};`); if (validProperties.length > 0) { customLayoutClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`); } } }); });
+    if (customLayoutClasses.length > 0) { cssLines.push('\n/* Custom Layout Selectors */'); cssLines.push(...customLayoutClasses); }
   }
 
-  // --- NEW: Add Design Selectors ---
   if (designSelectorGroups && designSelectorGroups.length > 0) {
     const customDesignClasses = [];
-    designSelectorGroups.forEach(group => {
-      group.rules.forEach(rule => {
-        if (rule.selector && rule.properties && rule.properties.length > 0) {
-          const validProperties = rule.properties
-            .filter(prop => prop.property && prop.value)
-            .map(prop => `  ${prop.property}: ${prop.value};`);
-          
-          if (validProperties.length > 0) {
-            customDesignClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`);
-          }
-        }
-      });
-    });
-    
-    if (customDesignClasses.length > 0) {
-        cssLines.push('\n/* Custom Design Selectors */');
-        cssLines.push(...customDesignClasses);
-    }
+    designSelectorGroups.forEach(group => { group.rules.forEach(rule => { if (rule.selector && rule.properties && rule.properties.length > 0) { const validProperties = rule.properties.filter(prop => prop.property && prop.value).map(prop => `  ${prop.property}: ${prop.value};`); if (validProperties.length > 0) { customDesignClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`); } } }); });
+    if (customDesignClasses.length > 0) { cssLines.push('\n/* Custom Design Selectors */'); cssLines.push(...customDesignClasses); }
   }
 
   if ([...colorTextClasses, ...backgroundClasses, ...borderClasses, ...fillClasses].length > 0) {

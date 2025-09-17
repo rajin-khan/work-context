@@ -3,7 +3,6 @@ import React from 'react';
 import GeneratorCard from './GeneratorCard';
 import { Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import FeatureHeader from '../ui/FeatureHeader';
 
 export const initialClassDefinitions = [
   { id: 'padding', className: '.padding-*', properties: ['padding'] },
@@ -23,13 +22,9 @@ export const initialClassDefinitions = [
   { id: 'gap', className: '.gap-*', properties: ['gap'] },
 ];
 
-const ClassGenerator = ({ config, onConfigChange, onAddClass, onRemoveClass }) => {
+const ClassGenerator = ({ config, onConfigChange, onAddClass, onRemoveClass, spacingGroups }) => {
   return (
     <div>
-      <FeatureHeader
-        title="Class Generator"
-        description="Enable and customize the utility classes that will be generated from your spacing scale. Add or remove CSS properties for complete control."
-      />
       <div className="space-y-4">
         <AnimatePresence>
           {config.map(def => (
@@ -39,6 +34,8 @@ const ClassGenerator = ({ config, onConfigChange, onAddClass, onRemoveClass }) =
               className={def.className}
               properties={def.properties}
               enabled={def.enabled}
+              scaleGroupId={def.scaleGroupId} // Pass the specific ID for this card
+              spacingGroups={spacingGroups}   // Pass the full list of available groups
               onUpdate={onConfigChange}
               onRemove={() => onRemoveClass(def.id)}
             />
