@@ -51,8 +51,10 @@ export const generateAndFormatCSS = async (
   variableGroups,
   isSpacingEnabled,
   customCSS,
-  layoutSelectorGroups,  // <-- ADD NEW PARAMETER
-  layoutVariableGroups   // <-- ADD NEW PARAMETER
+  layoutSelectorGroups,
+  layoutVariableGroups,
+  designSelectorGroups, // <-- ADD NEW PARAMETER
+  designVariableGroups  // <-- ADD NEW PARAMETER
 ) => {
   let cssLines = [];
   cssLines.push(':root {');
@@ -97,7 +99,6 @@ export const generateAndFormatCSS = async (
     }
   }
   
-  // --- NEW: Add Layout Variables ---
   if (layoutVariableGroups && layoutVariableGroups.length > 0) {
     cssLines.push('  /* Custom Layout Variables */');
     layoutVariableGroups.forEach(group => {
@@ -119,6 +120,28 @@ export const generateAndFormatCSS = async (
     cssLines.push('');
   }
   
+  // --- NEW: Add Design Variables ---
+  if (designVariableGroups && designVariableGroups.length > 0) {
+    cssLines.push('  /* Custom Design Variables */');
+    designVariableGroups.forEach(group => {
+        group.variables.forEach(variable => {
+            if (variable.name && (variable.value || variable.mode === 'minmax')) {
+                if (variable.mode === 'single') {
+                    cssLines.push(`  ${variable.name}: ${variable.value};`);
+                } else {
+                    const minRem = (variable.minValue || 0) / 16;
+                    const maxRem = (variable.maxValue || 0) / 16;
+                    const vwCoefficient = (maxRem - minRem) * 1.48;
+                    const remConstant = minRem * 0.85;
+                    const clampValue = `clamp(${minRem}rem, calc(${vwCoefficient.toFixed(2)}vw + ${remConstant.toFixed(2)}rem), ${maxRem}rem)`;
+                    cssLines.push(`  ${variable.name}: ${clampValue};`);
+                }
+            }
+        });
+    });
+    cssLines.push('');
+  }
+
   const alphaSteps = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90];
   const colorTextClasses = [], backgroundClasses = [], borderClasses = [], fillClasses = [];
   colors.forEach(color => {
@@ -201,7 +224,6 @@ export const generateAndFormatCSS = async (
     }
   }
 
-  // --- NEW: Add Layout Selectors ---
   if (layoutSelectorGroups && layoutSelectorGroups.length > 0) {
     const customLayoutClasses = [];
     layoutSelectorGroups.forEach(group => {
@@ -221,6 +243,29 @@ export const generateAndFormatCSS = async (
     if (customLayoutClasses.length > 0) {
         cssLines.push('\n/* Custom Layout Selectors */');
         cssLines.push(...customLayoutClasses);
+    }
+  }
+
+  // --- NEW: Add Design Selectors ---
+  if (designSelectorGroups && designSelectorGroups.length > 0) {
+    const customDesignClasses = [];
+    designSelectorGroups.forEach(group => {
+      group.rules.forEach(rule => {
+        if (rule.selector && rule.properties && rule.properties.length > 0) {
+          const validProperties = rule.properties
+            .filter(prop => prop.property && prop.value)
+            .map(prop => `  ${prop.property}: ${prop.value};`);
+          
+          if (validProperties.length > 0) {
+            customDesignClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`);
+          }
+        }
+      });
+    });
+    
+    if (customDesignClasses.length > 0) {
+        cssLines.push('\n/* Custom Design Selectors */');
+        cssLines.push(...customDesignClasses);
     }
   }
 

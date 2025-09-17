@@ -27,10 +27,14 @@ function App() {
   const [selectorGroups, setSelectorGroups] = useState([]);
   const [variableGroups, setVariableGroups] = useState([]);
 
-  // Layout State (NEW)
+  // Layout State
   const [layoutSelectorGroups, setLayoutSelectorGroups] = useState([]);
   const [layoutVariableGroups, setLayoutVariableGroups] = useState([]);
   
+  // Design State (NEW)
+  const [designSelectorGroups, setDesignSelectorGroups] = useState([]);
+  const [designVariableGroups, setDesignVariableGroups] = useState([]);
+
   // Stylesheet State
   const [customCSS, setCustomCSS] = useState('/* Your custom styles go here */');
 
@@ -55,15 +59,7 @@ function App() {
     setGeneratorConfig(prev => prev.filter(item => item.id !== id));
   };
   const handleAddSelectorGroup = () => {
-    const newGroup = { 
-      id: nanoid(), 
-      name: 'Custom Selector Group', 
-      rules: [{ 
-        id: nanoid(), 
-        selector: '.class-name', 
-        properties: [{ id: nanoid(), property: '', value: '' }] 
-      }] 
-    };
+    const newGroup = { id: nanoid(), name: 'Custom Selector Group', rules: [{ id: nanoid(), selector: '.class-name', properties: [{ id: nanoid(), property: '', value: '' }] }] };
     setSelectorGroups(prev => [...prev, newGroup]);
   };
   const handleUpdateSelectorGroup = (updatedGroup) => {
@@ -83,7 +79,7 @@ function App() {
     setVariableGroups(prev => prev.filter(g => g.id !== id));
   };
 
-  // --- LAYOUT HANDLERS (NEW) ---
+  // --- LAYOUT HANDLERS ---
   const handleAddLayoutSelectorGroup = () => {
     const newGroup = { id: nanoid(), name: 'Layout Selector Group', rules: [{ id: nanoid(), selector: '.container', properties: [{ id: nanoid(), property: 'width', value: '100%' }] }] };
     setLayoutSelectorGroups(prev => [...prev, newGroup]);
@@ -103,6 +99,28 @@ function App() {
   };
   const handleRemoveLayoutVariableGroup = (id) => {
     setLayoutVariableGroups(prev => prev.filter(g => g.id !== id));
+  };
+
+  // --- DESIGN HANDLERS (NEW) ---
+  const handleAddDesignSelectorGroup = () => {
+    const newGroup = { id: nanoid(), name: 'Design Selector Group', rules: [{ id: nanoid(), selector: '.button', properties: [{ id: nanoid(), property: 'border-radius', value: '8px' }] }] };
+    setDesignSelectorGroups(prev => [...prev, newGroup]);
+  };
+  const handleUpdateDesignSelectorGroup = (updatedGroup) => {
+    setDesignSelectorGroups(prev => prev.map(g => g.id === updatedGroup.id ? updatedGroup : g));
+  };
+  const handleRemoveDesignSelectorGroup = (id) => {
+    setDesignSelectorGroups(prev => prev.filter(g => g.id !== id));
+  };
+  const handleAddDesignVariableGroup = () => {
+    const newGroup = { id: nanoid(), name: 'Design Variable Group', variables: [{ id: nanoid(), name: '--border-radius-md', value: '8px', mode: 'single', minValue: 0, maxValue: 0 }] };
+    setDesignVariableGroups(prev => [...prev, newGroup]);
+  };
+  const handleUpdateDesignVariableGroup = (updatedGroup) => {
+    setDesignVariableGroups(prev => prev.map(g => g.id === updatedGroup.id ? updatedGroup : g));
+  };
+  const handleRemoveDesignVariableGroup = (id) => {
+    setDesignVariableGroups(prev => prev.filter(g => g.id !== id));
   };
 
   return (
@@ -139,9 +157,11 @@ function App() {
             selectorGroups={selectorGroups} onAddSelectorGroup={handleAddSelectorGroup} onUpdateSelectorGroup={handleUpdateSelectorGroup} onRemoveSelectorGroup={handleRemoveSelectorGroup}
             variableGroups={variableGroups} onAddVariableGroup={handleAddVariableGroup} onUpdateVariableGroup={handleUpdateVariableGroup} onRemoveVariableGroup={handleRemoveVariableGroup}
             customCSS={customCSS} setCustomCSS={setCustomCSS}
-            // Pass Layout Props (NEW)
             layoutSelectorGroups={layoutSelectorGroups} onAddLayoutSelectorGroup={handleAddLayoutSelectorGroup} onUpdateLayoutSelectorGroup={handleUpdateLayoutSelectorGroup} onRemoveLayoutSelectorGroup={handleRemoveLayoutSelectorGroup}
             layoutVariableGroups={layoutVariableGroups} onAddLayoutVariableGroup={handleAddLayoutVariableGroup} onUpdateLayoutVariableGroup={handleUpdateLayoutVariableGroup} onRemoveLayoutVariableGroup={handleRemoveLayoutVariableGroup}
+            // Pass Design Props (NEW)
+            designSelectorGroups={designSelectorGroups} onAddDesignSelectorGroup={handleAddDesignSelectorGroup} onUpdateDesignSelectorGroup={handleUpdateDesignSelectorGroup} onRemoveDesignSelectorGroup={handleRemoveDesignSelectorGroup}
+            designVariableGroups={designVariableGroups} onAddDesignVariableGroup={handleAddDesignVariableGroup} onUpdateDesignVariableGroup={handleUpdateDesignVariableGroup} onRemoveDesignVariableGroup={handleRemoveDesignVariableGroup}
           />
         </div>
       </div>
@@ -157,9 +177,11 @@ function App() {
         selectorGroups={selectorGroups}
         variableGroups={variableGroups}
         customCSS={customCSS}
-        // Pass Layout Props to Preview (NEW)
         layoutSelectorGroups={layoutSelectorGroups}
         layoutVariableGroups={layoutVariableGroups}
+        // Pass Design Props to Preview (NEW)
+        designSelectorGroups={designSelectorGroups}
+        designVariableGroups={designVariableGroups}
       />
     </div>
   );

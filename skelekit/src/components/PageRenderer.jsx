@@ -10,6 +10,8 @@ import VariablesPage from '../pages/VariablesPage';
 import StylesheetsPage from '../pages/StylesheetsPage';
 import LayoutSelectorsPage from '../pages/LayoutSelectorsPage'; 
 import LayoutVariablesPage from '../pages/LayoutVariablesPage'; 
+import DesignSelectorsPage from '../pages/DesignSelectorsPage'; // Import new page
+import DesignVariablesPage from '../pages/DesignVariablesPage'; // Import new page
 import FeatureActivationScreen from './ui/FeatureActivationScreen';
 
 const PageRenderer = (props) => {
@@ -38,7 +40,6 @@ const PageRenderer = (props) => {
           />
         );
         
-      // THIS IS THE CHANGE: Use the unique pageId from the sidebar
       case 'Spacing Selectors':
         return isSpacingEnabled ? <SelectorsPage {...props} /> : (
           <FeatureActivationScreen
@@ -49,7 +50,6 @@ const PageRenderer = (props) => {
           />
         );
 
-      // THIS IS THE CHANGE: Use the unique pageId from the sidebar
       case 'Spacing Variables':
         return isSpacingEnabled ? <VariablesPage {...props} /> : (
           <FeatureActivationScreen
@@ -60,14 +60,19 @@ const PageRenderer = (props) => {
           />
         );
       
-      // LAYOUT SUB-PAGES (NEW)
-      // THIS IS THE CHANGE: Use the unique pageId from the sidebar
+      // LAYOUT SUB-PAGES
       case 'Layout Selectors':
         return <LayoutSelectorsPage {...props} />;
         
-      // THIS IS THE CHANGE: Use the unique pageId from the sidebar
       case 'Layout Variables':
         return <LayoutVariablesPage {...props} />;
+
+      // DESIGN SUB-PAGES (NEW)
+      case 'Design Selectors':
+        return <DesignSelectorsPage {...props} />;
+        
+      case 'Design Variables':
+        return <DesignVariablesPage {...props} />;
 
       // OTHER MAIN PAGES
       case 'Stylesheets':

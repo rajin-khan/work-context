@@ -1,7 +1,7 @@
 // src/components/Sidebar.jsx
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Type, StretchHorizontal, Component, Layout, SquareRadical, Text, FileText, Settings, Wrench, ChevronLeft } from 'lucide-react';
+import { Palette, Type, StretchHorizontal, Component, Layout, SquareRadical, Text, FileText, Settings, Wrench, ChevronLeft, Brush } from 'lucide-react';
 
 const navItems = [
   { icon: Palette, label: 'Colors' },
@@ -12,19 +12,28 @@ const navItems = [
     subItems: [
       { label: 'Scales' },
       { label: 'Class Generator' },
-      { label: 'Selectors', pageId: 'Spacing Selectors' }, // Unique ID for page rendering
-      { label: 'Variables', pageId: 'Spacing Variables' }, // Unique ID for page rendering
+      { label: 'Selectors', pageId: 'Spacing Selectors' },
+      { label: 'Variables', pageId: 'Spacing Variables' },
+    ]
+  },
+  { 
+    icon: Layout, 
+    label: 'Layouts',
+    subItems: [
+      { label: 'Selectors', pageId: 'Layout Selectors' },
+      { label: 'Variables', pageId: 'Layout Variables' },
+    ]
+  },
+  // NEW DESIGN TAB
+  { 
+    icon: Brush, 
+    label: 'Design',
+    subItems: [
+      { label: 'Selectors', pageId: 'Design Selectors' },
+      { label: 'Variables', pageId: 'Design Variables' },
     ]
   },
   { icon: Component, label: 'Components' },
-  { 
-    icon: Layout, 
-    label: 'Layouts', // RENAMED for clarity
-    subItems: [
-      { label: 'Selectors', pageId: 'Layout Selectors' }, // Unique ID for page rendering
-      { label: 'Variables', pageId: 'Layout Variables' }, // Unique ID for page rendering
-    ]
-  },
   { icon: Text, label: 'Fonts' },
   { icon: FileText, label: 'Stylesheets' },
   { icon: SquareRadical, label: 'Other' },
@@ -52,12 +61,12 @@ const NavItem = ({ icon: Icon, label, active = false, hasSubMenu = false, onClic
 );
 
 const Sidebar = ({ activePage, onNavigate }) => {
-  const [menu, setMenu] = useState('main'); // Can be 'main', 'spacing', or 'layouts'
+  const [menu, setMenu] = useState('main'); // Can be 'main', 'spacing', 'layouts', or 'design'
 
   const handleNavigation = (pageLabel) => {
     const navItem = navItems.find(item => item.label === pageLabel);
     if (navItem && navItem.subItems) {
-      setMenu(pageLabel.toLowerCase()); // e.g., 'spacing', 'layouts'
+      setMenu(pageLabel.toLowerCase());
     } else {
       onNavigate(pageLabel);
     }
@@ -71,6 +80,7 @@ const Sidebar = ({ activePage, onNavigate }) => {
 
   const isSpacingActive = ['Scales', 'Class Generator', 'Spacing Selectors', 'Spacing Variables'].includes(activePage);
   const isLayoutsActive = ['Layout Selectors', 'Layout Variables'].includes(activePage);
+  const isDesignActive = ['Design Selectors', 'Design Variables'].includes(activePage);
 
   const renderSubMenu = (menuKey, Icon) => {
     const navItem = navItems.find(i => i.label.toLowerCase() === menuKey);
@@ -131,6 +141,7 @@ const Sidebar = ({ activePage, onNavigate }) => {
                       active={
                         (item.label === 'Spacing' && isSpacingActive) ||
                         (item.label === 'Layouts' && isLayoutsActive) ||
+                        (item.label === 'Design' && isDesignActive) || // Added check for Design
                         activePage === item.label
                       }
                       hasSubMenu={!!item.subItems}
@@ -145,8 +156,10 @@ const Sidebar = ({ activePage, onNavigate }) => {
           </motion.div>
         ) : menu === 'spacing' ? (
           renderSubMenu('spacing', StretchHorizontal)
-        ) : (
+        ) : menu === 'layouts' ? (
           renderSubMenu('layouts', Layout)
+        ) : (
+          renderSubMenu('design', Brush) // Added render for Design
         )}
       </AnimatePresence>
     </aside>
