@@ -5,9 +5,19 @@ import { Palette, Type, StretchHorizontal, Component, Layout, SquareRadical, Tex
 
 const navItems = [
   { icon: Palette, label: 'Colors' },
-  { icon: Type, label: 'Typography' },
-  { 
-    icon: StretchHorizontal, 
+  // THIS IS THE CHANGE: Added Typography with its own subItems
+  {
+    icon: Type,
+    label: 'Typography',
+    subItems: [
+      { label: 'Type Scales' },
+      { label: 'Class Generator', pageId: 'Typography Class Generator' },
+      { label: 'Selectors', pageId: 'Typography Selectors' },
+      { label: 'Variables', pageId: 'Typography Variables' },
+    ]
+  },
+  {
+    icon: StretchHorizontal,
     label: 'Spacing',
     subItems: [
       { label: 'Scales' },
@@ -16,17 +26,16 @@ const navItems = [
       { label: 'Variables', pageId: 'Spacing Variables' },
     ]
   },
-  { 
-    icon: Layout, 
+  {
+    icon: Layout,
     label: 'Layouts',
     subItems: [
       { label: 'Selectors', pageId: 'Layout Selectors' },
       { label: 'Variables', pageId: 'Layout Variables' },
     ]
   },
-  // NEW DESIGN TAB
-  { 
-    icon: Brush, 
+  {
+    icon: Brush,
     label: 'Design',
     subItems: [
       { label: 'Selectors', pageId: 'Design Selectors' },
@@ -61,7 +70,7 @@ const NavItem = ({ icon: Icon, label, active = false, hasSubMenu = false, onClic
 );
 
 const Sidebar = ({ activePage, onNavigate }) => {
-  const [menu, setMenu] = useState('main'); // Can be 'main', 'spacing', 'layouts', or 'design'
+  const [menu, setMenu] = useState('main'); // Can be 'main', 'typography', 'spacing', 'layouts', 'design'
 
   const handleNavigation = (pageLabel) => {
     const navItem = navItems.find(item => item.label === pageLabel);
@@ -78,6 +87,7 @@ const Sidebar = ({ activePage, onNavigate }) => {
     exit: (direction) => ({ x: direction === 'forward' ? '-100%' : '100%', opacity: 0 }),
   };
 
+  const isTypographyActive = ['Type Scales', 'Typography Class Generator', 'Typography Selectors', 'Typography Variables'].includes(activePage);
   const isSpacingActive = ['Scales', 'Class Generator', 'Spacing Selectors', 'Spacing Variables'].includes(activePage);
   const isLayoutsActive = ['Layout Selectors', 'Layout Variables'].includes(activePage);
   const isDesignActive = ['Design Selectors', 'Design Variables'].includes(activePage);
@@ -107,9 +117,9 @@ const Sidebar = ({ activePage, onNavigate }) => {
                     {Icon && <Icon size={18} className="text-neutral-500" />}
                 </div>
                 {navItem.subItems.map(subItem => (
-                    <NavItem 
-                        key={subItem.pageId || subItem.label} 
-                        {...subItem} 
+                    <NavItem
+                        key={subItem.pageId || subItem.label}
+                        {...subItem}
                         active={activePage === (subItem.pageId || subItem.label)}
                         onClick={() => onNavigate(subItem.pageId || subItem.label)}
                     />
@@ -135,13 +145,14 @@ const Sidebar = ({ activePage, onNavigate }) => {
           >
             <nav className="flex flex-col gap-1.5">
               {navItems.map((item) => (
-                  <NavItem 
-                      key={item.label} 
+                  <NavItem
+                      key={item.label}
                       {...item}
                       active={
+                        (item.label === 'Typography' && isTypographyActive) ||
                         (item.label === 'Spacing' && isSpacingActive) ||
                         (item.label === 'Layouts' && isLayoutsActive) ||
-                        (item.label === 'Design' && isDesignActive) || // Added check for Design
+                        (item.label === 'Design' && isDesignActive) ||
                         activePage === item.label
                       }
                       hasSubMenu={!!item.subItems}
@@ -151,15 +162,17 @@ const Sidebar = ({ activePage, onNavigate }) => {
             </nav>
             <div className="flex flex-col gap-1.5">
               {bottomNavItems.map((item) => <NavItem key={item.label} {...item} onClick={() => {}} />)}
-              <div className="text-xs text-neutral-600 px-3 pt-2">v1.0.0</div>
+              <div className="text-xs text-neutral-600 px-3 pt-2">v1.1.0</div>
             </div>
           </motion.div>
+        ) : menu === 'typography' ? (
+          renderSubMenu('typography', Type)
         ) : menu === 'spacing' ? (
           renderSubMenu('spacing', StretchHorizontal)
         ) : menu === 'layouts' ? (
           renderSubMenu('layouts', Layout)
         ) : (
-          renderSubMenu('design', Brush) // Added render for Design
+          renderSubMenu('design', Brush)
         )}
       </AnimatePresence>
     </aside>

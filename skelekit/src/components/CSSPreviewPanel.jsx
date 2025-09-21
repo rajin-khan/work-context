@@ -9,13 +9,21 @@ import { downloadFile } from '../utils/download';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism'; 
 
-const CSSPreviewPanel = ({ 
+const CSSPreviewPanel = (props) => {
+  // ** THE FIX IS HERE: We destructure all incoming props from the single `props` object. **
+  const { 
     isOpen, 
     onClose, 
     colorGroups, 
     isSpacingEnabled,
     spacingScale, 
-    spacingGroups, // <-- THIS IS THE FIX: Receive the full array
+    spacingGroups,
+    isTypographyEnabled,
+    typographyScale,
+    typographyGroups,
+    typographyGeneratorConfig,
+    typographySelectorGroups,
+    typographyVariableGroups,
     generatorConfig, 
     selectorGroups, 
     variableGroups,
@@ -24,17 +32,26 @@ const CSSPreviewPanel = ({
     layoutVariableGroups,
     designSelectorGroups,
     designVariableGroups
-}) => {
+  } = props;
+
   const [generatedCSS, setGeneratedCSS] = useState('/* Generating CSS... */');
 
   useEffect(() => {
     if (isOpen) {
       const generate = async () => {
         const allColors = colorGroups.flatMap(group => group.colors);
-        const css = await generateAndFormatCSS(
-            allColors,
+        
+        // ** THE FIX IS HERE: We now pass a single object to the generator function, matching its new signature. **
+        const css = await generateAndFormatCSS({
+            colors: allColors,
             spacingScale, 
-            spacingGroups, // <-- THIS IS THE FIX: Pass it to the generator
+            spacingGroups,
+            isTypographyEnabled,
+            typographyScale,
+            typographyGroups,
+            typographyGeneratorConfig,
+            typographySelectorGroups,
+            typographyVariableGroups,
             generatorConfig, 
             selectorGroups, 
             variableGroups,
@@ -44,13 +61,20 @@ const CSSPreviewPanel = ({
             layoutVariableGroups,
             designSelectorGroups,
             designVariableGroups
-        );
+        });
         setGeneratedCSS(css);
       };
 
       generate();
     }
-  }, [isOpen, colorGroups, spacingScale, spacingGroups, generatorConfig, selectorGroups, variableGroups, isSpacingEnabled, customCSS, layoutSelectorGroups, layoutVariableGroups, designSelectorGroups, designVariableGroups]);
+    // The dependency array correctly lists all the individual props that should trigger a regeneration.
+  }, [
+    isOpen, colorGroups, spacingScale, spacingGroups, 
+    isTypographyEnabled, typographyScale, typographyGroups, 
+    typographyGeneratorConfig, typographySelectorGroups, typographyVariableGroups, 
+    generatorConfig, selectorGroups, variableGroups, isSpacingEnabled, customCSS, 
+    layoutSelectorGroups, layoutVariableGroups, designSelectorGroups, designVariableGroups
+  ]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedCSS);

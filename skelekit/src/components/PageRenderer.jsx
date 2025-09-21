@@ -8,17 +8,58 @@ import ClassGeneratorPage from '../pages/ClassGeneratorPage';
 import SelectorsPage from '../pages/SelectorsPage';
 import VariablesPage from '../pages/VariablesPage';
 import StylesheetsPage from '../pages/StylesheetsPage';
-import LayoutSelectorsPage from '../pages/LayoutSelectorsPage'; 
-import LayoutVariablesPage from '../pages/LayoutVariablesPage'; 
-import DesignSelectorsPage from '../pages/DesignSelectorsPage'; // Import new page
-import DesignVariablesPage from '../pages/DesignVariablesPage'; // Import new page
+import LayoutSelectorsPage from '../pages/LayoutSelectorsPage';
+import LayoutVariablesPage from '../pages/LayoutVariablesPage';
+import DesignSelectorsPage from '../pages/DesignSelectorsPage';
+import DesignVariablesPage from '../pages/DesignVariablesPage';
 import FeatureActivationScreen from './ui/FeatureActivationScreen';
+import TypographyPage from '../pages/TypographyPage';
+import TypographyClassGeneratorPage from '../pages/TypographyClassGeneratorPage';
+// ** NEW: Import the final two typography pages **
+import TypographySelectorsPage from '../pages/TypographySelectorsPage';
+import TypographyVariablesPage from '../pages/TypographyVariablesPage';
+
 
 const PageRenderer = (props) => {
-  const { activePage, isSpacingEnabled, handleEnableSpacing } = props;
+  const { activePage, isSpacingEnabled, handleEnableSpacing, isTypographyEnabled, handleEnableTypography } = props;
 
   const renderActivePage = () => {
     switch (activePage) {
+      // TYPOGRAPHY SUB-PAGES
+      case 'Type Scales':
+        return <TypographyPage {...props} />;
+
+      case 'Typography Class Generator':
+        return isTypographyEnabled ? <TypographyClassGeneratorPage {...props} /> : (
+          <FeatureActivationScreen
+            title="Typography Not Enabled"
+            description="The Class Generator requires the Type Scales feature to be active."
+            buttonText="Enable Typography"
+            onActivate={handleEnableTypography}
+          />
+        );
+
+      // ** THIS IS THE CHANGE: Render the new pages **
+      case 'Typography Selectors':
+        return isTypographyEnabled ? <TypographySelectorsPage {...props} /> : (
+           <FeatureActivationScreen
+            title="Typography Not Enabled"
+            description="Custom selectors can use variables from your type scale."
+            buttonText="Enable Typography"
+            onActivate={handleEnableTypography}
+          />
+        );
+
+      case 'Typography Variables':
+        return isTypographyEnabled ? <TypographyVariablesPage {...props} /> : (
+           <FeatureActivationScreen
+            title="Typography Not Enabled"
+            description="Custom variables can be created independently of the main feature."
+            buttonText="Enable Typography"
+            onActivate={handleEnableTypography}
+          />
+        );
+
       // SPACING SUB-PAGES
       case 'Scales':
         return isSpacingEnabled ? <ScalesPage {...props} /> : (
@@ -67,7 +108,7 @@ const PageRenderer = (props) => {
       case 'Layout Variables':
         return <LayoutVariablesPage {...props} />;
 
-      // DESIGN SUB-PAGES (NEW)
+      // DESIGN SUB-PAGES
       case 'Design Selectors':
         return <DesignSelectorsPage {...props} />;
         
@@ -87,7 +128,7 @@ const PageRenderer = (props) => {
   return (
     <div className="flex-1 overflow-y-auto">
       <AnimatePresence mode="wait">
-        <motion.div key={activePage + isSpacingEnabled} className="h-full">
+        <motion.div key={activePage + isSpacingEnabled + isTypographyEnabled} className="h-full">
           {renderActivePage()}
         </motion.div>
       </AnimatePresence>

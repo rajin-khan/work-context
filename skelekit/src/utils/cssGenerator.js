@@ -39,29 +39,59 @@ const formatTransparentValue = (baseColor, parentFormat, alpha) => {
     return c.toHex();
 }
 
-export const generateAndFormatCSS = async (
-  colors, 
-  spacingScale,      // Correctly contains ALL variables for :root
-  spacingGroups,     // <-- THIS IS THE FIX: Now receiving the full groups array
-  generatorConfig, 
-  selectorGroups, 
-  variableGroups,
-  isSpacingEnabled,
-  customCSS,
-  layoutSelectorGroups,
-  layoutVariableGroups,
-  designSelectorGroups,
-  designVariableGroups
-) => {
+export const generateAndFormatCSS = async (data) => {
+  const {
+    colors,
+    spacingScale,
+    spacingGroups,
+    isTypographyEnabled,
+    typographyScale,
+    typographyGeneratorConfig,
+    typographyGroups,
+    typographySelectorGroups,
+    typographyVariableGroups,
+    generatorConfig,
+    selectorGroups,
+    variableGroups,
+    isSpacingEnabled,
+    customCSS,
+    layoutSelectorGroups,
+    layoutVariableGroups,
+    designSelectorGroups,
+    designVariableGroups
+  } = data;
+  
   let cssLines = [];
   cssLines.push(':root {');
 
-  if (isSpacingEnabled) {
+  if (isSpacingEnabled || isTypographyEnabled) {
     cssLines.push('  --min-screen-width: 320px;');
     cssLines.push('  --max-screen-width: 1400px;');
     cssLines.push(''); 
-    
-    // This part is correct and generates ALL variables from all groups
+  }
+
+  if (isTypographyEnabled) {
+    if (typographyScale && typographyScale.length > 0) {
+      cssLines.push('  /* Typography System Variables */');
+      typographyScale.forEach(type => {
+        const minRem = type.min / 16;
+        const maxRem = type.max / 16;
+        const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320);
+        const remConstant = minRem - (320 * vwCoefficient / 100);
+        const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`;
+        cssLines.push(`  ${type.name}: ${clampValue};`);
+      });
+      cssLines.push('');
+    }
+    // ** NEW: Add custom typography variables **
+    if (typographyVariableGroups && typographyVariableGroups.length > 0) {
+      cssLines.push('  /* Custom Typography Variables */');
+      typographyVariableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const minRem = (variable.minValue || 0) / 16; const maxRem = (variable.maxValue || 0) / 16; const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320); const remConstant = minRem - (320 * vwCoefficient / 100); const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`; cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
+      cssLines.push('');
+    }
+  }
+  
+  if (isSpacingEnabled) {
     if (spacingScale && spacingScale.length > 0) {
       cssLines.push('  /* Spacing System Variables */');
       spacingScale.forEach(space => {
@@ -74,16 +104,9 @@ export const generateAndFormatCSS = async (
       });
       cssLines.push(''); 
     }
-
     if (variableGroups && variableGroups.length > 0) {
         cssLines.push('  /* Custom Spacing Variables */');
-        variableGroups.forEach(group => {
-            group.variables.forEach(variable => {
-                if (variable.name && (variable.value || variable.mode === 'minmax')) {
-                    if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const minRem = (variable.minValue || 0) / 16; const maxRem = (variable.maxValue || 0) / 16; const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320); const remConstant = minRem - (320 * vwCoefficient / 100); const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`; cssLines.push(`  ${variable.name}: ${clampValue};`); }
-                }
-            });
-        });
+        variableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const minRem = (variable.minValue || 0) / 16; const maxRem = (variable.maxValue || 0) / 16; const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320); const remConstant = minRem - (320 * vwCoefficient / 100); const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`; cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
         cssLines.push('');
     }
   }
@@ -120,33 +143,45 @@ export const generateAndFormatCSS = async (
   });
 
   cssLines.push('}');
+  
+  if (isTypographyEnabled) {
+    const typographyClasses = [];
+    typographyGeneratorConfig.forEach(config => {
+      if (!config.enabled || !config.scaleGroupId || config.properties.length === 0 || !config.properties.some(p => p.trim() !== '')) { return; }
+      const sourceGroup = typographyGroups.find(g => g.id === config.scaleGroupId);
+      if (!sourceGroup) return;
+      const scaleForThisGenerator = generateSpacingScale(sourceGroup.settings);
+      const baseClassName = config.className.slice(0, -2);
+      scaleForThisGenerator.forEach(typeStep => {
+        const className = `${baseClassName}-${typeStep.id}`;
+        const properties = config.properties.map(prop => `  ${prop}: var(${typeStep.name});`).join('\n');
+        typographyClasses.push(`${className} {\n${properties}\n}`);
+      });
+    });
+    if (typographyClasses.length > 0) { cssLines.push('\n/* Typography Utility Classes */'); cssLines.push(...typographyClasses); }
+    // ** NEW: Add custom typography selectors **
+    if (typographySelectorGroups && typographySelectorGroups.length > 0) {
+      const customTypeSelectorClasses = [];
+      typographySelectorGroups.forEach(group => { group.rules.forEach(rule => { if (rule.selector && rule.properties && rule.properties.length > 0) { const validProperties = rule.properties.filter(prop => prop.property && prop.value).map(prop => `  ${prop.property}: ${prop.value};`); if (validProperties.length > 0) { customTypeSelectorClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`); } } }); });
+      if (customTypeSelectorClasses.length > 0) { cssLines.push('\n/* Custom Typography Selectors */'); cssLines.push(...customTypeSelectorClasses); }
+    }
+  }
 
   if (isSpacingEnabled) {
-    // --- THIS IS THE FIX: The new generation logic for utility classes ---
     const spacingClasses = [];
     generatorConfig.forEach(config => {
-        if (!config.enabled || !config.scaleGroupId || config.properties.length === 0 || !config.properties.some(p => p.trim() !== '')) {
-            return;
-        }
-
+        if (!config.enabled || !config.scaleGroupId || config.properties.length === 0 || !config.properties.some(p => p.trim() !== '')) { return; }
         const sourceGroup = spacingGroups.find(g => g.id === config.scaleGroupId);
         if (!sourceGroup) return;
-
         const scaleForThisGenerator = generateSpacingScale(sourceGroup.settings);
         const baseClassName = config.className.slice(0, -2);
-        
         scaleForThisGenerator.forEach(space => {
             const className = `${baseClassName}-${space.id}`;
             const properties = config.properties.map(prop => `  ${prop}: var(${space.name});`).join('\n');
             spacingClasses.push(`${className} {\n${properties}\n}`);
         });
     });
-
-    if (spacingClasses.length > 0) {
-        cssLines.push('\n/* Spacing Utility Classes */');
-        cssLines.push(...spacingClasses);
-    }
-
+    if (spacingClasses.length > 0) { cssLines.push('\n/* Spacing Utility Classes */'); cssLines.push(...spacingClasses); }
     if (selectorGroups && selectorGroups.length > 0) {
       const customSelectorClasses = [];
       selectorGroups.forEach(group => { group.rules.forEach(rule => { if (rule.selector && rule.properties && rule.properties.length > 0) { const validProperties = rule.properties.filter(prop => prop.property && prop.value).map(prop => `  ${prop.property}: ${prop.value};`); if (validProperties.length > 0) { customSelectorClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`); } } }); });
