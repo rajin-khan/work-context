@@ -1,0 +1,66 @@
+// src/pages/TypographySelectorsPage.jsx
+import React, { useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus } from 'lucide-react';
+import SelectorGroup from '../components/spacing/SelectorGroup';
+import { allCSSProperties } from '../utils/cssProperties';
+import FeatureHeader from '../components/ui/FeatureHeader';
+
+const TypographySelectorsPage = ({ 
+  typographySelectorGroups, 
+  onAddTypographySelectorGroup, 
+  onUpdateTypographySelectorGroup, 
+  onRemoveTypographySelectorGroup, 
+  typographyScale, 
+  typographyVariableGroups 
+}) => {
+  
+  const typographyVariableOptions = useMemo(() => {
+    const scaleOptions = typographyScale.map(item => ({ label: `var(${item.name})`, value: `var(${item.name})` }));
+    
+    const customTypographyVarOptions = typographyVariableGroups.flatMap(group =>
+      group.variables.map(variable => ({ label: `var(${variable.name})`, value: `var(${variable.name})` }))
+    );
+
+    return [...scaleOptions, ...customTypographyVarOptions];
+  }, [typographyScale, typographyVariableGroups]);
+
+  const propertyOptions = useMemo(() => allCSSProperties.map(prop => ({ label: prop, value: prop })), []);
+
+  return (
+    <motion.div 
+        className="max-w-5xl mx-auto p-8" 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ duration: 0.3 }}
+    >
+      <FeatureHeader
+        title="Typography Selectors"
+        description="Define CSS rules for typographic elements like headings, paragraphs, or blockquotes. Use your type scale and custom typography variables for consistent styling."
+      />
+
+      <AnimatePresence>
+        {typographySelectorGroups.map(group => (
+          <SelectorGroup 
+            key={group.id} 
+            group={group} 
+            onUpdate={onUpdateTypographySelectorGroup} 
+            onRemove={() => onRemoveTypographySelectorGroup(group.id)} 
+            spacingVariableOptions={typographyVariableOptions} 
+            propertyOptions={propertyOptions} 
+          />
+        ))}
+      </AnimatePresence>
+      <div className="max-w-5xl mx-auto my-8 px-4 flex items-center justify-center">
+        <button 
+            onClick={onAddTypographySelectorGroup} 
+            className="text-neutral-500 hover:text-white font-medium text-sm py-2 px-4 rounded-full transition-colors flex items-center gap-2 border-2 border-dashed border-neutral-800 hover:border-neutral-700"
+        >
+          <Plus size={16} /> Create Typography Selector Group
+        </button>
+      </div>
+    </motion.div>
+  );
+};
+
+export default TypographySelectorsPage;
