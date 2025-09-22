@@ -1,21 +1,34 @@
 // src/components/components/ComponentPreview.jsx
 import React, { useEffect, useMemo } from 'react';
-import { generateComponentCSS } from '../../utils/componentStyler';
+// THE FIX IS HERE: Import the renamed and upgraded utility function
+import { generateComponentStylesheet } from '../../utils/componentStyler'; 
 import { nanoid } from 'nanoid';
 import clsx from 'clsx';
 
-const ComponentPreview = ({ component }) => {
-  // **THE FIX**: Generate a unique ID for this specific preview instance.
-  // This ensures its styles will not conflict with any other preview.
+// THE FIX IS HERE: Accept all the new data props
+const ComponentPreview = ({ 
+  component,
+  colorGroups,
+  spacingGroups,
+  typographyGroups,
+  layoutVariableGroups,
+  designVariableGroups,
+}) => {
   const previewId = useMemo(() => `preview-${nanoid(6)}`, [component.id]);
 
-  // Generate the full, SCOPED CSS using the unique ID
-  const componentCSS = useMemo(() => generateComponentCSS(component, previewId), [component, previewId]);
+  // THE FIX IS HERE: Pass all data to the new stylesheet generator
+  const componentCSS = useMemo(() => generateComponentStylesheet({
+    component, 
+    previewId,
+    colorGroups,
+    spacingGroups,
+    typographyGroups,
+    layoutVariableGroups,
+    designVariableGroups
+  }), [component, previewId, colorGroups, spacingGroups, typographyGroups, layoutVariableGroups, designVariableGroups]);
 
-  // Inject and clean up the generated styles in the document's <head>
   useEffect(() => {
     const styleTag = document.createElement('style');
-    // The ID now includes the unique previewId to be certain of its uniqueness
     styleTag.id = `component-preview-styles-${previewId}`;
     styleTag.innerHTML = componentCSS;
     document.head.appendChild(styleTag);
@@ -30,8 +43,6 @@ const ComponentPreview = ({ component }) => {
 
   const previewClasses = clsx(component.name);
 
-  // **THE FIX**: The button is wrapped in a div with the unique previewId as a class.
-  // This creates the CSS scope, so the generated styles only apply inside this div.
   return (
     <div className={previewId}>
       <button className={previewClasses}>

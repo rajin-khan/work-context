@@ -1,14 +1,25 @@
 // src/components/components/ComponentPreviewCard.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import ComponentPreview from './ComponentPreview'; // Import the live preview component
+import ComponentPreview from './ComponentPreview';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
 };
 
-const ComponentPreviewCard = ({ component, onEdit }) => {
+// --- START OF THE FIX ---
+// Destructure all the new data props
+const ComponentPreviewCard = ({ 
+  component, 
+  onEdit,
+  colorGroups,
+  spacingGroups,
+  typographyGroups,
+  layoutVariableGroups,
+  designVariableGroups,
+}) => {
+// --- END OF THE FIX ---
   return (
     <motion.div
       variants={cardVariants}
@@ -28,12 +39,18 @@ const ComponentPreviewCard = ({ component, onEdit }) => {
       </div>
       
       <div className="h-48 flex-1 flex items-center justify-center bg-white p-4 overflow-hidden">
-        {/*
-          This wrapper scales down the preview to fit nicely in the card.
-          The ComponentPreview inside will render the button with all its live styles.
-        */}
         <div style={{ transform: 'scale(0.8)' }}>
-            <ComponentPreview component={component} />
+            {/* --- START OF THE FIX --- */}
+            {/* Pass all the required data props to the ComponentPreview */}
+            <ComponentPreview 
+              component={component}
+              colorGroups={colorGroups}
+              spacingGroups={spacingGroups}
+              typographyGroups={typographyGroups}
+              layoutVariableGroups={layoutVariableGroups}
+              designVariableGroups={designVariableGroups}
+            />
+            {/* --- END OF THE FIX --- */}
         </div>
       </div>
     </motion.div>

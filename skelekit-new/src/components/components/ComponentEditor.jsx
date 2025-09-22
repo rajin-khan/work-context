@@ -6,7 +6,22 @@ import ComponentCSSDisplay from './ComponentCSSDisplay';
 import ComponentPreview from './ComponentPreview'; // Import the live preview component
 import { nanoid } from 'nanoid';
 
-const ComponentEditor = ({ component, setComponent, onSave, onDiscard }) => {
+// --- START OF THE FIX ---
+// Destructure all the new props, including the data groups
+const ComponentEditor = ({
+  component,
+  setComponent,
+  allColorVariables,
+  allSpacingVariables,
+  allTypographyVariables,
+  allGlobalVariables,
+  colorGroups,
+  spacingGroups,
+  typographyGroups,
+  layoutVariableGroups,
+  designVariableGroups,
+}) => {
+// --- END OF THE FIX ---
   const [activeSelection, setActiveSelection] = useState({ type: 'base' });
 
   useEffect(() => {
@@ -21,7 +36,7 @@ const ComponentEditor = ({ component, setComponent, onSave, onDiscard }) => {
     const newModifier = {
       id: nanoid(),
       name: `modifier-${(component.modifiers?.length || 0) + 1}`,
-      styles: {},
+      styles: [],
       states: {},
     };
     const newModifiers = [...(component.modifiers || []), newModifier];
@@ -49,14 +64,14 @@ const ComponentEditor = ({ component, setComponent, onSave, onDiscard }) => {
   const handleAddState = (modifierId, state) => {
     if (!modifierId) {
       if (component.states?.[state]) return;
-      const newStates = { ...(component.states || {}), [state]: {} };
+      const newStates = { ...(component.states || {}), [state]: [] };
       setComponent(prev => ({ ...prev, states: newStates }));
       setActiveSelection({type: 'baseState', state: state});
     } else {
       const mod = component.modifiers.find(m => m.id === modifierId);
       if(mod.states?.[state]) return;
       handleUpdateModifier(modifierId, {
-        states: { ...mod.states, [state]: {} }
+        states: { ...mod.states, [state]: [] }
       });
       setActiveSelection({ type: 'modifierState', id: modifierId, state: state });
     }
@@ -107,15 +122,15 @@ const ComponentEditor = ({ component, setComponent, onSave, onDiscard }) => {
         case 'base':
             return { styles: component.styles, name: `.${component.name}` };
         case 'baseState':
-            return { styles: component.states?.[activeSelection.state] || {}, name: `.${component.name}:${activeSelection.state}` };
+            return { styles: component.states?.[activeSelection.state] || [], name: `.${component.name}:${activeSelection.state}` };
         case 'modifier':
             const mod = component.modifiers?.find(m => m.id === activeSelection.id);
-            return { styles: mod?.styles || {}, name: `.${component.name}.${mod?.name}` };
+            return { styles: mod?.styles || [], name: `.${component.name}.${mod?.name}` };
         case 'modifierState':
              const modifier = component.modifiers?.find(m => m.id === activeSelection.id);
-             return { styles: modifier?.states?.[activeSelection.state] || {}, name: `.${component.name}.${modifier?.name}:${activeSelection.state}` };
+             return { styles: modifier?.states?.[activeSelection.state] || [], name: `.${component.name}.${modifier?.name}:${activeSelection.state}` };
         default:
-            return { styles: {}, name: '' };
+            return { styles: [], name: '' };
     }
   };
 
@@ -147,7 +162,17 @@ const ComponentEditor = ({ component, setComponent, onSave, onDiscard }) => {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.3 }}
         >
-          <ComponentPreview component={component} />
+          {/* --- START OF THE FIX --- */}
+          {/* Pass all the new data props down to the preview */}
+          <ComponentPreview 
+            component={component} 
+            colorGroups={colorGroups}
+            spacingGroups={spacingGroups}
+            typographyGroups={typographyGroups}
+            layoutVariableGroups={layoutVariableGroups}
+            designVariableGroups={designVariableGroups}
+          />
+          {/* --- END OF THE FIX --- */}
         </motion.div>
       </div>
 
@@ -155,6 +180,10 @@ const ComponentEditor = ({ component, setComponent, onSave, onDiscard }) => {
         styles={activeStyles}
         onUpdateStyles={handleUpdateStyles}
         activeModifier={activeName}
+        allColorVariables={allColorVariables}
+        allSpacingVariables={allSpacingVariables}
+        allTypographyVariables={allTypographyVariables}
+        allGlobalVariables={allGlobalVariables}
       />
     </motion.div>
   );

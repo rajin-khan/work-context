@@ -2,19 +2,21 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import EditablePill from '../ui/EditablePill';
-import { allCSSProperties } from '../../utils/cssProperties';
 
-const propertyOptions = allCSSProperties.map(p => ({ label: p, value: p }));
+// THE FIX IS HERE: Accept `item` and `valueOptions` as props
+const ComponentPropertyRow = ({ item, onUpdate, onRemove, propertyOptions, valueOptions }) => {
+  const { prop, value } = item;
 
-const ComponentPropertyRow = ({ property, value, onUpdate, onRemove }) => {
   return (
     <div className="flex items-center gap-3 group px-4 py-1 hover:bg-neutral-800/50 rounded-md">
       {/* Property Input */}
-      <div className="w-40">
+      <div className="w-48">
         <EditablePill
-          value={property}
-          onChange={(newProp) => onUpdate(newProp, value)}
+          value={prop}
+          // THE FIX IS HERE: Update the specific 'prop' field of the item
+          onChange={(newProp) => onUpdate({ ...item, prop: newProp })}
           placeholder="property"
+          datalistId="component-css-properties"
           options={propertyOptions}
           inputClassName="w-full"
         />
@@ -26,9 +28,11 @@ const ComponentPropertyRow = ({ property, value, onUpdate, onRemove }) => {
       <div className="flex-1">
         <EditablePill
           value={value}
-          onChange={(newValue) => onUpdate(property, newValue)}
+          // THE FIX IS HERE: Update the specific 'value' field of the item
+          onChange={(newValue) => onUpdate({ ...item, value: newValue })}
           placeholder="value"
-          options={[]} // We can add theme variables here later
+          datalistId="component-css-values"
+          options={valueOptions}
           inputClassName="w-full"
         />
       </div>

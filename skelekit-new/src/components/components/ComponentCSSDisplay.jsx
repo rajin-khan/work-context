@@ -1,30 +1,50 @@
 // src/components/components/ComponentCSSDisplay.jsx
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Plus } from 'lucide-react';
 import ComponentPropertyRow from './ComponentPropertyRow';
 import { motion, AnimatePresence } from 'framer-motion';
+import { allCSSProperties, spacingProperties, typographyProperties, colorProperties } from '../../utils/cssProperties';
+import { nanoid } from 'nanoid';
 
-const ComponentCSSDisplay = ({ styles, onUpdateStyles, activeModifier }) => {
+const ComponentCSSDisplay = ({ 
+    styles, 
+    onUpdateStyles, 
+    activeModifier,
+    allColorVariables,
+    allSpacingVariables,
+    allTypographyVariables,
+    allGlobalVariables
+}) => {
+  
+  const propertyOptions = useMemo(() => allCSSProperties.map(p => ({ label: p, value: p })), []);
+
+  const getValueOptionsForProperty = (property) => {
+    const prop = property.toLowerCase().trim();
+    if (!prop) return allGlobalVariables;
+    if (colorProperties.includes(prop)) return allColorVariables;
+    if (spacingProperties.includes(prop)) return allSpacingVariables;
+    if (typographyProperties.includes(prop)) return allTypographyVariables;
+    return allGlobalVariables;
+  };
+
+  // --- START OF THE FIX: REWRITE HANDLERS FOR ARRAY DATA STRUCTURE ---
   const handleAddProperty = () => {
-    onUpdateStyles({ ...styles, '': '' }); // Add a new empty property
-  };
-
-  const handleUpdateProperty = (oldProp, newProp, newValue) => {
-    if (oldProp === newProp) {
-        onUpdateStyles({ ...styles, [newProp]: newValue });
-        return;
-    }
-    const newStyles = { ...styles };
-    delete newStyles[oldProp];
-    newStyles[newProp] = newValue;
+    const newStyles = [...styles, { id: nanoid(), prop: '', value: '' }];
     onUpdateStyles(newStyles);
   };
 
-  const handleRemoveProperty = (propToRemove) => {
-    const newStyles = { ...styles };
-    delete newStyles[propToRemove];
+  const handleUpdateProperty = (updatedItem) => {
+    const newStyles = styles.map(item =>
+      item.id === updatedItem.id ? updatedItem : item
+    );
     onUpdateStyles(newStyles);
   };
+
+  const handleRemoveProperty = (idToRemove) => {
+    const newStyles = styles.filter(item => item.id !== idToRemove);
+    onUpdateStyles(newStyles);
+  };
+  // --- END OF THE FIX ---
 
   const selectorName = activeModifier || '';
   const descriptionText = selectorName.includes(':')
@@ -48,9 +68,10 @@ const ComponentCSSDisplay = ({ styles, onUpdateStyles, activeModifier }) => {
       </AnimatePresence>
       <div className="flex-1 overflow-auto p-2 space-y-1">
         <AnimatePresence>
-        {Object.entries(styles).map(([prop, value]) => (
+        {/* THE FIX IS HERE: Map over the array and use the stable item.id as the key */}
+        {styles.map(item => (
           <motion.div
-            key={prop}
+            key={item.id} 
             layout
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -58,10 +79,11 @@ const ComponentCSSDisplay = ({ styles, onUpdateStyles, activeModifier }) => {
             transition={{ type: 'spring', stiffness: 350, damping: 30 }}
           >
             <ComponentPropertyRow
-              property={prop}
-              value={value}
-              onUpdate={(newProp, newValue) => handleUpdateProperty(prop, newProp, newValue)}
-              onRemove={() => handleRemoveProperty(prop)}
+              item={item} // Pass the whole item object
+              onUpdate={handleUpdateProperty}
+              onRemove={() => handleRemoveProperty(item.id)}
+              propertyOptions={propertyOptions}
+              valueOptions={getValueOptionsForProperty(item.prop)}
             />
           </motion.div>
         ))}

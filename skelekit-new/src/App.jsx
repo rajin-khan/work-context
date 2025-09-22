@@ -78,6 +78,57 @@ function App() {
     '/* Your custom styles go here */'
   );
 
+  const allColorVariables = useMemo(() => {
+    return colorGroups.flatMap(group =>
+      group.colors.flatMap(color => {
+        const vars = [{ label: `var(${color.name})`, value: `var(${color.name})` }];
+        if (color.shadesConfig?.enabled) {
+          color.shadesConfig.palette.forEach((_, i) => {
+            const varName = `${color.name}-d-${i + 1}`;
+            vars.push({ label: `var(${varName})`, value: `var(${varName})` });
+          });
+        }
+        if (color.tintsConfig?.enabled) {
+          color.tintsConfig.palette.forEach((_, i) => {
+            const varName = `${color.name}-l-${i + 1}`;
+            vars.push({ label: `var(${varName})`, value: `var(${varName})` });
+          });
+        }
+        return vars;
+      })
+    );
+  }, [colorGroups]);
+
+  const allSpacingVariables = useMemo(() => {
+    const scaleVars = spacingGroups.flatMap(group =>
+      generateSpacingScale(group.settings).map(item => ({ label: `var(${item.name})`, value: `var(${item.name})` }))
+    );
+    const customVars = variableGroups.flatMap(group =>
+      group.variables.map(v => ({ label: `var(${v.name})`, value: `var(${v.name})` }))
+    );
+    return [...scaleVars, ...customVars];
+  }, [spacingGroups, variableGroups]);
+
+  const allTypographyVariables = useMemo(() => {
+    const scaleVars = typographyGroups.flatMap(group =>
+      generateSpacingScale(group.settings).map(item => ({ label: `var(${item.name})`, value: `var(${item.name})` }))
+    );
+    const customVars = typographyVariableGroups.flatMap(group =>
+      group.variables.map(v => ({ label: `var(${v.name})`, value: `var(${v.name})` }))
+    );
+    return [...scaleVars, ...customVars];
+  }, [typographyGroups, typographyVariableGroups]);
+
+  const allGlobalVariables = useMemo(() => {
+    const layoutVars = layoutVariableGroups.flatMap(group =>
+        group.variables.map(v => ({ label: `var(${v.name})`, value: `var(${v.name})` }))
+    );
+    const designVars = designVariableGroups.flatMap(group =>
+        group.variables.map(v => ({ label: `var(${v.name})`, value: `var(${v.name})` }))
+    );
+    return [...allColorVariables, ...allSpacingVariables, ...allTypographyVariables, ...layoutVars, ...designVars];
+  }, [allColorVariables, allSpacingVariables, allTypographyVariables, layoutVariableGroups, designVariableGroups]);
+
   const handleEnableTypography = () => {
     if (typographyGroups.length === 0) {
       const defaultGroup = {
@@ -299,30 +350,29 @@ function App() {
         id: nanoid(),
         type: 'button',
         name: 'btn',
-        styles: {
-          display: 'inline-flex',
-          'align-items': 'center',
-          'justify-content': 'center',
-          padding: '10px 20px',
-          background: '#2563eb',
-          color: '#ffffff',
-          'font-size': '16px',
-          'font-weight': '600',
-          'border-radius': '8px',
-          border: 'none',
-          cursor: 'pointer',
-          transition:
-            'background-color 0.2s ease-in-out, transform 0.1s ease',
-        },
+        styles: [
+          { id: nanoid(), prop: 'display', value: 'inline-flex' },
+          { id: nanoid(), prop: 'align-items', value: 'center' },
+          { id: nanoid(), prop: 'justify-content', value: 'center' },
+          { id: nanoid(), prop: 'padding', value: '10px 20px' },
+          { id: nanoid(), prop: 'background', value: '#2563eb' },
+          { id: nanoid(), prop: 'color', value: '#ffffff' },
+          { id: nanoid(), prop: 'font-size', value: '16px' },
+          { id: nanoid(), prop: 'font-weight', value: '600' },
+          { id: nanoid(), prop: 'border-radius', value: '8px' },
+          { id: nanoid(), prop: 'border', value: 'none' },
+          { id: nanoid(), prop: 'cursor', value: 'pointer' },
+          { id: nanoid(), prop: 'transition', value: 'background-color 0.2s ease-in-out, transform 0.1s ease' },
+        ],
         states: {
-          hover: {
-            background: '#1d4ed8',
-            transform: 'translateY(-1px)',
-          },
-          focus: {
-            outline: '3px solid rgba(96, 165, 250, 0.5)',
-            'outline-offset': '2px',
-          },
+          hover: [
+            { id: nanoid(), prop: 'background', value: '#1d4ed8' },
+            { id: nanoid(), prop: 'transform', value: 'translateY(-1px)' },
+          ],
+          focus: [
+            { id: nanoid(), prop: 'outline', value: '3px solid rgba(96, 165, 250, 0.5)' },
+            { id: nanoid(), prop: 'outline-offset', value: '2px' },
+          ],
         },
         modifiers: [],
       };
@@ -675,10 +725,24 @@ function App() {
         onDiscard={handleDiscardChanges}
       >
         {draftComponent && (
+          // --- START OF THE FIX ---
+          // Pass the full data groups in addition to the variable lists
           <ComponentEditor
             component={draftComponent}
             setComponent={setDraftComponent}
+            // Props for value suggestions
+            allColorVariables={allColorVariables}
+            allSpacingVariables={allSpacingVariables}
+            allTypographyVariables={allTypographyVariables}
+            allGlobalVariables={allGlobalVariables}
+            // Props for generating variable definitions
+            colorGroups={colorGroups}
+            spacingGroups={spacingGroups}
+            typographyGroups={typographyGroups}
+            layoutVariableGroups={layoutVariableGroups}
+            designVariableGroups={designVariableGroups}
           />
+          // --- END OF THE FIX ---
         )}
       </Modal>
     </div>
