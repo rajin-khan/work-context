@@ -15,13 +15,18 @@ import DesignVariablesPage from '../pages/DesignVariablesPage';
 import FeatureActivationScreen from './ui/FeatureActivationScreen';
 import TypographyPage from '../pages/TypographyPage';
 import TypographyClassGeneratorPage from '../pages/TypographyClassGeneratorPage';
-// ** NEW: Import the final two typography pages **
 import TypographySelectorsPage from '../pages/TypographySelectorsPage';
 import TypographyVariablesPage from '../pages/TypographyVariablesPage';
-
+import ComponentsPage from '../pages/ComponentsPage'; // Import the new page
 
 const PageRenderer = (props) => {
-  const { activePage, isSpacingEnabled, handleEnableSpacing, isTypographyEnabled, handleEnableTypography } = props;
+  const {
+    activePage,
+    isSpacingEnabled,
+    handleEnableSpacing,
+    isTypographyEnabled,
+    handleEnableTypography,
+  } = props;
 
   const renderActivePage = () => {
     switch (activePage) {
@@ -30,7 +35,9 @@ const PageRenderer = (props) => {
         return <TypographyPage {...props} />;
 
       case 'Typography Class Generator':
-        return isTypographyEnabled ? <TypographyClassGeneratorPage {...props} /> : (
+        return isTypographyEnabled ? (
+          <TypographyClassGeneratorPage {...props} />
+        ) : (
           <FeatureActivationScreen
             title="Typography Not Enabled"
             description="The Class Generator requires the Type Scales feature to be active."
@@ -39,10 +46,11 @@ const PageRenderer = (props) => {
           />
         );
 
-      // ** THIS IS THE CHANGE: Render the new pages **
       case 'Typography Selectors':
-        return isTypographyEnabled ? <TypographySelectorsPage {...props} /> : (
-           <FeatureActivationScreen
+        return isTypographyEnabled ? (
+          <TypographySelectorsPage {...props} />
+        ) : (
+          <FeatureActivationScreen
             title="Typography Not Enabled"
             description="Custom selectors can use variables from your type scale."
             buttonText="Enable Typography"
@@ -51,8 +59,10 @@ const PageRenderer = (props) => {
         );
 
       case 'Typography Variables':
-        return isTypographyEnabled ? <TypographyVariablesPage {...props} /> : (
-           <FeatureActivationScreen
+        return isTypographyEnabled ? (
+          <TypographyVariablesPage {...props} />
+        ) : (
+          <FeatureActivationScreen
             title="Typography Not Enabled"
             description="Custom variables can be created independently of the main feature."
             buttonText="Enable Typography"
@@ -62,7 +72,9 @@ const PageRenderer = (props) => {
 
       // SPACING SUB-PAGES
       case 'Scales':
-        return isSpacingEnabled ? <ScalesPage {...props} /> : (
+        return isSpacingEnabled ? (
+          <ScalesPage {...props} />
+        ) : (
           <FeatureActivationScreen
             title="Spacing Features Not Enabled"
             description="Activate spacing to generate a fluid, responsive scale and utility classes for your project."
@@ -72,7 +84,9 @@ const PageRenderer = (props) => {
         );
 
       case 'Class Generator':
-        return isSpacingEnabled ? <ClassGeneratorPage {...props} /> : (
+        return isSpacingEnabled ? (
+          <ClassGeneratorPage {...props} />
+        ) : (
           <FeatureActivationScreen
             title="Spacing Features Not Enabled"
             description="The Class Generator requires the Scales feature to be active. Activate it to begin creating custom utility classes."
@@ -80,9 +94,11 @@ const PageRenderer = (props) => {
             onActivate={handleEnableSpacing}
           />
         );
-        
+
       case 'Spacing Selectors':
-        return isSpacingEnabled ? <SelectorsPage {...props} /> : (
+        return isSpacingEnabled ? (
+          <SelectorsPage {...props} />
+        ) : (
           <FeatureActivationScreen
             title="Spacing Features Not Enabled"
             description="Custom selectors can use variables from your spacing scale. Activate the feature to access them."
@@ -92,7 +108,9 @@ const PageRenderer = (props) => {
         );
 
       case 'Spacing Variables':
-        return isSpacingEnabled ? <VariablesPage {...props} /> : (
+        return isSpacingEnabled ? (
+          <VariablesPage {...props} />
+        ) : (
           <FeatureActivationScreen
             title="Spacing Features Not Enabled"
             description="Custom variables can be created independently, but activating the core feature provides the main spacing variables."
@@ -100,24 +118,27 @@ const PageRenderer = (props) => {
             onActivate={handleEnableSpacing}
           />
         );
-      
+
       // LAYOUT SUB-PAGES
       case 'Layout Selectors':
         return <LayoutSelectorsPage {...props} />;
-        
+
       case 'Layout Variables':
         return <LayoutVariablesPage {...props} />;
 
       // DESIGN SUB-PAGES
       case 'Design Selectors':
         return <DesignSelectorsPage {...props} />;
-        
+
       case 'Design Variables':
         return <DesignVariablesPage {...props} />;
 
       // OTHER MAIN PAGES
       case 'Stylesheets':
         return <StylesheetsPage {...props} />;
+
+      case 'Components': // Add the new case
+        return <ComponentsPage {...props} />;
 
       case 'Colors':
       default:
@@ -128,7 +149,10 @@ const PageRenderer = (props) => {
   return (
     <div className="flex-1 overflow-y-auto">
       <AnimatePresence mode="wait">
-        <motion.div key={activePage + isSpacingEnabled + isTypographyEnabled} className="h-full">
+        <motion.div
+          key={activePage + isSpacingEnabled + isTypographyEnabled}
+          className="h-full"
+        >
           {renderActivePage()}
         </motion.div>
       </AnimatePresence>

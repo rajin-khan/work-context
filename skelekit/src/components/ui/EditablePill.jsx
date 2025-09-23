@@ -2,9 +2,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const EditablePill = ({ value, onChange, placeholder, datalistId, options, inputClassName = 'w-32' }) => {
-  const [isEditing, setIsEditing] = useState(!value); // Start editing if the value is empty
+  const [isEditing, setIsEditing] = useState(!value);
   const [currentValue, setCurrentValue] = useState(value);
   const inputRef = useRef(null);
+
+  // ** THIS IS THE FIX **
+  // This effect ensures that if the parent's `value` prop changes
+  // (e.g., when switching from viewing .btn to :hover),
+  // the pill's internal state (`currentValue`) is updated to match.
+  useEffect(() => {
+    setCurrentValue(value);
+  }, [value]);
 
   useEffect(() => {
     if (isEditing) {
@@ -22,7 +30,7 @@ const EditablePill = ({ value, onChange, placeholder, datalistId, options, input
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') inputRef.current?.blur();
     if (e.key === 'Escape') {
-      setCurrentValue(value);
+      setCurrentValue(value); // Revert to original prop value on escape
       setIsEditing(false);
     }
   };
@@ -52,7 +60,7 @@ const EditablePill = ({ value, onChange, placeholder, datalistId, options, input
         className={`font-mono text-sm bg-neutral-950 border border-neutral-700 text-white rounded-md px-3 py-1 outline-none focus:border-neutral-500 ${inputClassName}`}
       />
       <datalist id={datalistId}>
-        {options.map(opt => (
+        {(options || []).map(opt => (
           <option key={opt.value} value={opt.value} />
         ))}
       </datalist>
