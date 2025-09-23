@@ -1,3 +1,4 @@
+
 // src/App.jsx
 import React, { useState, useMemo } from 'react';
 import Header from './components/Header';
@@ -11,6 +12,22 @@ import { initialTypographyClassDefinitions } from './components/typography/Typog
 import { generateSpacingScale } from './utils/spacingCalculator';
 import { nanoid } from 'nanoid';
 import { Search, Grid2X2 } from 'lucide-react';
+import LoadingScreen from './pages/LoadingScreen'; // Import the new loading screen
+import { // Import all the preset data
+  skelementorColorGroups,
+  skelementorSpacingGroups,
+  skelementorTypographyGroups,
+  skelementorDesignVariableGroups,
+  skelementorComponents,
+  skelementorLayoutVariableGroups,
+  skelementorLayoutSelectorGroups,
+  skelementorDesignSelectorGroups,
+  skelementorTypographySelectorGroups,
+  skelementorTypographyVariableGroups,
+  skelementorSpacingSelectorGroups,
+  skelementorSpacingVariableGroups,
+  skelementorCustomCSS
+} from './presets/skelementorPreset';
 
 const defaultSpacingSettings = {
   namingConvention: 'space',
@@ -35,6 +52,9 @@ const defaultTypographySettings = {
 };
 
 function App() {
+  // --- NEW STATE TO MANAGE LOADING SCREEN ---
+  const [workspaceLoaded, setWorkspaceLoaded] = useState(false);
+  
   const [colorGroups, setColorGroups] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [activePage, setActivePage] = useState('Colors');
@@ -77,6 +97,39 @@ function App() {
   const [customCSS, setCustomCSS] = useState(
     '/* Your custom styles go here */'
   );
+
+  // --- NEW HANDLER FOR LOADING PRESETS OR BLANK WORKSPACE ---
+  const handleWorkspaceSelect = (choice) => {
+    if (choice === 'preset') {
+      // Load all the data from the preset file
+      setColorGroups(skelementorColorGroups);
+      setSpacingGroups(skelementorSpacingGroups);
+      setTypographyGroups(skelementorTypographyGroups);
+      setDesignVariableGroups(skelementorDesignVariableGroups);
+      setComponents(skelementorComponents);
+      
+      // Set features to enabled
+      setIsSpacingEnabled(true);
+      setIsTypographyEnabled(true);
+      
+      // Associate default generators with the new preset scales
+      setGeneratorConfig(prev => prev.map(gen => ({ ...gen, scaleGroupId: skelementorSpacingGroups[0]?.id || null })));
+      setTypographyGeneratorConfig(prev => prev.map(gen => ({ ...gen, scaleGroupId: skelementorTypographyGroups[0]?.id || null })));
+
+      // Load empty arrays for other settings to ensure a clean state
+      setLayoutVariableGroups(skelementorLayoutVariableGroups);
+      setLayoutSelectorGroups(skelementorLayoutSelectorGroups);
+      setDesignSelectorGroups(skelementorDesignSelectorGroups);
+      setTypographySelectorGroups(skelementorTypographySelectorGroups);
+      setTypographyVariableGroups(skelementorTypographyVariableGroups);
+      setSelectorGroups(skelementorSpacingSelectorGroups);
+      setVariableGroups(skelementorSpacingVariableGroups);
+      setCustomCSS(skelementorCustomCSS);
+      
+    }
+    // If 'blank', the default empty states are already set, so we do nothing else.
+    setWorkspaceLoaded(true);
+  };
 
   const allColorVariables = useMemo(() => {
     return colorGroups.flatMap(group =>
@@ -463,7 +516,6 @@ function App() {
         modifiers: [],
       };
       setComponents((prev) => [...prev, newTextarea]);
-    // --- START OF THE FIX ---
     } else if (type === 'checkbox') {
         const newCheckbox = {
             id: nanoid(),
@@ -595,7 +647,6 @@ function App() {
         };
         setComponents((prev) => [...prev, newRadio]);
     }
-    // --- END OF THE FIX ---
   };
 
   const handleEditComponent = (id) => {
@@ -806,6 +857,11 @@ function App() {
     );
   const handleRemoveDesignVariableGroup = (id) =>
     setDesignVariableGroups((prev) => prev.filter((g) => g.id !== id));
+
+  // --- NEW CONDITIONAL RENDER ---
+  if (!workspaceLoaded) {
+    return <LoadingScreen onSelect={handleWorkspaceSelect} />;
+  }
 
   return (
     <div className="flex flex-col h-screen bg-black font-sans">
