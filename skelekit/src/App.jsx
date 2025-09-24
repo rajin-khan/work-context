@@ -1,6 +1,5 @@
-
 // src/App.jsx
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import CSSPreviewPanel from './components/CSSPreviewPanel';
@@ -12,8 +11,8 @@ import { initialTypographyClassDefinitions } from './components/typography/Typog
 import { generateSpacingScale } from './utils/spacingCalculator';
 import { nanoid } from 'nanoid';
 import { Search, Grid2X2 } from 'lucide-react';
-import LoadingScreen from './pages/LoadingScreen'; // Import the new loading screen
-import { // Import all the preset data
+import LoadingScreen from './pages/LoadingScreen';
+import {
   skelementorColorGroups,
   skelementorSpacingGroups,
   skelementorTypographyGroups,
@@ -30,93 +29,108 @@ import { // Import all the preset data
 } from './presets/skelementorPreset';
 
 const defaultSpacingSettings = {
-  namingConvention: 'space',
-  minSize: 16,
-  maxSize: 28,
-  minScaleRatio: 1.25,
-  maxScaleRatio: 1.41,
-  baseScaleIndex: 'm',
-  negativeSteps: 4,
-  positiveSteps: 4,
+  namingConvention: 'space', minSize: 16, maxSize: 28, minScaleRatio: 1.25,
+  maxScaleRatio: 1.41, baseScaleIndex: 'm', negativeSteps: 4, positiveSteps: 4,
 };
 
 const defaultTypographySettings = {
-  namingConvention: 'text',
-  minSize: 16,
-  maxSize: 24,
-  minScaleRatio: 1.2,
-  maxScaleRatio: 1.33,
-  baseScaleIndex: 'm',
-  negativeSteps: 2,
-  positiveSteps: 5,
+  namingConvention: 'text', minSize: 16, maxSize: 24, minScaleRatio: 1.2,
+  maxScaleRatio: 1.33, baseScaleIndex: 'm', negativeSteps: 2, positiveSteps: 5,
 };
 
+const LOCAL_STORAGE_KEY = 'skelekit-workspace';
+
 function App() {
-  // --- NEW STATE TO MANAGE LOADING SCREEN ---
   const [workspaceLoaded, setWorkspaceLoaded] = useState(false);
-  
   const [colorGroups, setColorGroups] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [activePage, setActivePage] = useState('Colors');
-
-  // Spacing State
   const [isSpacingEnabled, setIsSpacingEnabled] = useState(false);
   const [spacingGroups, setSpacingGroups] = useState([]);
-  const [generatorConfig, setGeneratorConfig] = useState(
-    initialClassDefinitions.map((def) => ({
-      ...def,
-      enabled: true,
-      scaleGroupId: null,
-    }))
-  );
-
-  // Typography State
+  const [generatorConfig, setGeneratorConfig] = useState(() => initialClassDefinitions.map(def => ({ ...def, enabled: true, scaleGroupId: null })));
   const [isTypographyEnabled, setIsTypographyEnabled] = useState(false);
   const [typographyGroups, setTypographyGroups] = useState([]);
-  const [typographyGeneratorConfig, setTypographyGeneratorConfig] = useState(
-    initialTypographyClassDefinitions.map((def) => ({
-      ...def,
-      enabled: true,
-      scaleGroupId: null,
-    }))
-  );
+  const [typographyGeneratorConfig, setTypographyGeneratorConfig] = useState(() => initialTypographyClassDefinitions.map(def => ({ ...def, enabled: true, scaleGroupId: null })));
   const [typographySelectorGroups, setTypographySelectorGroups] = useState([]);
   const [typographyVariableGroups, setTypographyVariableGroups] = useState([]);
-
-  // Components State
   const [components, setComponents] = useState([]);
   const [draftComponent, setDraftComponent] = useState(null);
-
-  // Other State
   const [selectorGroups, setSelectorGroups] = useState([]);
   const [variableGroups, setVariableGroups] = useState([]);
   const [layoutSelectorGroups, setLayoutSelectorGroups] = useState([]);
   const [layoutVariableGroups, setLayoutVariableGroups] = useState([]);
   const [designSelectorGroups, setDesignSelectorGroups] = useState([]);
   const [designVariableGroups, setDesignVariableGroups] = useState([]);
-  const [customCSS, setCustomCSS] = useState(
-    '/* Your custom styles go here */'
-  );
+  const [customCSS, setCustomCSS] = useState('/* Your custom styles go here */');
 
-  // --- NEW HANDLER FOR LOADING PRESETS OR BLANK WORKSPACE ---
+  // --- START OF THE FIX: LOCALSTORAGE LOGIC ---
+
+  // Effect to LOAD data from localStorage on initial app startup
+  useEffect(() => {
+    const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        setColorGroups(parsedData.colorGroups || []);
+        setActivePage(parsedData.activePage || 'Colors');
+        setIsSpacingEnabled(parsedData.isSpacingEnabled || false);
+        setSpacingGroups(parsedData.spacingGroups || []);
+        setGeneratorConfig(parsedData.generatorConfig || initialClassDefinitions.map(def => ({ ...def, enabled: true, scaleGroupId: null })));
+        setIsTypographyEnabled(parsedData.isTypographyEnabled || false);
+        setTypographyGroups(parsedData.typographyGroups || []);
+        setTypographyGeneratorConfig(parsedData.typographyGeneratorConfig || initialTypographyClassDefinitions.map(def => ({ ...def, enabled: true, scaleGroupId: null })));
+        setTypographySelectorGroups(parsedData.typographySelectorGroups || []);
+        setTypographyVariableGroups(parsedData.typographyVariableGroups || []);
+        setComponents(parsedData.components || []);
+        setSelectorGroups(parsedData.selectorGroups || []);
+        setVariableGroups(parsedData.variableGroups || []);
+        setLayoutSelectorGroups(parsedData.layoutSelectorGroups || []);
+        setLayoutVariableGroups(parsedData.layoutVariableGroups || []);
+        setDesignSelectorGroups(parsedData.designSelectorGroups || []);
+        setDesignVariableGroups(parsedData.designVariableGroups || []);
+        setCustomCSS(parsedData.customCSS || '/* Your custom styles go here */');
+        
+        setWorkspaceLoaded(true); // Bypass the loading screen
+      } catch (error) {
+        console.error("Failed to parse data from localStorage", error);
+        localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear corrupted data
+      }
+    }
+  }, []); // Empty array ensures this runs only once on mount
+
+  // Effect to SAVE data to localStorage whenever any state changes
+  useEffect(() => {
+    if (workspaceLoaded) {
+      const workspaceData = {
+        colorGroups, activePage, isSpacingEnabled, spacingGroups, generatorConfig,
+        isTypographyEnabled, typographyGroups, typographyGeneratorConfig,
+        typographySelectorGroups, typographyVariableGroups, components, selectorGroups,
+        variableGroups, layoutSelectorGroups, layoutVariableGroups, designSelectorGroups,
+        designVariableGroups, customCSS
+      };
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(workspaceData));
+    }
+  }, [
+    workspaceLoaded, colorGroups, activePage, isSpacingEnabled, spacingGroups,
+    generatorConfig, isTypographyEnabled, typographyGroups, typographyGeneratorConfig,
+    typographySelectorGroups, typographyVariableGroups, components, selectorGroups,
+    variableGroups, layoutSelectorGroups, layoutVariableGroups, designSelectorGroups,
+    designVariableGroups, customCSS
+  ]);
+
+  // --- END OF THE FIX ---
+
   const handleWorkspaceSelect = (choice) => {
     if (choice === 'preset') {
-      // Load all the data from the preset file
       setColorGroups(skelementorColorGroups);
       setSpacingGroups(skelementorSpacingGroups);
       setTypographyGroups(skelementorTypographyGroups);
       setDesignVariableGroups(skelementorDesignVariableGroups);
       setComponents(skelementorComponents);
-      
-      // Set features to enabled
       setIsSpacingEnabled(true);
       setIsTypographyEnabled(true);
-      
-      // Associate default generators with the new preset scales
       setGeneratorConfig(prev => prev.map(gen => ({ ...gen, scaleGroupId: skelementorSpacingGroups[0]?.id || null })));
       setTypographyGeneratorConfig(prev => prev.map(gen => ({ ...gen, scaleGroupId: skelementorTypographyGroups[0]?.id || null })));
-
-      // Load empty arrays for other settings to ensure a clean state
       setLayoutVariableGroups(skelementorLayoutVariableGroups);
       setLayoutSelectorGroups(skelementorLayoutSelectorGroups);
       setDesignSelectorGroups(skelementorDesignSelectorGroups);
@@ -125,12 +139,20 @@ function App() {
       setSelectorGroups(skelementorSpacingSelectorGroups);
       setVariableGroups(skelementorSpacingVariableGroups);
       setCustomCSS(skelementorCustomCSS);
-      
     }
-    // If 'blank', the default empty states are already set, so we do nothing else.
+    // If 'blank', we just reset the state to defaults
+    else {
+        setColorGroups([]); setSpacingGroups([]); setTypographyGroups([]);
+        setDesignVariableGroups([]); setComponents([]); setIsSpacingEnabled(false);
+        setIsTypographyEnabled(false); setGeneratorConfig(initialClassDefinitions.map(def => ({ ...def, enabled: true, scaleGroupId: null })));
+        setTypographyGeneratorConfig(initialTypographyClassDefinitions.map(def => ({ ...def, enabled: true, scaleGroupId: null })));
+        setLayoutVariableGroups([]); setLayoutSelectorGroups([]); setDesignSelectorGroups([]);
+        setTypographySelectorGroups([]); setTypographyVariableGroups([]);
+        setSelectorGroups([]); setVariableGroups([]); setCustomCSS('/* Your custom styles go here */');
+    }
     setWorkspaceLoaded(true);
   };
-
+  
   const allColorVariables = useMemo(() => {
     return colorGroups.flatMap(group =>
       group.colors.flatMap(color => {
@@ -858,7 +880,6 @@ function App() {
   const handleRemoveDesignVariableGroup = (id) =>
     setDesignVariableGroups((prev) => prev.filter((g) => g.id !== id));
 
-  // --- NEW CONDITIONAL RENDER ---
   if (!workspaceLoaded) {
     return <LoadingScreen onSelect={handleWorkspaceSelect} />;
   }

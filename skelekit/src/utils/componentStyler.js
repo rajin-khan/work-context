@@ -3,6 +3,26 @@ import { colord } from 'colord';
 import chroma from 'chroma-js';
 import { generateSpacingScale } from './spacingCalculator';
 
+// --- START OF THE FIX ---
+// Helper function to round to a maximum of 2 decimal places.
+const round = (num) => Math.round(num * 100) / 100;
+
+// Reusable function to generate the clamp() string with the corrected formula and rounding.
+const generateClampValue = (minPx, maxPx) => {
+  // 1. Convert to REM and round before any calculations.
+  const minRem = round(minPx / 16);
+  const maxRem = round(maxPx / 16);
+
+  // 2. Apply the new custom formulas.
+  const vwCoefficient = (maxRem - minRem) * 1.48;
+  const remConstant = minRem * 0.85;
+
+  // 3. Assemble the final string, using calc() and ensuring ALL values are rounded to 2 decimal places.
+  // .toFixed(2) ensures consistent formatting (e.g., 1.5 becomes 1.50).
+  return `clamp(${minRem.toFixed(2)}rem, calc(${round(remConstant).toFixed(2)}rem + ${round(vwCoefficient).toFixed(2)}vw), ${maxRem.toFixed(2)}rem)`;
+};
+// --- END OF THE FIX ---
+
 // Helper functions adapted from cssGenerator.js
 const formatColorValue = (color) => {
   const c = colord(color.value);
@@ -39,7 +59,6 @@ const formatTransparentValue = (baseColor, parentFormat, alpha) => {
     return c.toHex();
 }
 
-
 /**
  * Generates a complete, SCOPED CSS stylesheet for a component preview, including all variables.
  */
@@ -59,7 +78,6 @@ export const generateComponentStylesheet = (data) => {
   let cssString = '';
   let cssLines = [];
 
-  // --- START VARIABLE DEFINITIONS ---
   cssLines.push(`.${previewId} {`);
   
   const allColors = colorGroups.flatMap(group => group.colors);
@@ -76,11 +94,7 @@ export const generateComponentStylesheet = (data) => {
     (groups || []).forEach(group => {
         const scale = generateSpacingScale(group.settings);
         scale.forEach(item => {
-            const minRem = item.min / 16;
-            const maxRem = item.max / 16;
-            const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320);
-            const remConstant = minRem - (320 * vwCoefficient / 100);
-            const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`;
+            const clampValue = generateClampValue(item.min, item.max);
             cssLines.push(`  ${item.name}: ${clampValue};`);
         });
     });
@@ -96,7 +110,8 @@ export const generateComponentStylesheet = (data) => {
                  if (variable.mode === 'single') {
                      cssLines.push(`  ${variable.name}: ${variable.value};`);
                  } else {
-                     const minRem = (variable.minValue || 0) / 16; const maxRem = (variable.maxValue || 0) / 16; const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320); const remConstant = minRem - (320 * vwCoefficient / 100); const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`; cssLines.push(`  ${variable.name}: ${clampValue};`);
+                     const clampValue = generateClampValue(variable.minValue || 0, variable.maxValue || 0);
+                     cssLines.push(`  ${variable.name}: ${clampValue};`);
                  }
              }
          });
@@ -107,10 +122,7 @@ export const generateComponentStylesheet = (data) => {
   generateCustomVarsCss(designVariableGroups);
 
   cssLines.push('}');
-  // --- END VARIABLE DEFINITIONS ---
-
-
-  // --- START COMPONENT RULE DEFINITIONS ---
+  
   const { name, styles, states, modifiers, type } = component;
   
   const createRule = (selector, styleArray) => {
@@ -154,7 +166,6 @@ export const generateComponentStylesheet = (data) => {
     if (menuModifier) {
       cssString += `.${previewId} .${name}:hover .${menuModifier.name} { display: block; }\n`;
     }
-  // --- START OF THE FIX ---
   } else if (type === 'checkbox' || type === 'radio') {
     const isCheckbox = type === 'checkbox';
     const inputModName = isCheckbox ? 'checkbox-input' : 'radio-input';
@@ -187,7 +198,6 @@ export const generateComponentStylesheet = (data) => {
       }
     }
   }
-  // --- END OF THE FIX ---
 
   return cssLines.join('\n') + '\n' + cssString;
 };

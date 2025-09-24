@@ -4,6 +4,26 @@ import prettier from 'prettier/standalone';
 import * as parserPostCSS from 'prettier/plugins/postcss.js';
 import { generateSpacingScale } from './spacingCalculator';
 
+// --- START OF THE FIX ---
+// Helper function to round to a maximum of 2 decimal places.
+const round = (num) => Math.round(num * 100) / 100;
+
+// Reusable function to generate the clamp() string with the corrected formula and rounding.
+const generateClampValue = (minPx, maxPx) => {
+  // 1. Convert to REM and round before any calculations.
+  const minRem = round(minPx / 16);
+  const maxRem = round(maxPx / 16);
+
+  // 2. Apply the new custom formulas.
+  const vwCoefficient = (maxRem - minRem) * 1.48;
+  const remConstant = minRem * 0.85;
+
+  // 3. Assemble the final string, using calc() and ensuring ALL values are rounded to 2 decimal places.
+  // .toFixed(2) ensures consistent formatting (e.g., 1.5 becomes 1.50).
+  return `clamp(${minRem.toFixed(2)}rem, calc(${round(remConstant).toFixed(2)}rem + ${round(vwCoefficient).toFixed(2)}vw), ${maxRem.toFixed(2)}rem)`;
+};
+// --- END OF THE FIX ---
+
 const formatColorValue = (color) => {
   const c = colord(color.value);
   if (!c.isValid()) return color.value;
@@ -74,19 +94,14 @@ export const generateAndFormatCSS = async (data) => {
     if (typographyScale && typographyScale.length > 0) {
       cssLines.push('  /* Typography System Variables */');
       typographyScale.forEach(type => {
-        const minRem = type.min / 16;
-        const maxRem = type.max / 16;
-        const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320);
-        const remConstant = minRem - (320 * vwCoefficient / 100);
-        const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`;
+        const clampValue = generateClampValue(type.min, type.max);
         cssLines.push(`  ${type.name}: ${clampValue};`);
       });
       cssLines.push('');
     }
-    // ** NEW: Add custom typography variables **
     if (typographyVariableGroups && typographyVariableGroups.length > 0) {
       cssLines.push('  /* Custom Typography Variables */');
-      typographyVariableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const minRem = (variable.minValue || 0) / 16; const maxRem = (variable.maxValue || 0) / 16; const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320); const remConstant = minRem - (320 * vwCoefficient / 100); const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`; cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
+      typographyVariableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const clampValue = generateClampValue(variable.minValue || 0, variable.maxValue || 0); cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
       cssLines.push('');
     }
   }
@@ -95,31 +110,27 @@ export const generateAndFormatCSS = async (data) => {
     if (spacingScale && spacingScale.length > 0) {
       cssLines.push('  /* Spacing System Variables */');
       spacingScale.forEach(space => {
-        const minRem = space.min / 16;
-        const maxRem = space.max / 16;
-        const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320);
-        const remConstant = minRem - (320 * vwCoefficient / 100);
-        const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`;
+        const clampValue = generateClampValue(space.min, space.max);
         cssLines.push(`  ${space.name}: ${clampValue};`);
       });
       cssLines.push(''); 
     }
     if (variableGroups && variableGroups.length > 0) {
         cssLines.push('  /* Custom Spacing Variables */');
-        variableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const minRem = (variable.minValue || 0) / 16; const maxRem = (variable.maxValue || 0) / 16; const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320); const remConstant = minRem - (320 * vwCoefficient / 100); const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`; cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
+        variableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const clampValue = generateClampValue(variable.minValue || 0, variable.maxValue || 0); cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
         cssLines.push('');
     }
   }
   
   if (layoutVariableGroups && layoutVariableGroups.length > 0) {
     cssLines.push('  /* Custom Layout Variables */');
-    layoutVariableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const minRem = (variable.minValue || 0) / 16; const maxRem = (variable.maxValue || 0) / 16; const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320); const remConstant = minRem - (320 * vwCoefficient / 100); const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`; cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
+    layoutVariableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const clampValue = generateClampValue(variable.minValue || 0, variable.maxValue || 0); cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
     cssLines.push('');
   }
   
   if (designVariableGroups && designVariableGroups.length > 0) {
     cssLines.push('  /* Custom Design Variables */');
-    designVariableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const minRem = (variable.minValue || 0) / 16; const maxRem = (variable.maxValue || 0) / 16; const vwCoefficient = (100 * (maxRem - minRem)) / (1400 - 320); const remConstant = minRem - (320 * vwCoefficient / 100); const clampValue = `clamp(${minRem}rem, ${remConstant.toFixed(4)}rem + ${vwCoefficient.toFixed(4)}vw, ${maxRem}rem)`; cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
+    designVariableGroups.forEach(group => { group.variables.forEach(variable => { if (variable.name && (variable.value || variable.mode === 'minmax')) { if (variable.mode === 'single') { cssLines.push(`  ${variable.name}: ${variable.value};`); } else { const clampValue = generateClampValue(variable.minValue || 0, variable.maxValue || 0); cssLines.push(`  ${variable.name}: ${clampValue};`); } } }); });
     cssLines.push('');
   }
 
@@ -159,7 +170,6 @@ export const generateAndFormatCSS = async (data) => {
       });
     });
     if (typographyClasses.length > 0) { cssLines.push('\n/* Typography Utility Classes */'); cssLines.push(...typographyClasses); }
-    // ** NEW: Add custom typography selectors **
     if (typographySelectorGroups && typographySelectorGroups.length > 0) {
       const customTypeSelectorClasses = [];
       typographySelectorGroups.forEach(group => { group.rules.forEach(rule => { if (rule.selector && rule.properties && rule.properties.length > 0) { const validProperties = rule.properties.filter(prop => prop.property && prop.value).map(prop => `  ${prop.property}: ${prop.value};`); if (validProperties.length > 0) { customTypeSelectorClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`); } } }); });

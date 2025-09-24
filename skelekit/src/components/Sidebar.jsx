@@ -91,14 +91,23 @@ const NavItem = ({ icon: Icon, label, active = false, hasSubMenu = false, onClic
 const Sidebar = ({ activePage, onNavigate }) => {
   const [menu, setMenu] = useState('main'); // Can be 'main', 'typography', 'spacing', 'layouts', 'design'
 
+  // --- START OF THE FIX ---
   const handleNavigation = (pageLabel) => {
     const navItem = navItems.find((item) => item.label === pageLabel);
-    if (navItem && navItem.subItems) {
+    if (navItem && navItem.subItems && navItem.subItems.length > 0) {
+      // Open the submenu view
       setMenu(pageLabel.toLowerCase());
+      
+      // AND automatically navigate to the first item in that submenu
+      const firstSubItem = navItem.subItems[0];
+      const targetPage = firstSubItem.pageId || firstSubItem.label;
+      onNavigate(targetPage);
     } else {
+      // If there's no submenu, just navigate directly
       onNavigate(pageLabel);
     }
   };
+  // --- END OF THE FIX ---
 
   const menuVariants = {
     initial: (direction) => ({

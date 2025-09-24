@@ -11,26 +11,28 @@ import UtilityClassGenerator from './ui/UtilityClassGenerator';
 import toast from 'react-hot-toast';
 import FormatDropdown from './ui/FormatDropdown'; // Import the new component
 
+// This new function uses chroma.mix() for accurate shade and tint generation.
 const generatePalette = (baseColor, count, type) => {
-    try {
-        const baseChroma = chroma(baseColor);
-        const baseLch = baseChroma.lch();
-        let endColor;
+  try {
+    const colors = [];
+    const mode = 'lab'; // Use the perceptually uniform LAB color space for mixing
+    const targetColor = type === 'shades' ? 'black' : 'white';
 
-        if (type === 'shades') {
-            const endL = Math.max(8, baseLch[0] - 75);
-            const endC = baseLch[1] + 15;
-            endColor = chroma.lch(endL, endC, baseLch[2]);
-        } else {
-            const endL = Math.min(96, baseLch[0] + (100 - baseLch[0]) * 0.95);
-            const endC = baseLch[1] * 0.1;
-            endColor = chroma.lch(endL, endC, baseLch[2]);
-        }
-        return chroma.scale([baseColor, endColor]).mode('lch').colors(count);
-    } catch (e) {
-        console.error("Error generating palette:", e);
-        return [];
+    // We create a series of mix ratios. This loop generates `count` colors
+    // by mixing the base color with the target color (black or white) in increasing amounts.
+    for (let i = 1; i <= count; i++) {
+      // The ratio determines how much of the target color is mixed in.
+      // A simple linear progression works well.
+      const ratio = i / (count + 1);
+      const newColor = chroma.mix(baseColor, targetColor, ratio, mode).hex();
+      colors.push(newColor);
     }
+    return colors;
+  } catch (e) {
+    console.error("Error generating palette:", e);
+    // Fallback to an array of the base color if something goes wrong
+    return Array(count).fill(baseColor);
+  }
 };
 
 const ColorRow = ({ color, onUpdate, onDelete }) => {
