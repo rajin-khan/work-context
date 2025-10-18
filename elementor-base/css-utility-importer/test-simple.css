@@ -1,0 +1,35 @@
+/* Test CSS for CSS Utility Importer - Text Sizes & Colors */
+/* 15 classes + 5 variables = 20 total (well under 40 limit) */
+
+/* Global CSS Variables */
+:root {
+	/* Color variables */
+	--primary-blue: #2563eb;
+	--success-green: #10b981;
+	--danger-red: #ef4444;
+	--warning-orange: #f59e0b;
+	--text-gray: #6b7280;
+}
+
+/* Text Colors (5 classes) */
+.text-primary { color: var(--primary-blue); }
+.text-success { color: var(--success-green); }
+.text-danger { color: var(--danger-red); }
+.text-warning { color: var(--warning-orange); }
+.text-gray { color: var(--text-gray); }
+
+/* Text Sizes (5 classes) */
+.text-xs { font-size: 12px; }
+.text-sm { font-size: 14px; }
+.text-base { font-size: 16px; }
+.text-lg { font-size: 18px; }
+.text-xl { font-size: 20px; }
+
+/* Font Weights (3 classes) */
+.font-normal { font-weight: 400; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+/* Text Alignment (2 classes) */
+.text-center { text-align: center; }
+.text-right { text-align: right; }

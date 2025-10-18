@@ -1,0 +1,31 @@
+/* Ensure visible area */
+.min-h-220 { min-height: 220px; }
+
+/* Aspect ratio + fit/position */
+.ratio-3-2 { aspect-ratio: 3/2; }
+.fit-cover { object-fit: cover; }
+.pos-top-center { object-position: top center; }
+
+/* Background wrapper styles (for containers around images if needed) */
+.bg-red-200 { background-color: #fecaca; }
+
+/* Borders */
+.bw-2 { border-width: 2px; border-style: solid; border-color: #000000; }
+.radius-24 { border-radius: 24px; }
+
+/* Opacity (percent-compatible) */
+.opacity-42 { opacity: 42%; }
+
+/* Filters (simple) */
+.blur-3 { filter: blur(3px); }
+
+/* Layout alignment (if the Image is inside a flex container) */
+.self-center { align-self: center; }
+
+/* Spacing */
+.p-24 { padding: 24px; }
+.m-20 { margin: 20px; }
+
+/* Size helpers */
+.w-300 { width: 300px; }
+.h-200 { height: 200px; }
