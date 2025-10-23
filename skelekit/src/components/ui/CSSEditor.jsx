@@ -49,16 +49,16 @@ const CSSEditor = ({ code, setCode }) => {
 
   return (
     // The main window frame
-    <div className="h-full w-full bg-black rounded-lg border border-neutral-800 shadow-2xl flex flex-col overflow-hidden">
+    <div className="h-full w-full bg-white rounded-lg border border-neutral-300 shadow-2xl flex flex-col overflow-hidden">
       
       {/* The Title Bar */}
-      <div className="flex-shrink-0 h-10 bg-neutral-900/50 border-b border-neutral-800 flex items-center justify-between px-4">
+      <div className="flex-shrink-0 h-10 bg-neutral-100 border-b border-neutral-300 flex items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-[#f87171] rounded-full"></div>
           <div className="w-3 h-3 bg-[#fbbd23] rounded-full"></div>
           <div className="w-3 h-3 bg-[#4ade80] rounded-full"></div>
         </div>
-        <span className="text-sm text-neutral-500 font-mono">custom-styles.css</span>
+        <span className="text-sm text-neutral-600 font-mono">custom-styles.css</span>
         <div className="w-12"></div> {/* Spacer */}
       </div>
 
@@ -68,7 +68,7 @@ const CSSEditor = ({ code, setCode }) => {
         {/* Line Numbers Column */}
         <div 
           ref={lineNumbersRef}
-          className="w-14 flex-shrink-0 bg-black text-right pr-4 pt-4 text-neutral-600 font-mono text-sm leading-relaxed select-none overflow-hidden"
+          className="w-14 flex-shrink-0 bg-white text-right pr-4 pt-4 text-neutral-500 font-mono text-sm leading-relaxed select-none overflow-hidden"
         >
           {lines.map(num => <div key={num}>{num}</div>)}
         </div>
@@ -86,14 +86,14 @@ const CSSEditor = ({ code, setCode }) => {
             h-full
             resize-none
             border-none
-            bg-black
-            text-neutral-200
+            bg-white
+            text-neutral-800
             font-mono
             text-sm
             leading-relaxed
             p-4
             focus:outline-none
-            scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent
+            scrollbar-thin scrollbar-thumb-neutral-400 scrollbar-track-transparent
           "
         />
       </div>

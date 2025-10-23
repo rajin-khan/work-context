@@ -34,7 +34,7 @@ const EditableProperty = ({ value, onChange, startInEditMode = false, onEditComp
     // ** THE CHANGE: Placeholder text is simpler and the input area is better defined **
     return (
       <div
-        className={`font-mono text-sm py-0.5 cursor-pointer rounded ${value ? 'text-white' : 'text-neutral-500 italic'}`}
+        className={`font-mono text-sm py-0.5 cursor-pointer rounded ${value ? 'text-neutral-800' : 'text-neutral-500 italic'}`}
         onClick={() => setIsEditing(true)}
       >
         {value || 'property...'}
@@ -53,7 +53,7 @@ const EditableProperty = ({ value, onChange, startInEditMode = false, onEditComp
         onKeyDown={handleKeyDown}
         list="css-properties"
         // ** THE CHANGE: Styling is tweaked to be invisible within the pill **
-        className="font-mono text-sm bg-transparent text-white w-28 outline-none"
+        className="font-mono text-sm bg-transparent text-neutral-800 w-28 outline-none"
       />
       <datalist id="css-properties">
         {spacingProperties.map(prop => (

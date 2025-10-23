@@ -10,11 +10,11 @@ import {
   SquareRadical,
   Text,
   FileText,
-  Settings,
-  Wrench,
   ChevronLeft,
   Brush,
+  Info,
 } from 'lucide-react';
+import InfoModal from './ui/InfoModal';
 
 const navItems = [
   { icon: Palette, label: 'Colors' },
@@ -55,34 +55,37 @@ const navItems = [
     ],
   },
   { icon: Component, label: 'Components' },
-  { icon: Text, label: 'Fonts' },
   { icon: FileText, label: 'Stylesheets' },
-  { icon: SquareRadical, label: 'Other' },
+  { icon: Text, label: 'Fonts', disabled: true },
+  { icon: SquareRadical, label: 'Other', disabled: true },
 ];
 
 const bottomNavItems = [
-  { icon: Wrench, label: 'Manage project' },
-  { icon: Settings, label: 'Preferences' },
+  { icon: Info, label: 'About SkeleKit' },
 ];
 
-const NavItem = ({ icon: Icon, label, active = false, hasSubMenu = false, onClick }) => (
+const NavItem = ({ icon: Icon, label, active = false, hasSubMenu = false, disabled = false, onClick }) => (
   <a
     href="#"
     onClick={(e) => {
       e.preventDefault();
-      onClick();
+      if (!disabled) {
+        onClick();
+      }
     }}
     className={`flex items-center justify-between w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-      active
-        ? 'bg-neutral-900 text-white'
-        : 'text-neutral-400 hover:bg-neutral-900 hover:text-white'
+      disabled
+        ? 'text-neutral-400 cursor-not-allowed'
+        : active
+        ? 'bg-neutral-100 text-neutral-800'
+        : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-800'
     }`}
   >
     <div className="flex items-center gap-3">
-      {Icon && <Icon size={18} />}
+      {Icon && <Icon size={18} className={disabled ? 'text-neutral-400' : ''} />}
       <span>{label}</span>
     </div>
-    {hasSubMenu && (
+    {hasSubMenu && !disabled && (
       <ChevronLeft size={16} className="text-neutral-600 transform rotate-180" />
     )}
   </a>
@@ -90,6 +93,7 @@ const NavItem = ({ icon: Icon, label, active = false, hasSubMenu = false, onClic
 
 const Sidebar = ({ activePage, onNavigate }) => {
   const [menu, setMenu] = useState('main'); // Can be 'main', 'typography', 'spacing', 'layouts', 'design'
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   // --- START OF THE FIX ---
   const handleNavigation = (pageLabel) => {
@@ -158,7 +162,7 @@ const Sidebar = ({ activePage, onNavigate }) => {
         <nav className="flex flex-col gap-1.5">
           <button
             onClick={() => setMenu('main')}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-neutral-400 hover:text-white mb-2"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 hover:text-neutral-800 mb-2"
           >
             <ChevronLeft size={16} />
             Back
@@ -183,7 +187,7 @@ const Sidebar = ({ activePage, onNavigate }) => {
   };
 
   return (
-    <aside className="relative w-60 bg-black border-r border-neutral-900 flex flex-col justify-between p-4 shrink-0 overflow-hidden">
+    <aside className="relative w-60 bg-white border-r border-neutral-200 flex flex-col justify-between p-4 shrink-0 overflow-hidden">
       <AnimatePresence
         initial={false}
         custom={menu !== 'main' ? 'forward' : 'backward'}
@@ -218,9 +222,16 @@ const Sidebar = ({ activePage, onNavigate }) => {
             </nav>
             <div className="flex flex-col gap-1.5">
               {bottomNavItems.map((item) => (
-                <NavItem key={item.label} {...item} onClick={() => {}} />
+                <NavItem 
+                  key={item.label} 
+                  {...item} 
+                  onClick={() => setIsInfoModalOpen(true)} 
+                />
               ))}
-              <div className="text-xs text-neutral-600 px-3 pt-2">v1.1.0</div>
+              <div className="text-xs text-neutral-500 px-3 pt-2 space-y-1">
+                <div>v 0.1.0 beta</div>
+                <div>Built by the Skelementor team</div>
+              </div>
             </div>
           </motion.div>
         ) : menu === 'typography' ? (
@@ -233,6 +244,12 @@ const Sidebar = ({ activePage, onNavigate }) => {
           renderSubMenu('design', Brush)
         )}
       </AnimatePresence>
+      
+      {/* Info Modal */}
+      <InfoModal 
+        isOpen={isInfoModalOpen} 
+        onClose={() => setIsInfoModalOpen(false)} 
+      />
     </aside>
   );
 };

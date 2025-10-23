@@ -17,9 +17,9 @@ const UtilityClassGenerator = ({ config, onConfigChange }) => {
   };
 
   return (
-    <div className="bg-neutral-950 p-4 border-t border-neutral-900">
+    <div className="bg-white p-4 border-t border-neutral-200">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-medium text-neutral-200">Generate utility classes</h4>
+        <h4 className="text-sm font-medium text-neutral-700">Generate utility classes</h4>
         <div className="flex items-center gap-2">
           {utilityTypes.map((util) => {
             const isEnabled = config[util.id];
@@ -31,7 +31,7 @@ const UtilityClassGenerator = ({ config, onConfigChange }) => {
                   ${
                     isEnabled
                       ? 'bg-brand/20 text-brand-light border border-brand'
-                      : 'bg-neutral-800 text-neutral-400 border border-neutral-700 hover:border-neutral-500'
+                      : 'bg-neutral-100 text-neutral-600 border border-neutral-300 hover:border-neutral-400'
                   }
                 `}
               >

@@ -8,7 +8,7 @@ const ComponentPropertyRow = ({ item, onUpdate, onRemove, propertyOptions, value
   const { prop, value } = item;
 
   return (
-    <div className="flex items-center gap-3 group px-4 py-1 hover:bg-neutral-800/50 rounded-md">
+    <div className="flex items-center gap-3 group px-4 py-1 hover:bg-neutral-100/50 rounded-md">
       {/* Property Input */}
       <div className="w-48">
         <EditablePill
@@ -22,7 +22,7 @@ const ComponentPropertyRow = ({ item, onUpdate, onRemove, propertyOptions, value
         />
       </div>
 
-      <span className="text-neutral-700">:</span>
+      <span className="text-neutral-600">:</span>
 
       {/* Value Input */}
       <div className="flex-1">
@@ -37,7 +37,7 @@ const ComponentPropertyRow = ({ item, onUpdate, onRemove, propertyOptions, value
         />
       </div>
 
-      <button onClick={onRemove} className="text-neutral-600 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+      <button onClick={onRemove} className="text-neutral-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
         <X size={16} />
       </button>
     </div>

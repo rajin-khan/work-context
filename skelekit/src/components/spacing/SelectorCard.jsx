@@ -65,11 +65,11 @@ const SelectorCard = ({ rule, onUpdate, onRemove, spacingVariableOptions, proper
   };
 
   return (
-    <div className="bg-neutral-900/50 p-4 rounded-lg border border-neutral-800/50 hover:border-neutral-800 transition-colors group/card">
+    <div className="bg-white/50 p-4 rounded-lg border border-neutral-300/50 hover:border-neutral-300 transition-colors group/card">
       <div className="flex items-center justify-between gap-4 mb-4">
         {/* This wrapper provides the visual container for our input and its static dot prefix */}
-        <div className="flex-1 flex items-center bg-transparent focus-within:bg-neutral-800 rounded transition-colors group/input">
-          <span className="pl-2 text-neutral-500 font-mono text-lg group-focus-within/input:text-neutral-300">.</span>
+        <div className="flex-1 flex items-center bg-transparent focus-within:bg-neutral-100 rounded transition-colors group/input">
+          <span className="pl-2 text-neutral-500 font-mono text-lg group-focus-within/input:text-neutral-700">.</span>
           <input
             type="text"
             value={editableSelector}
@@ -77,15 +77,15 @@ const SelectorCard = ({ rule, onUpdate, onRemove, spacingVariableOptions, proper
             onBlur={handleSelectorBlur}
             onKeyDown={handleSelectorKeyDown}
             placeholder="class-name"
-            className="flex-1 bg-transparent focus:outline-none text-neutral-200 focus:text-white transition-colors font-mono text-lg px-1 py-1"
+            className="flex-1 bg-transparent focus:outline-none text-neutral-700 focus:text-neutral-800 transition-colors font-mono text-lg px-1 py-1"
           />
         </div>
-        <button onClick={onRemove} className="text-neutral-600 hover:text-red-500 opacity-0 group-hover/card:opacity-100 transition-opacity">
+        <button onClick={onRemove} className="text-neutral-500 hover:text-red-500 opacity-0 group-hover/card:opacity-100 transition-opacity">
           <X size={18} />
         </button>
       </div>
       
-      <div className="pl-4 border-l-2 border-neutral-800">
+      <div className="pl-4 border-l-2 border-neutral-300">
         <div className="space-y-2">
           <AnimatePresence>
             {rule.properties.map(prop => (
@@ -110,7 +110,7 @@ const SelectorCard = ({ rule, onUpdate, onRemove, spacingVariableOptions, proper
         
         <button
           onClick={handleAddProperty}
-          className="flex items-center gap-2 text-sm text-neutral-500 hover:text-neutral-300 transition-colors mt-4"
+          className="flex items-center gap-2 text-sm text-neutral-600 hover:text-neutral-800 transition-colors mt-4"
         >
           <Plus size={14} /> Add Property
         </button>

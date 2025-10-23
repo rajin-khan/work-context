@@ -18,7 +18,7 @@ const PropertyRow = ({ property, onUpdate, onRemove, spacingVariableOptions, pro
         />
       </div>
 
-      <span className="text-neutral-700">:</span>
+      <span className="text-neutral-600">:</span>
 
       {/* Value Input */}
       <div className="w-56">
@@ -34,7 +34,7 @@ const PropertyRow = ({ property, onUpdate, onRemove, spacingVariableOptions, pro
       
       <div className="flex-1"></div>
 
-      <button onClick={onRemove} className="text-neutral-600 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+      <button onClick={onRemove} className="text-neutral-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
         <X size={16} />
       </button>
     </div>

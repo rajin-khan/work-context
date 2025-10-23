@@ -40,7 +40,7 @@ const FormatDropdown = ({ isOpen, anchorEl, onClose, onFormatSelect }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
             transition={{ duration: 0.15 }}
-            className="w-full mt-1 bg-neutral-800 border border-neutral-700 rounded-md shadow-lg overflow-hidden"
+            className="w-full mt-1 bg-white border border-neutral-300 rounded-md shadow-lg overflow-hidden"
           >
             {formats.map(f => (
               <a
@@ -50,7 +50,7 @@ const FormatDropdown = ({ isOpen, anchorEl, onClose, onFormatSelect }) => {
                   e.preventDefault();
                   onFormatSelect(f);
                 }}
-                className="block px-3 py-2 text-sm text-neutral-300 hover:bg-brand hover:text-white"
+                className="block px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-100 hover:text-neutral-800"
               >
                 {f}
               </a>

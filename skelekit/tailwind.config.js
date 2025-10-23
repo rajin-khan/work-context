@@ -9,6 +9,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+        mono: ['JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
       },
       colors: {
         'neutral': {
@@ -24,9 +25,9 @@ export default {
           '100': '#f5f5f5',
         },
         'brand': {
-          'DEFAULT': '#9333ea',
-          'light': '#a855f7',
-          'dark': '#7e22ce',
+          'DEFAULT': '#3b82f6',
+          'light': '#60a5fa',
+          'dark': '#2563eb',
         }
       },
       backgroundImage: {

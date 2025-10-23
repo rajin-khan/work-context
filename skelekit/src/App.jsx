@@ -885,32 +885,32 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-black font-sans">
+    <div className="flex flex-col h-screen bg-white font-sans">
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activePage={activePage} onNavigate={setActivePage} />
-        <div className="flex-1 flex flex-col bg-[#050505]">
-          <div className="flex items-center justify-between px-6 py-3 border-b border-neutral-900 shrink-0">
+        <div className="flex-1 flex flex-col bg-gray-50">
+          <div className="flex items-center justify-between px-6 py-3 border-b border-neutral-200 shrink-0">
             <div className="flex items-center gap-2">
-              <button className="px-3 py-1.5 text-sm font-medium bg-neutral-900 border border-neutral-800 rounded-md text-neutral-200 hover:bg-neutral-800 transition-colors">
+              <button className="px-3 py-1.5 text-sm font-medium bg-white border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50 transition-colors">
                 All breakpoints
               </button>
-              <button className="flex items-center justify-center w-8 h-8 text-sm font-medium bg-neutral-900 border border-neutral-800 rounded-md text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors">
+              <button className="flex items-center justify-center w-8 h-8 text-sm font-medium bg-white border border-neutral-300 rounded-md text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-colors">
                 +
               </button>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <button className="p-2 text-neutral-400 rounded-md hover:bg-neutral-800 hover:text-white transition-colors">
+                <button className="p-2 text-neutral-600 rounded-md hover:bg-neutral-100 hover:text-neutral-800 transition-colors">
                   <Search size={16} />
                 </button>
-                <button className="p-2 text-neutral-400 rounded-md hover:bg-neutral-800 hover:text-white transition-colors">
+                <button className="p-2 text-neutral-600 rounded-md hover:bg-neutral-100 hover:text-neutral-800 transition-colors">
                   <Grid2X2 size={16} />
                 </button>
               </div>
               <button
                 onClick={() => setIsPreviewOpen(true)}
-                className="px-4 py-2 text-sm font-semibold bg-brand rounded-md text-white hover:bg-brand-light transition-colors shadow-[0_0_15px_rgba(147,51,234,0.4)]"
+                className="px-4 py-2 text-sm font-semibold bg-black text-white rounded-md hover:bg-neutral-800 transition-colors shadow-[0_0_15px_rgba(0,0,0,0.2)]"
               >
                 Export
               </button>

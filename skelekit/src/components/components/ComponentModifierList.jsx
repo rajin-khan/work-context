@@ -23,7 +23,7 @@ const ModifierRow = ({
       onClick={onClick}
       className={clsx(
         'w-full text-left rounded-md text-sm group/row relative cursor-pointer',
-        { 'text-white': isActive, 'text-neutral-400 hover:bg-neutral-800': !isActive }
+        { 'text-neutral-800': isActive, 'text-neutral-600 hover:bg-neutral-100': !isActive }
       )}
     >
       {isActive && (
@@ -35,7 +35,7 @@ const ModifierRow = ({
       )}
       <div className="relative flex items-center justify-between pl-3 pr-1.5 py-1">
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
-          {prefix && <span className={clsx("font-mono", { "text-neutral-500": !isActive, "text-white/60": isActive })}>{prefix}</span>}
+          {prefix && <span className={clsx("font-mono", { "text-neutral-500": !isActive, "text-neutral-800/60": isActive })}>{prefix}</span>}
           {isEditable ? (
             <input
               type="text"
@@ -53,7 +53,7 @@ const ModifierRow = ({
             <button
               ref={stateButtonRef}
               onClick={(e) => { e.stopPropagation(); setIsStateDropdownOpen(true); }}
-              className="p-1.5 rounded-md hover:bg-black/20 flex items-center gap-1 text-neutral-400 opacity-0 group-hover/row:opacity-100 transition-opacity"
+              className="p-1.5 rounded-md hover:bg-black/10 flex items-center gap-1 text-neutral-500 opacity-0 group-hover/row:opacity-100 transition-opacity"
             >
               <Plus size={14} />
             </button>
@@ -61,7 +61,7 @@ const ModifierRow = ({
           {onRemove && (
              <button
                 onClick={(e) => { e.stopPropagation(); onRemove(); }}
-                className="p-1 rounded-md text-neutral-500 hover:bg-black/20 hover:text-red-500 opacity-0 group-hover/row:opacity-100 transition-opacity"
+                className="p-1 rounded-md text-neutral-500 hover:bg-black/10 hover:text-red-500 opacity-0 group-hover/row:opacity-100 transition-opacity"
               >
               <X size={14} />
             </button>
@@ -92,7 +92,7 @@ const ComponentModifierList = ({
   onRemoveModifier,
 }) => {
   return (
-    <div className="w-64 bg-neutral-950 border-r border-neutral-800 p-4 space-y-6 overflow-y-auto">
+    <div className="w-64 bg-white border-r border-neutral-200 p-4 space-y-6 overflow-y-auto">
       <div>
         <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider px-3 mb-2">
           Default Style
@@ -185,7 +185,7 @@ const ComponentModifierList = ({
         </div>
         <button
           onClick={onAddModifier}
-          className="w-full flex items-center justify-start gap-2 px-3 py-2 mt-4 text-sm font-medium text-neutral-500 rounded-md hover:bg-neutral-800 hover:text-neutral-300 transition-colors"
+          className="w-full flex items-center justify-start gap-2 px-3 py-2 mt-4 text-sm font-medium text-neutral-600 rounded-md hover:bg-neutral-100 hover:text-neutral-800 transition-colors"
         >
           <Plus size={16} /> Add Modifier
         </button>

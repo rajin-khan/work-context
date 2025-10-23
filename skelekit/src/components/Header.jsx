@@ -1,7 +1,8 @@
 // src/components/Header.jsx
 import React from 'react';
-import { ChevronDown, Trash2 } from 'lucide-react'; // Import Trash2 icon
-import logo from '../assets/skelekit.png'; 
+import { ChevronDown, Trash2, ExternalLink } from 'lucide-react'; // Import Trash2 icon
+import logo from '../assets/skelekit-light.png';
+import wordpressLogo from '../assets/WordPress-logotype-wmark.png'; 
 
 const Header = () => {
   // --- START OF THE FIX ---
@@ -16,35 +17,36 @@ const Header = () => {
   // --- END OF THE FIX ---
 
   return (
-    <header className="relative z-40 flex items-center justify-between px-6 py-3 border-b border-neutral-900 bg-black/80 backdrop-blur-sm shrink-0">
+    <header className="relative z-40 flex items-center justify-between px-6 py-3 border-b border-neutral-200 bg-white/80 backdrop-blur-sm shrink-0">
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-2.5">
-          <img src={logo} alt="SkeleKit Logo" className="h-6 w-6" />
-          <h1 className="text-xl font-bold tracking-tighter text-white" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
-            SkeleKit
-          </h1>
+          <img src={logo} alt="SkeleKit" className="h-6" />
         </div>
-        <nav className="flex items-center gap-6 text-sm text-neutral-400">
-          <a href="#" className="hover:text-white transition-colors">Marketplace</a>
-          <a href="#" className="hover:text-white transition-colors">Community</a>
-          <a href="#" className="hover:text-white transition-colors">Documentation</a>
-        </nav>
+        <div className="flex items-center gap-2 text-sm text-neutral-600">
+          <img src={wordpressLogo} alt="WordPress" className="w-5 h-5" />
+          <span>Plugin sync coming soon</span>
+        </div>
       </div>
       <div className="flex items-center gap-4">
         {/* --- START OF THE FIX --- */}
         <button
           onClick={handleReset}
           title="Reset Workspace"
-          className="flex items-center gap-2 px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded-md cursor-pointer hover:bg-red-900/50 hover:border-red-500/50 hover:text-red-400 text-neutral-400 transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 bg-white border border-neutral-300 rounded-md cursor-pointer hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-neutral-600 transition-colors"
         >
           <Trash2 size={14} />
           <span className="text-sm font-medium">Reset</span>
         </button>
         {/* --- END OF THE FIX --- */}
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded-md cursor-pointer hover:bg-neutral-800 transition-colors">
-          <span className="text-sm text-neutral-200">Hello, rajin!</span>
-          <ChevronDown size={16} className="text-neutral-500" />
-        </div>
+        <a
+          href="https://skelementor.mintlify.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-3 py-1.5 bg-white border border-neutral-300 rounded-md cursor-pointer hover:bg-neutral-50 hover:border-neutral-400 hover:text-neutral-800 transition-all duration-200"
+        >
+          <ExternalLink size={14} />
+          <span className="text-sm font-medium">Documentation</span>
+        </a>
       </div>
     </header>
   );

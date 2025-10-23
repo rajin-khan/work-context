@@ -7,7 +7,7 @@ const Input = ({ value, onChange, className = '', ...props }) => {
       type="text"
       value={value}
       onChange={onChange}
-      className={`bg-gray-800 border border-gray-700 rounded-md px-3 py-1.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent ${className}`}
+      className={`bg-white border border-neutral-300 rounded-md px-3 py-1.5 text-sm text-neutral-800 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent ${className}`}
       {...props}
     />
   );

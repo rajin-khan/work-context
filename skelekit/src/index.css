@@ -2,15 +2,15 @@
 @import "tailwindcss";
 
 body {
-  @apply bg-black text-neutral-200 antialiased;
+  @apply bg-white text-neutral-800 antialiased;
   font-family: 'Inter', sans-serif;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-thumb { background: #262626; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #404040; }
+::-webkit-scrollbar-track { background: #f5f5f5; }
+::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #a3a3a3; }
 
 /* ** THE CHANGE: Thinner slider track and re-centered thumb ** */
 .range-slider {
@@ -30,13 +30,13 @@ body {
   height: 16px;
   background: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.2);
   transition: transform 0.1s ease-in-out;
   margin-top: -5px; /* Re-centered the thumb on the thinner track */
 }
 .range-slider::-moz-range-thumb {
   width: 16px; height: 16px; background: #ffffff; border-radius: 50%;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.2);
   transition: transform 0.1s ease-in-out;
 }
 .range-slider:active::-webkit-slider-thumb { transform: scale(1.1); }

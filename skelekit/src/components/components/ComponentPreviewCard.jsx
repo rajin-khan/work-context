@@ -23,16 +23,16 @@ const ComponentPreviewCard = ({
   return (
     <motion.div
       variants={cardVariants}
-      className="bg-neutral-950 border border-neutral-800 rounded-lg overflow-hidden flex flex-col group"
+      className="bg-white border border-neutral-300 rounded-lg overflow-hidden flex flex-col group"
       whileHover={{ scale: 1.03, y: -5, transition: { type: 'spring', stiffness: 300, damping: 15 } }}
     >
-      <div className="px-4 py-2 border-b border-neutral-800 flex justify-between items-center">
-        <span className="font-mono text-sm text-neutral-400">
+      <div className="px-4 py-2 border-b border-neutral-200 flex justify-between items-center">
+        <span className="font-mono text-sm text-neutral-600">
           .{component.name}
         </span>
         <button
           onClick={onEdit}
-          className="px-3 py-1 text-xs font-semibold bg-neutral-800 rounded-md hover:bg-neutral-700 text-neutral-200"
+          className="px-3 py-1 text-xs font-semibold bg-white rounded-md hover:bg-neutral-50 text-neutral-700"
         >
           Edit
         </button>

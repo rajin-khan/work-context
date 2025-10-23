@@ -24,8 +24,8 @@ const Swatch = ({ color }) => {
       style={{ backgroundColor: colorStr }}
       onClick={handleCopy}
     >
-      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-1">
-        <Copy size={16} className="text-white/80" />
+      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-1">
+        <Copy size={16} className="text-white/90" />
         <span className="text-white font-mono text-xs mt-1">{hexValue}</span>
       </div>
     </motion.div>

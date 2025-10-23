@@ -56,7 +56,7 @@ const CustomColorPicker = ({ rgb, hsl, hsv, onChange, onChangeComplete, format }
   };
 
   return (
-    <div className="w-[280px] p-4 bg-neutral-900 rounded-lg border border-neutral-800 shadow-2xl flex flex-col gap-4">
+    <div className="w-[280px] p-4 bg-white rounded-lg border border-neutral-300 shadow-2xl flex flex-col gap-4">
       <div className="relative w-full h-48 rounded-md overflow-hidden">
         {/* ** THIS IS THE CHANGE: Added onChangeComplete passthrough ** */}
         <Saturation hsl={hsl} hsv={hsv} onChange={onChange} onChangeComplete={onChangeComplete} pointer={SaturationPointer} />
@@ -66,7 +66,7 @@ const CustomColorPicker = ({ rgb, hsl, hsv, onChange, onChangeComplete, format }
 
         {!showHslSliders && (
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-neutral-400 font-medium px-1">Hue</label>
+            <label className="text-xs text-neutral-600 font-medium px-1">Hue</label>
             <div className="relative w-full h-4 flex items-center">
               {/* ** THIS IS THE CHANGE: Added onChangeComplete passthrough ** */}
               <Hue hsl={hsl} onChange={onChange} onChangeComplete={onChangeComplete} direction="horizontal" pointer={DraggablePointer} style={reactColorSliderStyle} />
@@ -76,7 +76,7 @@ const CustomColorPicker = ({ rgb, hsl, hsv, onChange, onChangeComplete, format }
 
         {showAlphaSlider && (
            <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-neutral-400 font-medium px-1">Alpha</label>
+            <label className="text-xs text-neutral-600 font-medium px-1">Alpha</label>
             <div className="relative w-full h-4 flex items-center">
               {/* ** THIS IS THE CHANGE: Added onChangeComplete passthrough ** */}
               <Alpha rgb={rgb} hsl={hsl} onChange={onChange} onChangeComplete={onChangeComplete} pointer={DraggablePointer} style={reactColorSliderStyle} />

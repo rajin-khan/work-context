@@ -32,7 +32,7 @@ const TypographyClassGenerator = ({ config, onConfigChange, onAddClass, onRemove
       <div className="mt-6 flex justify-center">
         <button 
           onClick={onAddClass}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-neutral-900 border border-neutral-800 rounded-md text-neutral-300 hover:bg-neutral-800 hover:text-white hover:border-neutral-700 transition-all"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-neutral-100 border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-200 hover:text-neutral-800 hover:border-neutral-400 transition-all"
         >
           <Plus size={16} />
           Add Type Class Generator

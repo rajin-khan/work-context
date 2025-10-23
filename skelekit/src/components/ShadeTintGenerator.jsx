@@ -30,12 +30,12 @@ const ShadeTintGenerator = ({ type, config, onConfigChange, format }) => {
   };
 
   return (
-    <div className="bg-neutral-950 p-4 border-t border-neutral-900 first:border-t-0">
+    <div className="bg-white p-4 border-t border-neutral-200 first:border-t-0">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* ** THIS IS THE CHANGE: Added the icon before the heading ** */}
-          <Icon size={16} className="text-neutral-400" />
-          <h4 className="text-sm font-medium text-neutral-200">Generate {displayName}</h4>
+          <Icon size={16} className="text-neutral-500" />
+          <h4 className="text-sm font-medium text-neutral-700">Generate {displayName}</h4>
         </div>
         <Switch enabled={enabled} setEnabled={handleEnableToggle} />
       </div>
@@ -49,10 +49,10 @@ const ShadeTintGenerator = ({ type, config, onConfigChange, format }) => {
             transition={{ duration: 0.25, ease: 'easeInOut' }}
           >
             <div className="flex items-center gap-4 mb-3">
-              <div className="flex items-center gap-1 bg-neutral-900 border border-neutral-800 rounded-lg px-1">
-                <button onClick={() => handleCountChange(-1)} className="p-1.5 text-neutral-400 hover:text-white transition-colors rounded-md hover:bg-neutral-700"><Minus size={14} /></button>
-                <span className="text-sm font-medium text-neutral-300 w-24 text-center">{count} {type}</span>
-                <button onClick={() => handleCountChange(1)} className="p-1.5 text-neutral-400 hover:text-white transition-colors rounded-md hover:bg-neutral-700"><Plus size={14} /></button>
+              <div className="flex items-center gap-1 bg-white border border-neutral-300 rounded-lg px-1">
+                <button onClick={() => handleCountChange(-1)} className="p-1.5 text-neutral-600 hover:text-neutral-800 transition-colors rounded-md hover:bg-neutral-100"><Minus size={14} /></button>
+                <span className="text-sm font-medium text-neutral-700 w-24 text-center">{count} {type}</span>
+                <button onClick={() => handleCountChange(1)} className="p-1.5 text-neutral-600 hover:text-neutral-800 transition-colors rounded-md hover:bg-neutral-100"><Plus size={14} /></button>
               </div>
             </div>
 

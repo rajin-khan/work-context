@@ -62,9 +62,9 @@ const RatioSlider = ({ label, value, onValueChange }) => {
 
   return (
     <div>
-      <label className="text-sm font-medium text-neutral-300 mb-2 block">{label}</label>
+      <label className="text-sm font-medium text-neutral-600 mb-2 block">{label}</label>
       <div className="flex items-center gap-2">
-        <div className="flex-1 flex items-center gap-2 bg-neutral-900 border border-neutral-800 rounded-md px-3 py-1">
+        <div className="flex-1 flex items-center gap-2 bg-white border border-neutral-300 rounded-md px-3 py-1">
           <input
             type="range"
             min={min}
@@ -75,8 +75,8 @@ const RatioSlider = ({ label, value, onValueChange }) => {
             className="range-slider w-full"
           />
         </div>
-        <div className="flex items-center gap-1 bg-neutral-900 border border-neutral-800 rounded-lg p-0.5">
-          <button onClick={handleDecrement} className="p-1 text-neutral-400 hover:text-white transition-colors rounded-md hover:bg-neutral-700">
+        <div className="flex items-center gap-1 bg-white border border-neutral-300 rounded-lg p-0.5">
+          <button onClick={handleDecrement} className="p-1 text-neutral-600 hover:text-neutral-800 transition-colors rounded-md hover:bg-neutral-100">
             <Minus size={14} />
           </button>
           
@@ -87,13 +87,13 @@ const RatioSlider = ({ label, value, onValueChange }) => {
             onChange={handleInputChange}
             onBlur={handleInputBlur}
             onKeyDown={handleInputKeyDown}
-            className="text-sm font-mono text-neutral-300 w-12 text-center bg-transparent focus:outline-none"
+            className="text-sm font-mono text-neutral-700 w-12 text-center bg-transparent focus:outline-none"
             step="0.01"
             min="1"
             max="2"
           />
 
-          <button onClick={handleIncrement} className="p-1 text-neutral-400 hover:text-white transition-colors rounded-md hover:bg-neutral-700">
+          <button onClick={handleIncrement} className="p-1 text-neutral-600 hover:text-neutral-800 transition-colors rounded-md hover:bg-neutral-100">
             <Plus size={14} />
           </button>
         </div>

@@ -52,7 +52,7 @@ const ComponentCSSDisplay = ({
     : `Base styles for ${selectorName}`
 
   return (
-    <div className="w-[450px] bg-black border-l border-neutral-800 flex flex-col">
+    <div className="w-[450px] bg-white border-l border-neutral-200 flex flex-col">
       <AnimatePresence mode="wait">
         <motion.div
             key={selectorName}
@@ -60,10 +60,10 @@ const ComponentCSSDisplay = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
             transition={{ duration: 0.15 }}
-            className="p-4 border-b border-neutral-800"
+            className="p-4 border-b border-neutral-200"
         >
-            <h3 className="font-semibold text-white">CSS for {selectorName}</h3>
-            <p className="text-xs text-neutral-400 mt-1">{descriptionText}</p>
+            <h3 className="font-semibold text-neutral-800">CSS for {selectorName}</h3>
+            <p className="text-xs text-neutral-600 mt-1">{descriptionText}</p>
         </motion.div>
       </AnimatePresence>
       <div className="flex-1 overflow-auto p-2 space-y-1">
@@ -89,10 +89,10 @@ const ComponentCSSDisplay = ({
         ))}
         </AnimatePresence>
       </div>
-      <div className="p-4 border-t border-neutral-800">
+      <div className="p-4 border-t border-neutral-200">
         <button
           onClick={handleAddProperty}
-          className="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium text-neutral-400 hover:text-white rounded-md hover:bg-neutral-800 transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium text-neutral-600 hover:text-neutral-800 rounded-md hover:bg-neutral-100 transition-colors"
         >
           <Plus size={16} /> Add Property
         </button>

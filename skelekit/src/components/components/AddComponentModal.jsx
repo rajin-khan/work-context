@@ -27,20 +27,20 @@ const AddComponentModal = ({ isOpen, onClose, onAddComponent }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="w-full max-w-sm bg-neutral-950 border border-neutral-800 rounded-lg p-6"
+            className="w-full max-w-sm bg-white border border-neutral-300 rounded-lg p-6"
           >
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-white">Select a Component</h3>
+              <h3 className="font-semibold text-neutral-800">Select a Component</h3>
               <button
                 onClick={onClose}
-                className="p-1 rounded-full text-neutral-500 hover:bg-neutral-800"
+                className="p-1 rounded-full text-neutral-500 hover:bg-neutral-100"
               >
                 <X size={18} />
               </button>
@@ -50,7 +50,7 @@ const AddComponentModal = ({ isOpen, onClose, onAddComponent }) => {
                 <button
                   key={opt.id}
                   onClick={() => handleSelectComponent(opt.id)}
-                  className="w-full text-left px-4 py-2 rounded-md bg-neutral-900 hover:bg-neutral-800 text-neutral-200"
+                  className="w-full text-left px-4 py-2 rounded-md bg-white hover:bg-neutral-50 text-neutral-700"
                 >
                   {opt.name}
                 </button>

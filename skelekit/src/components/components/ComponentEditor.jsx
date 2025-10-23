@@ -155,7 +155,7 @@ const ComponentEditor = ({
         onRemoveModifier={handleRemoveModifier}
       />
 
-      <div className="flex-1 bg-neutral-900 flex items-center justify-center p-8">
+      <div className="flex-1 bg-neutral-100 flex items-center justify-center p-8">
         <motion.div 
           className="w-full h-full bg-white rounded-md flex items-center justify-center"
           initial={{ scale: 0.95, opacity: 0 }}

@@ -19,7 +19,7 @@ const ValueStepper = ({ value, onValueChange, min = 0, max = Infinity, step = 1,
 
   return (
     // ** THE CHANGE: Replaced `focus-within:border-brand` with a neutral color **
-    <div className="flex items-center justify-between w-full bg-neutral-900 border border-neutral-800 rounded-md focus-within:border-neutral-600 transition-colors">
+    <div className="flex items-center justify-between w-full bg-white border border-neutral-300 rounded-md focus-within:border-brand transition-colors">
       <input
         type="number"
         value={value}
@@ -28,15 +28,15 @@ const ValueStepper = ({ value, onValueChange, min = 0, max = Infinity, step = 1,
         min={min}
         max={max}
         step={step}
-        className="bg-transparent focus:outline-none py-1.5 px-3 text-neutral-200 w-full"
+        className="bg-transparent focus:outline-none py-1.5 px-3 text-neutral-800 w-full"
       />
       <div className="flex items-center h-full pr-1">
         {unit && <span className="text-sm text-neutral-500 mr-2 select-none">{unit}</span>}
         <div className="flex flex-col items-center">
-          <button onClick={handleIncrement} className="text-neutral-400 hover:text-white transition-colors h-1/2 px-1 flex items-center justify-center">
+          <button onClick={handleIncrement} className="text-neutral-600 hover:text-neutral-800 transition-colors h-1/2 px-1 flex items-center justify-center">
             <Plus size={14} />
           </button>
-          <button onClick={handleDecrement} className="text-neutral-400 hover:text-white transition-colors h-1/2 px-1 flex items-center justify-center">
+          <button onClick={handleDecrement} className="text-neutral-600 hover:text-neutral-800 transition-colors h-1/2 px-1 flex items-center justify-center">
             <Minus size={14} />
           </button>
         </div>

@@ -25,11 +25,11 @@ const EditableSwatch = ({ color, onEdit, onCopy }) => {
       className="relative group h-12 rounded-lg"
       style={{ backgroundColor: colorStr }}
     >
-      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-1">
-        <button onClick={onEdit} className="p-2 rounded-md hover:bg-white/20 text-white/80 hover:text-white transition-colors">
+      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-1">
+        <button onClick={onEdit} className="p-2 rounded-md hover:bg-white/30 text-white/90 hover:text-white transition-colors">
             <Pencil size={16} />
         </button>
-        <button onClick={handleCopy} className="p-2 rounded-md hover:bg-white/20 text-white/80 hover:text-white transition-colors">
+        <button onClick={handleCopy} className="p-2 rounded-md hover:bg-white/30 text-white/90 hover:text-white transition-colors">
             <Copy size={16} />
         </button>
       </div>

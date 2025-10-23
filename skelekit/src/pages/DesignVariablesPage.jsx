@@ -36,7 +36,7 @@ const DesignVariablesPage = ({
     <div className="max-w-5xl mx-auto my-8 px-4 flex items-center justify-center">
       <button
         onClick={onAddDesignVariableGroup}
-        className="text-neutral-500 hover:text-white font-medium text-sm py-2 px-4 rounded-full transition-colors flex items-center gap-2 border-2 border-dashed border-neutral-800 hover:border-neutral-700"
+        className="text-neutral-600 hover:text-neutral-800 font-medium text-sm py-2 px-4 rounded-full transition-colors flex items-center gap-2 border-2 border-dashed border-neutral-300 hover:border-neutral-400"
       >
         <Plus size={16} />
         Create Design Variable Group

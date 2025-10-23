@@ -12,14 +12,14 @@ const FeatureActivationScreen = ({ title, description, buttonText, onActivate })
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className="max-w-md w-full"
       >
-        <div className="bg-neutral-950 border-2 border-dashed border-neutral-800 p-12 rounded-xl">
-          <h2 className="text-xl font-bold text-white mb-2">{title}</h2>
-          <p className="text-sm text-neutral-400 mb-8">
+        <div className="bg-white border-2 border-dashed border-neutral-300 p-12 rounded-xl">
+          <h2 className="text-xl font-bold text-neutral-800 mb-2">{title}</h2>
+          <p className="text-sm text-neutral-600 mb-8">
             {description}
           </p>
           <button
             onClick={onActivate}
-            className="flex items-center justify-center w-full px-5 py-3 text-sm font-semibold bg-neutral-900 border border-neutral-800 rounded-md text-neutral-200 shadow-[0_0_15px_rgba(147,51,234,0.2)] hover:shadow-[0_0_25px_rgba(147,51,234,0.4)] hover:border-brand/50 hover:bg-neutral-800 hover:text-white transition-all duration-300"
+            className="flex items-center justify-center w-full px-5 py-3 text-sm font-semibold bg-white border border-neutral-300 rounded-md text-neutral-700 shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:shadow-[0_0_25px_rgba(59,130,246,0.2)] hover:border-brand/50 hover:bg-neutral-50 hover:text-neutral-800 transition-all duration-300"
           >
             <Sparkles size={16} className="mr-2 text-brand-light" />
             {buttonText}

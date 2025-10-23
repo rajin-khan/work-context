@@ -10,8 +10,8 @@ const FeatureHeader = ({ title, description }) => {
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className="mb-10"
     >
-      <h2 className="text-3xl font-bold text-white tracking-tight">{title}</h2>
-      <p className="text-neutral-400 mt-2 max-w-3xl">
+      <h2 className="text-3xl font-bold text-neutral-800 tracking-tight">{title}</h2>
+      <p className="text-neutral-600 mt-2 max-w-3xl">
         {description}
       </p>
     </motion.div>

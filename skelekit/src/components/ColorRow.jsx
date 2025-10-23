@@ -137,24 +137,24 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
     <motion.div
       layout
       transition={{ layout: { duration: 0.2, ease: "easeOut" } }}
-      className="bg-neutral-950 border border-neutral-900 rounded-lg shadow-sm"
+      className="bg-white border border-neutral-200 rounded-lg shadow-sm"
     >
       <div className="flex items-center gap-2 p-1.5 relative group/row">
         <button 
-          className="w-8 h-8 rounded-md flex-shrink-0 border-2 border-neutral-800 transition-transform duration-200 hover:scale-110" 
+          className="w-8 h-8 rounded-md flex-shrink-0 border-2 border-neutral-300 transition-transform duration-200 hover:scale-110" 
           style={{ backgroundColor: colorSwatchValue }}
           onClick={(e) => setPickerState({ isOpen: true, anchorEl: e.currentTarget })}
         />
         
-        <div className="flex items-center w-56 bg-neutral-900 border border-neutral-800 rounded-md px-3 focus-within:border-brand transition-colors">
-            <span className="text-neutral-500 select-none">--</span>
+        <div className="flex items-center w-56 bg-white border border-neutral-300 rounded-md px-3 focus-within:border-brand transition-colors">
+            <span className="text-neutral-400 select-none">--</span>
             <input 
                 value={color.name.startsWith('--') ? color.name.slice(2) : color.name}
                 onChange={(e) => {
                     const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9-]/g, '');
                     onUpdate(color.id, { name: `--${sanitizedValue}` });
                 }}
-                className="bg-transparent focus:outline-none py-1.5 text-neutral-200 flex-1 pl-1 min-w-0"
+                className="bg-transparent focus:outline-none py-1.5 text-neutral-800 flex-1 pl-1 min-w-0"
                 placeholder="variable-name"
             />
         </div>
@@ -163,13 +163,13 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
           value={displayedValue}
           onChange={(e) => onUpdate(color.id, { value: e.target.value })}
           onDoubleClick={handleCopy}
-          className="flex-1 font-mono bg-neutral-900 rounded-md px-3 py-1.5 text-sm text-neutral-300 border border-neutral-800 focus:outline-none focus:border-brand"
+          className="flex-1 font-mono bg-white rounded-md px-3 py-1.5 text-sm text-neutral-700 border border-neutral-300 focus:outline-none focus:border-brand"
         />
         <div className="relative">
           <button 
             ref={formatButtonRef} // Attach ref to the button
             onClick={() => setFormatDropdownOpen(!isFormatDropdownOpen)}
-            className="flex items-center justify-between w-24 px-3 py-1.5 text-sm bg-neutral-900 border border-neutral-800 rounded-md hover:bg-neutral-800 transition-colors"
+            className="flex items-center justify-between w-24 px-3 py-1.5 text-sm bg-white border border-neutral-300 rounded-md hover:bg-neutral-50 transition-colors"
           >
             {color.format}
             <ChevronDown size={16} className="text-neutral-500" />
@@ -177,14 +177,14 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
           {/* The dropdown is no longer rendered here */}
         </div>
         <button 
-            className="p-2 text-neutral-600 rounded-md hover:bg-neutral-800 hover:text-red-500 opacity-0 group-hover/row:opacity-100 transition-opacity" 
+            className="p-2 text-neutral-500 rounded-md hover:bg-neutral-100 hover:text-red-500 opacity-0 group-hover/row:opacity-100 transition-opacity" 
             onClick={() => onDelete(color.id)}
         >
           <Trash2 size={16} />
         </button>
         <button
             onClick={() => setExpanded(!isExpanded)}
-            className="p-2 text-neutral-500 rounded-md hover:bg-neutral-800 hover:text-white transition-colors"
+            className="p-2 text-neutral-500 rounded-md hover:bg-neutral-100 hover:text-neutral-700 transition-colors"
         >
             <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
                 <ChevronDown size={16} />
@@ -213,11 +213,11 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
               config={{...color.tintsConfig, editingState: editingSwatch, setEditingState: setEditingSwatch}}
               onConfigChange={(newValues) => handleConfigChange('tints', newValues)}
             />
-            <div className="bg-neutral-950 p-4 border-t border-neutral-900">
+            <div className="bg-white p-4 border-t border-neutral-200">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <Layers size={16} className="text-neutral-400" />
-                        <h4 className="text-sm font-medium text-neutral-200">Generate Transparent Variants</h4>
+                        <h4 className="text-sm font-medium text-neutral-700">Generate Transparent Variants</h4>
                     </div>
                     <Switch 
                         enabled={color.transparentConfig.enabled} 

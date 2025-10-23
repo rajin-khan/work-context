@@ -84,10 +84,10 @@ const ColorGroup = ({ group, onUpdateGroup, onRemoveGroup }) => {
   };
 
   return (
-    <div className="relative bg-black border border-neutral-800 rounded-xl shadow-2xl overflow-hidden p-6 group/group">
+    <div className="relative bg-white border border-neutral-300 rounded-xl shadow-2xl overflow-hidden p-6 group/group">
         <button 
           onClick={() => onRemoveGroup(group.id)}
-          className="absolute top-5 right-5 p-1.5 text-neutral-600 rounded-full hover:bg-neutral-800 hover:text-red-500 opacity-0 group-hover/group:opacity-100 transition-all z-10"
+          className="absolute top-5 right-5 p-1.5 text-neutral-500 rounded-full hover:bg-neutral-100 hover:text-red-500 opacity-0 group-hover/group:opacity-100 transition-all z-10"
           aria-label="Remove color group"
         >
           <X size={18} />
@@ -97,7 +97,7 @@ const ColorGroup = ({ group, onUpdateGroup, onRemoveGroup }) => {
             type="text"
             value={group.name}
             onChange={(e) => onUpdateGroup(group.id, { name: e.target.value })}
-            className="text-2xl font-bold text-white tracking-tight bg-transparent focus:outline-none focus:bg-neutral-900 rounded px-2 -mx-2"
+            className="text-2xl font-bold text-neutral-800 tracking-tight bg-transparent focus:outline-none focus:bg-neutral-100 rounded px-2 -mx-2"
           />
         </header>
       
@@ -124,24 +124,24 @@ const ColorGroup = ({ group, onUpdateGroup, onRemoveGroup }) => {
               <div className="relative group">
                 <button 
                   onClick={addSuggestedColor} 
-                  className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium bg-neutral-900 border border-neutral-800 rounded-md text-neutral-200 shadow-[0_0_10px_rgba(147,51,234,0.2)] hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] hover:border-brand/50 hover:bg-neutral-800 hover:text-white transition-all duration-300"
+                  className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium bg-white border border-neutral-300 rounded-md text-neutral-700 shadow-[0_0_10px_rgba(59,130,246,0.1)] hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] hover:border-brand/50 hover:bg-neutral-50 hover:text-neutral-800 transition-all duration-300"
                 >
                   <motion.div
                     className="mr-2"
                     animate={{ rotate: [-5, 5, -5], scale: [1, 1.1, 1] }}
                     transition={{ duration: 1, repeat: Infinity, repeatType: "mirror", ease: 'easeInOut' }}
                   >
-                    <Sparkles size={16} className="text-neutral-200" />
+                    <Sparkles size={16} className="text-neutral-700" />
                   </motion.div>
                   <span>Suggest Color</span>
                 </button>
-                <div className="absolute bottom-full mb-2 w-64 left-1/2 -translate-x-1/2 bg-neutral-800 text-neutral-300 text-xs text-center rounded-md p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
+                <div className="absolute bottom-full mb-2 w-64 left-1/2 -translate-x-1/2 bg-white text-neutral-700 text-xs text-center rounded-md p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
                   SkeleKit will suggest a new color from a curated, professionally-designed palette.
                 </div>
               </div>
               <button 
                 onClick={addDefaultColor} 
-                className="p-2 bg-neutral-950 border border-neutral-900 rounded-md text-neutral-400 hover:text-white hover:border-neutral-700 transition-all"
+                className="p-2 bg-white border border-neutral-300 rounded-md text-neutral-600 hover:text-neutral-800 hover:border-neutral-400 transition-all"
                 aria-label="Add default color"
               >
                 <Plus size={16} />
@@ -158,7 +158,7 @@ const ColorGroup = ({ group, onUpdateGroup, onRemoveGroup }) => {
             >
               <button 
                 onClick={addDefaultColor} 
-                className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium bg-neutral-950 border border-neutral-900 rounded-md text-neutral-400 hover:text-white hover:border-neutral-700 transition-all"
+                className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium bg-white border border-neutral-300 rounded-md text-neutral-600 hover:text-neutral-800 hover:border-neutral-400 transition-all"
               >
                 <Plus size={16} className="mr-2" />
                 Create new color
