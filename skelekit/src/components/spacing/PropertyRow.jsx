@@ -1,13 +1,16 @@
 // src/components/spacing/PropertyRow.jsx
 import React from 'react';
-import { X } from 'lucide-react';
+import { X, Grid3x3, Code } from 'lucide-react';
 import EditablePill from '../ui/EditablePill';
 
 const PropertyRow = ({ property, onUpdate, onRemove, spacingVariableOptions, propertyOptions }) => {
   return (
-    <div className="flex items-center gap-3 group">
-      {/* Property Input */}
-      <div className="w-48">
+    <div className="flex items-center gap-3 group/row">
+      {/* Grid Icon */}
+      <Grid3x3 size={15} className="text-neutral-400/70 flex-shrink-0" />
+      
+      {/* Property Name */}
+      <div className="w-[140px] min-w-0 overflow-hidden">
         <EditablePill
           value={property.property}
           onChange={(prop) => onUpdate({ ...property, property: prop })}
@@ -15,13 +18,17 @@ const PropertyRow = ({ property, onUpdate, onRemove, spacingVariableOptions, pro
           datalistId="css-properties"
           options={propertyOptions}
           inputClassName="w-full"
+          textColor="text-brand"
         />
       </div>
 
-      <span className="text-neutral-600">:</span>
+      <span className="text-neutral-400/70 text-base flex-shrink-0">:</span>
 
-      {/* Value Input */}
-      <div className="w-56">
+      {/* Code Icon */}
+      <Code size={15} className="text-neutral-400/70 flex-shrink-0" />
+
+      {/* Value */}
+      <div className="flex-1 min-w-0 overflow-hidden">
         <EditablePill
           value={property.value}
           onChange={(val) => onUpdate({ ...property, value: val })}
@@ -32,10 +39,11 @@ const PropertyRow = ({ property, onUpdate, onRemove, spacingVariableOptions, pro
         />
       </div>
       
-      <div className="flex-1"></div>
-
-      <button onClick={onRemove} className="text-neutral-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-        <X size={16} />
+      <button 
+        onClick={onRemove} 
+        className="opacity-0 group-hover/row:opacity-100 text-neutral-400 hover:text-red-500 transition-all flex-shrink-0 p-1.5 rounded hover:bg-red-50"
+      >
+        <X size={15} />
       </button>
     </div>
   );

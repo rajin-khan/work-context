@@ -1,14 +1,13 @@
 // src/components/spacing/SelectorGroup.jsx
 import React from 'react';
 import { Plus, X } from 'lucide-react'; 
-import SelectorCard from './SelectorCard'; // <-- Import the new card component
+import SelectorCard from './SelectorCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { nanoid } from 'nanoid';
 
 const SelectorGroup = ({ group, onUpdate, onRemove, spacingVariableOptions, propertyOptions }) => {
 
   const handleAddRule = () => {
-    // A new "rule" is now a card with one empty property to start
     const newRule = { id: nanoid(), selector: '.new-selector', properties: [{ id: nanoid(), property: '', value: '' }] };
     onUpdate({ ...group, rules: [...group.rules, newRule] });
   };
@@ -28,38 +27,47 @@ const SelectorGroup = ({ group, onUpdate, onRemove, spacingVariableOptions, prop
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="relative max-w-5xl mx-auto my-8 px-4 group"
+      className="relative max-w-6xl mx-auto my-12 px-4"
     >
-      <div className="bg-white border border-neutral-300 rounded-xl shadow-2xl overflow-hidden">
-        <button 
-          onClick={onRemove}
-          className="absolute top-5 right-6 p-1.5 text-neutral-500 rounded-full hover:bg-neutral-100 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all z-10"
-          aria-label="Remove selector group"
-        >
-          <X size={18} />
-        </button>
-
-        <header className="flex items-center justify-between p-6 border-b border-neutral-200">
-          <input
-            type="text"
-            value={group.name}
-            onChange={(e) => onUpdate({ ...group, name: e.target.value })}
-            className="text-2xl font-bold text-neutral-800 tracking-tight bg-transparent focus:outline-none focus:bg-neutral-100 rounded px-2 -mx-2"
-          />
+      <div className="bg-white border border-neutral-200/80 rounded-xl shadow-sm">
+        <header className="px-8 py-5 border-b border-neutral-200/60 bg-white">
+          <div className="flex items-center justify-between">
+            <input
+              type="text"
+              value={group.name}
+              onChange={(e) => onUpdate({ ...group, name: e.target.value })}
+              className="text-xl font-semibold text-neutral-900 bg-transparent focus:outline-none focus:bg-neutral-50 rounded-lg px-3 py-1 -mx-3 -my-1 transition-colors"
+              placeholder="Group name"
+            />
+            <button 
+              onClick={onRemove}
+              className="p-2 text-neutral-500 rounded-lg hover:bg-neutral-100 hover:text-red-500 transition-all"
+              aria-label="Remove selector group"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </header>
 
-        <div className="p-6 space-y-4"> {/* Increased space between cards */}
+        {/* Column Headers */}
+        <div className="px-8 py-3.5 border-b border-neutral-200/60 bg-neutral-50/50">
+          <div className="grid grid-cols-[256px_1fr] gap-8 pr-4">
+            <span className="text-xs font-semibold text-neutral-600 uppercase tracking-wider">Selector</span>
+            <span className="text-xs font-semibold text-neutral-600 uppercase tracking-wider">CSS Property & Value</span>
+          </div>
+        </div>
+
+        {/* Selectors List */}
+        <div className="divide-y divide-neutral-200/60 overflow-visible">
           <AnimatePresence>
             {group.rules.map(rule => (
               <motion.div 
                 key={rule.id} 
                 layout
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
               >
-                {/* Use SelectorCard instead of SelectorRow */}
                 <SelectorCard 
                   rule={rule}
                   onUpdate={handleUpdateRule}
@@ -72,14 +80,15 @@ const SelectorGroup = ({ group, onUpdate, onRemove, spacingVariableOptions, prop
           </AnimatePresence>
         </div>
 
-        <footer className="px-6 py-4 border-t border-neutral-200/50">
+        {/* Add Button */}
+        <div className="px-8 py-5 border-t border-neutral-200/60 bg-neutral-50/30">
           <button 
             onClick={handleAddRule}
-            className="flex items-center gap-2 text-sm text-neutral-600 hover:text-neutral-800 transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
           >
-            <Plus size={16} /> Add Selector Rule
+            <Plus size={16} /> Add Selector
           </button>
-        </footer>
+        </div>
       </div>
     </motion.div>
   );

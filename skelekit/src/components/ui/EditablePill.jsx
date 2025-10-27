@@ -1,7 +1,7 @@
 // src/components/ui/EditablePill.jsx
 import React, { useState, useEffect, useRef } from 'react';
 
-const EditablePill = ({ value, onChange, placeholder, datalistId, options, inputClassName = 'w-32' }) => {
+const EditablePill = ({ value, onChange, placeholder, datalistId, options, inputClassName = 'w-32', textColor = 'text-neutral-800' }) => {
   const [isEditing, setIsEditing] = useState(!value);
   const [currentValue, setCurrentValue] = useState(value);
   const inputRef = useRef(null);
@@ -38,10 +38,10 @@ const EditablePill = ({ value, onChange, placeholder, datalistId, options, input
   if (!isEditing) {
     return (
       <div
-        className="font-mono text-sm py-1 px-3 cursor-pointer rounded-md bg-neutral-100 text-neutral-800 hover:bg-neutral-200 transition-colors w-full text-left"
+        className={`font-mono text-sm py-0.5 px-1.5 cursor-pointer ${textColor} hover:bg-neutral-100/60 rounded transition-colors w-full text-left truncate`}
         onClick={() => setIsEditing(true)}
       >
-        {value || <span className="text-neutral-500">{placeholder}</span>}
+        {value || <span className="text-neutral-400 italic">{placeholder}</span>}
       </div>
     );
   }
@@ -57,7 +57,7 @@ const EditablePill = ({ value, onChange, placeholder, datalistId, options, input
         onKeyDown={handleKeyDown}
         list={datalistId}
         placeholder={placeholder}
-        className={`font-mono text-sm bg-white border border-neutral-300 text-neutral-800 rounded-md px-3 py-1 outline-none focus:border-brand ${inputClassName}`}
+        className={`font-mono text-sm bg-white border border-neutral-300 text-neutral-800 rounded px-3 py-1.5 w-full outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 ${inputClassName}`}
       />
       <datalist id={datalistId}>
         {(options || []).map(opt => (
