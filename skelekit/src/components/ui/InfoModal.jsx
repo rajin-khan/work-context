@@ -36,7 +36,7 @@ const InfoModal = ({ isOpen, onClose }) => {
                 </button>
                 
                 <div className="flex justify-center">
-                  <img src={mainLogo} alt="SkeleKit" className="h-12" />
+                  <img src={mainLogo} alt="the Editor" className="h-12" />
                 </div>
               </div>
 
@@ -47,9 +47,9 @@ const InfoModal = ({ isOpen, onClose }) => {
                   <div className="space-y-6">
                     {/* About Section */}
                     <div>
-                      <h3 className="text-xl font-semibold text-neutral-800 mb-4">About SkeleKit</h3>
+                      <h3 className="text-xl font-semibold text-neutral-800 mb-4">About the CSS Editor</h3>
                       <p className="text-neutral-600 leading-relaxed">
-                        SkeleKit is a powerful visual CSS editor and component builder designed to streamline 
+                        SkelementorCSS presents a powerful visual CSS editor and component builder designed to streamline 
                         your development workflow. Built by the Skelementor team, it provides intuitive tools 
                         for creating, managing, and exporting CSS components with ease.
                       </p>

@@ -20,7 +20,7 @@ const Header = () => {
     <header className="relative z-40 flex items-center justify-between px-6 py-3 border-b border-neutral-200 bg-white/80 backdrop-blur-sm shrink-0">
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-2.5">
-          <img src={logo} alt="SkeleKit" className="h-6" />
+          <img src={logo} alt="the Editor" className="h-6" />
         </div>
         <div className="flex items-center gap-2 text-sm text-neutral-600">
           <img src={wordpressLogo} alt="WordPress" className="w-5 h-5" />

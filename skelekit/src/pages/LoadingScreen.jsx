@@ -14,7 +14,7 @@ const LoadingScreen = ({ onSelect }) => {
         className="text-center"
       >
         <div className="flex items-center justify-center gap-4 mb-4">
-          <img src={logo} alt="SkeleKit" className="h-16" />
+          <img src={logo} alt="the Editor" className="h-16" />
         </div>
         <p className="text-neutral-600 max-w-lg mx-auto mb-12">
           The intuitive design system generator. Start from scratch or use a preset to kickstart your project.

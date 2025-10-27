@@ -61,7 +61,7 @@ const navItems = [
 ];
 
 const bottomNavItems = [
-  { icon: Info, label: 'About SkeleKit' },
+  { icon: Info, label: 'About the CSS Editor' },
 ];
 
 const NavItem = ({ icon: Icon, label, active = false, hasSubMenu = false, disabled = false, onClick }) => (

@@ -136,7 +136,7 @@ const ColorGroup = ({ group, onUpdateGroup, onRemoveGroup }) => {
                   <span>Suggest Color</span>
                 </button>
                 <div className="absolute bottom-full mb-2 w-64 left-1/2 -translate-x-1/2 bg-white text-neutral-700 text-xs text-center rounded-md p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
-                  SkeleKit will suggest a new color from a curated, professionally-designed palette.
+                  The Editor will suggest a new color from a curated, professionally-designed palette.
                 </div>
               </div>
               <button 
