@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { File, Wand2 } from 'lucide-react';
-import logo from '../assets/skelekit-light.png';
+import logo from '../assets/skeleclassic.svg';
 
 const LoadingScreen = ({ onSelect }) => {
   return (

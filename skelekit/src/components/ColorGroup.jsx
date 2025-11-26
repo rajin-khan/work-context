@@ -43,17 +43,20 @@ const ColorGroup = ({ group, onUpdateGroup, onRemoveGroup }) => {
     return colorToReturn;
   };
 
-  const createNewColor = (props) => ({
-    id: generateId(),
-    name: `--color-${group.colors.length + 1}`,
-    value: '#808080',
-    format: 'HEX',
-    shadesConfig: { ...defaultShadeTintConfig },
-    tintsConfig: { ...defaultShadeTintConfig },
-    transparentConfig: { enabled: false },
-    utilityConfig: { text: false, background: false, border: false, fill: false },
-    ...props,
-  });
+  const createNewColor = (props) => {
+    const colorIndex = group.colors.length + 1;
+    return {
+      id: generateId(),
+      name: `--color-${colorIndex}`,
+      value: '#808080',
+      format: 'HEX',
+      shadesConfig: { ...defaultShadeTintConfig },
+      tintsConfig: { ...defaultShadeTintConfig },
+      transparentConfig: { enabled: false },
+      utilityConfig: { text: false, background: false, border: false, fill: false },
+      ...props,
+    };
+  };
   
   const setColors = (newColors) => {
     onUpdateGroup(group.id, { colors: newColors });

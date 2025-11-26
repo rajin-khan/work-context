@@ -147,15 +147,17 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
         />
         
         <div className="flex items-center w-56 bg-white border border-neutral-300 rounded-md px-3 focus-within:border-brand transition-colors">
-            <span className="text-neutral-400 select-none">--</span>
             <input 
-                value={color.name.startsWith('--') ? color.name.slice(2) : color.name}
+                value={color.name}
                 onChange={(e) => {
-                    const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9-]/g, '');
-                    onUpdate(color.id, { name: `--${sanitizedValue}` });
+                    let nextName = e.target.value;
+                    if (nextName && !nextName.startsWith('--')) {
+                        nextName = `--${nextName.replace(/^--+/, '')}`;
+                    }
+                    onUpdate(color.id, { name: nextName || '--' });
                 }}
-                className="bg-transparent focus:outline-none py-1.5 text-neutral-800 flex-1 pl-1 min-w-0"
-                placeholder="variable-name"
+                className="bg-transparent focus:outline-none py-1.5 text-neutral-800 flex-1 min-w-0"
+                placeholder="--color-1"
             />
         </div>
 

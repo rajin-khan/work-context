@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Copy, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { generateAndFormatCSS } from '../utils/cssGenerator';
+import { generateAndFormatCSS, generateSkelementorCSS } from '../utils/cssGenerator';
 import { downloadFile } from '../utils/download';
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -35,14 +35,31 @@ const CSSPreviewPanel = (props) => {
   } = props;
 
   const [generatedCSS, setGeneratedCSS] = useState('/* Generating CSS... */');
+  const [activeTab, setActiveTab] = useState('normal'); // 'normal' or 'skelementor'
 
   useEffect(() => {
     if (isOpen) {
       const generate = async () => {
         const allColors = colorGroups.flatMap(group => group.colors);
         
-        // ** THE FIX IS HERE: We now pass a single object to the generator function, matching its new signature. **
-        const css = await generateAndFormatCSS({
+        if (activeTab === 'skelementor') {
+          // Generate Skelementor-compatible CSS
+          const css = await generateSkelementorCSS({
+            colors: allColors,
+            spacingScale, 
+            spacingGroups,
+            isTypographyEnabled,
+            typographyScale,
+            typographyGroups,
+            typographyGeneratorConfig,
+            typographyVariableGroups,
+            generatorConfig, 
+            isSpacingEnabled,
+          });
+          setGeneratedCSS(css);
+        } else {
+          // Generate normal CSS
+          const css = await generateAndFormatCSS({
             colors: allColors,
             spacingScale, 
             spacingGroups,
@@ -61,15 +78,16 @@ const CSSPreviewPanel = (props) => {
             layoutVariableGroups,
             designSelectorGroups,
             designVariableGroups
-        });
-        setGeneratedCSS(css);
+          });
+          setGeneratedCSS(css);
+        }
       };
 
       generate();
     }
     // The dependency array correctly lists all the individual props that should trigger a regeneration.
   }, [
-    isOpen, colorGroups, spacingScale, spacingGroups, 
+    isOpen, activeTab, colorGroups, spacingScale, spacingGroups, 
     isTypographyEnabled, typographyScale, typographyGroups, 
     typographyGeneratorConfig, typographySelectorGroups, typographyVariableGroups, 
     generatorConfig, selectorGroups, variableGroups, isSpacingEnabled, customCSS, 
@@ -81,9 +99,38 @@ const CSSPreviewPanel = (props) => {
     toast.success('CSS copied to clipboard!');
   };
 
+  const base64Encode = (value) => {
+    try {
+      return btoa(unescape(encodeURIComponent(value)));
+    } catch (error) {
+      console.error('Failed to encode content for .skele package', error);
+      return btoa(value);
+    }
+  };
+
   const handleDownload = () => {
-    const fileName = `theme.css`;
+    const fileName = activeTab === 'skelementor' ? `skelementor-theme.css` : `theme.css`;
     downloadFile(generatedCSS, fileName);
+  };
+
+  const handleDownloadSkele = () => {
+    const payload = {
+      version: '1.0',
+      format: 'skelementor-css-package',
+      source: 'Skelekit Export',
+      created_at: new Date().toISOString(),
+      payload: {
+        encoding: 'base64',
+        css: base64Encode(generatedCSS)
+      }
+    };
+
+    downloadFile(
+      JSON.stringify(payload, null, 2),
+      'skelementor-theme.skele',
+      'application/json;charset=utf-8'
+    );
+    toast.success('.skele package downloaded');
   };
 
   return (
@@ -105,14 +152,38 @@ const CSSPreviewPanel = (props) => {
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="fixed top-0 right-0 h-full w-full max-w-lg bg-white border-l border-neutral-300 shadow-2xl z-50 flex flex-col"
           >
-            <header className="flex items-center justify-between p-4 border-b border-neutral-200 shrink-0">
-              <h2 className="text-lg font-semibold text-neutral-800">Export CSS</h2>
-              <button
-                onClick={onClose}
-                className="p-2 text-neutral-600 rounded-md hover:bg-neutral-100 hover:text-neutral-800 transition-colors"
-              >
-                <X size={20} />
-              </button>
+            <header className="flex flex-col border-b border-neutral-200 shrink-0">
+              <div className="flex items-center justify-between p-4">
+                <h2 className="text-lg font-semibold text-neutral-800">Export CSS</h2>
+                <button
+                  onClick={onClose}
+                  className="p-2 text-neutral-600 rounded-md hover:bg-neutral-100 hover:text-neutral-800 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="flex border-t border-neutral-200">
+                <button
+                  onClick={() => setActiveTab('normal')}
+                  className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === 'normal'
+                      ? 'bg-neutral-100 text-neutral-800 border-b-2 border-neutral-800'
+                      : 'text-neutral-600 hover:text-neutral-800 hover:bg-neutral-50'
+                  }`}
+                >
+                  Normal
+                </button>
+                <button
+                  onClick={() => setActiveTab('skelementor')}
+                  className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === 'skelementor'
+                      ? 'bg-neutral-100 text-neutral-800 border-b-2 border-neutral-800'
+                      : 'text-neutral-600 hover:text-neutral-800 hover:bg-neutral-50'
+                  }`}
+                >
+                  Skelementor Plugin
+                </button>
+              </div>
             </header>
             
             <main className="flex-1 overflow-auto bg-white">
@@ -136,21 +207,32 @@ const CSSPreviewPanel = (props) => {
               </SyntaxHighlighter>
             </main>
 
-            <footer className="p-4 border-t border-neutral-200 shrink-0 flex items-center justify-end gap-3">
-               <button
-                onClick={handleCopy}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50 transition-colors"
-              >
-                <Copy size={16} />
-                Copy to Clipboard
-              </button>
-               <button
-                onClick={handleDownload}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-black text-white rounded-md hover:bg-neutral-800 transition-all duration-150 ease-in-out"
-              >
-                <Download size={16} />
-                Download File
-              </button>
+            <footer className="p-4 border-t border-neutral-200 shrink-0">
+              <div className="flex flex-wrap justify-end gap-3">
+                <button
+                  onClick={handleCopy}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 text-neutral-700 bg-white shadow-sm hover:bg-neutral-50 transition-colors"
+                >
+                  <Copy size={16} />
+                  Copy CSS
+                </button>
+                <button
+                  onClick={handleDownload}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-neutral-900 text-white shadow hover:bg-neutral-800 transition-colors"
+                >
+                  <Download size={16} />
+                  Download CSS
+                </button>
+                {activeTab === 'skelementor' && (
+                  <button
+                    onClick={handleDownloadSkele}
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow hover:bg-blue-500 transition-colors"
+                  >
+                    <Download size={16} />
+                    Download .skele
+                  </button>
+                )}
+              </div>
             </footer>
           </motion.div>
         </>

@@ -296,7 +296,7 @@ function App() {
     if (!group) return;
     const key = type === 'negative' ? 'negativeSteps' : 'positiveSteps';
     const currentSteps = group.settings[key];
-    const newSteps = Math.max(1, Math.min(25, currentSteps + amount));
+    const newSteps = Math.max(0, Math.min(25, currentSteps + amount));
     handleUpdateTypographyGroup(groupId, { [key]: newSteps });
   };
   const handleAddTypographySelectorGroup = () =>
@@ -415,7 +415,7 @@ function App() {
     if (!group) return;
     const key = type === 'negative' ? 'negativeSteps' : 'positiveSteps';
     const currentSteps = group.settings[key];
-    const newSteps = Math.max(1, Math.min(25, currentSteps + amount));
+    const newSteps = Math.max(0, Math.min(25, currentSteps + amount));
     handleUpdateSpacingGroup(groupId, { [key]: newSteps });
   };
 

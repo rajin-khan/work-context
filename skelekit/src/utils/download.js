@@ -5,8 +5,8 @@
  * @param {string} content - The text content of the file.
  * @param {string} fileName - The desired name of the file (e.g., "theme.css").
  */
-export const downloadFile = (content, fileName) => {
-  const blob = new Blob([content], { type: 'text/css;charset=utf-8' });
+export const downloadFile = (content, fileName, mimeType = 'text/css;charset=utf-8') => {
+  const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   

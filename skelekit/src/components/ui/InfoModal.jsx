@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, Github, Globe } from 'lucide-react';
-import mainLogo from '../../assets/mainlogo.png';
+import mainLogo from '../../assets/skeleclassic.svg';
 import wordpressLogo from '../../assets/WordPress-logotype-wmark.png';
 
 const InfoModal = ({ isOpen, onClose }) => {

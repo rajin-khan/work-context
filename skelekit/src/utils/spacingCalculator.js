@@ -10,16 +10,47 @@ export const scales = {
   'Golden Ratio': 1.618,
 };
 
-const generateScaleIndices = (negativeSteps, positiveSteps) => {
-  const indices = [];
-  for (let i = negativeSteps; i >= 2; i--) {
-    indices.push(`${i}xs`);
+const offsetToIndexName = (offset) => {
+  if (offset === 0) return 'm';
+  if (offset > 0) {
+    if (offset === 1) return 'l';
+    if (offset === 2) return 'xl';
+    return `${offset - 1}xl`;
   }
-  indices.push('xs', 's', 'm', 'l', 'xl');
-  for (let i = 2; i <= positiveSteps; i++) {
-    indices.push(`${i}xl`);
+
+  const magnitude = Math.abs(offset);
+  if (magnitude === 1) return 's';
+  if (magnitude === 2) return 'xs';
+  return `${magnitude - 1}xs`;
+};
+
+const indexNameToOffset = (name) => {
+  if (name === 'm') return 0;
+  if (name === 'l') return 1;
+  if (name === 'xl') return 2;
+
+  if (name === 's') return -1;
+  if (name === 'xs') return -2;
+
+  const xlMatch = name.match(/^(\d+)xl$/);
+  if (xlMatch) {
+    return parseInt(xlMatch[1], 10) + 1;
   }
-  return indices;
+
+  const xsMatch = name.match(/^(\d+)xs$/);
+  if (xsMatch) {
+    return -(parseInt(xsMatch[1], 10) + 1);
+  }
+
+  return 0;
+};
+
+const generateScaleOffsets = (negativeSteps, positiveSteps) => {
+  const offsets = [];
+  for (let offset = -negativeSteps; offset <= positiveSteps; offset++) {
+    offsets.push(offset);
+  }
+  return offsets;
 };
 
 export const generateSpacingScale = (settings) => {
@@ -34,23 +65,12 @@ export const generateSpacingScale = (settings) => {
     positiveSteps = 4,
   } = settings;
   
-  const scaleIndices = generateScaleIndices(negativeSteps, positiveSteps);
-  
-  const positionMap = {
-    ...Object.fromEntries(Array.from({ length: negativeSteps }, (_, i) => [`${i + 1}xs`, -(i + 1)])),
-    's': 0, 'm': 1, 'l': 2,
-    ...Object.fromEntries(Array.from({ length: positiveSteps }, (_, i) => [`${i + 1}xl`, i + 3])),
-  };
-  
-  const baseRemapping = { 'xs': '1xs', 'xl': '1xl'};
-  const remappedBaseIndex = baseRemapping[baseScaleIndex] || baseScaleIndex;
+  const baseOffset = indexNameToOffset(baseScaleIndex);
+  const offsets = generateScaleOffsets(negativeSteps, positiveSteps);
 
-  const baseIndexPosition = positionMap[remappedBaseIndex];
-
-  return scaleIndices.map((indexName) => {
-    const remappedIndexName = baseRemapping[indexName] || indexName;
-    const currentIndexPosition = positionMap[remappedIndexName];
-    const distance = currentIndexPosition - baseIndexPosition;
+  return offsets.map((offset) => {
+    const indexName = offsetToIndexName(offset);
+    const distance = offset - baseOffset;
 
     let min, max;
 

@@ -16,7 +16,7 @@ const TypographyRow = ({ name, min, max, isBase }) => {
           <motion.span
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-xs font-semibold bg-brand text-white px-2.5 py-1 rounded-full mr-4"
+            className="text-xs font-semibold bg-neutral-200 text-neutral-700 px-2.5 py-1 rounded-full mr-4"
           >
             Base
           </motion.span>
@@ -92,7 +92,7 @@ const TypographyVisualization = ({ scale, onStepsChange, steps }) => {
               <StepControlButton 
                 icon={Minus} 
                 onClick={() => onStepsChange('negative', -1)}
-                disabled={steps.negative <= 1}
+                disabled={steps.negative <= 0}
               />
           </div>
           {scale.map((item) => (
@@ -107,7 +107,7 @@ const TypographyVisualization = ({ scale, onStepsChange, steps }) => {
               <StepControlButton 
                 icon={Minus} 
                 onClick={() => onStepsChange('positive', -1)}
-                disabled={steps.positive <= 1}
+                disabled={steps.positive <= 0}
               />
           </div>
         </div>
