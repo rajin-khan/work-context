@@ -59,6 +59,20 @@ const formatTransparentValue = (baseColor, parentFormat, alpha) => {
     return c.toHex();
 }
 
+// Generate a single shadow color for a given opacity
+const generateShadowColor = (baseColor, opacity, parentFormat) => {
+    const alpha = opacity / 100;
+    const c = colord(baseColor);
+    const format = parentFormat.toUpperCase();
+    
+    // Mix slightly towards black for a subtle shadow tone
+    const mixedColor = chroma.mix(c.toHex(), 'black', 0.3, 'lab').alpha(alpha);
+    
+    if (format.includes('HSL')) return mixedColor.css('hsla');
+    if (format.includes('RGB')) return mixedColor.css('rgba');
+    return mixedColor.hex();
+}
+
 /**
  * Generates a complete, SCOPED CSS stylesheet for a component preview, including all variables.
  */
@@ -88,6 +102,14 @@ export const generateComponentStylesheet = (data) => {
     if (color.shadesConfig?.enabled && color.shadesConfig?.palette?.length > 0) { color.shadesConfig.palette.forEach((shade, index) => { const varName = `${color.name}-d-${index + 1}`; cssLines.push(`  ${varName}: ${formatSwatchColorValue(shade, color.format)};`); }); }
     if (color.tintsConfig?.enabled && color.tintsConfig?.palette?.length > 0) { color.tintsConfig.palette.forEach((tint, index) => { const varName = `${color.name}-l-${index + 1}`; cssLines.push(`  ${varName}: ${formatSwatchColorValue(tint, color.format)};`); }); }
     if (color.transparentConfig?.enabled) { alphaSteps.forEach(step => { const varName = `${color.name}-t-${step}`; const alphaValue = step / 100; cssLines.push(`  ${varName}: ${formatTransparentValue(color.value, color.format, alphaValue)};`); }); }
+    if (color.shadowConfig?.enabled) {
+      const colorBaseName = color.name.replace(/^--/, '');
+      alphaSteps.forEach(step => {
+        const varName = `--shadow-${colorBaseName}-${step}`;
+        const shadowColor = generateShadowColor(color.value, step, color.format);
+        cssLines.push(`  ${varName}: ${shadowColor};`);
+      });
+    }
   });
 
   const generateScaleCss = (groups) => {

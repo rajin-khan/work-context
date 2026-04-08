@@ -24,8 +24,8 @@ const VariableRow = ({ variable, onUpdate, onRemove }) => {
   };
 
   return (
-    <div className="flex items-center gap-4 group bg-neutral-100/50 p-2 rounded-lg border border-transparent hover:border-neutral-300">
-      <div className="flex items-center w-52 bg-transparent focus-within:bg-neutral-200 rounded transition-colors group/input">
+    <div className="group flex flex-col gap-3 rounded-2xl border border-transparent bg-neutral-100/50 p-3 hover:border-neutral-300 sm:flex-row sm:items-center sm:gap-4">
+      <div className="group/input flex w-full items-center rounded-xl bg-transparent transition-colors focus-within:bg-neutral-200 sm:w-52">
         <span className="pl-2 text-neutral-500 group-focus-within/input:text-neutral-400">--</span>
         <input
           type="text"
@@ -37,7 +37,7 @@ const VariableRow = ({ variable, onUpdate, onRemove }) => {
         />
       </div>
 
-      <div className="flex-1 flex items-center gap-4">
+      <div className="flex flex-1 items-center gap-3 sm:gap-4">
         <AnimatePresence mode="wait">
           {variable.mode === 'single' ? (
             <motion.input
@@ -54,7 +54,7 @@ const VariableRow = ({ variable, onUpdate, onRemove }) => {
           ) : (
             <motion.div
               key="minmax"
-              className="w-full flex items-center gap-4"
+              className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-4"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 10 }}
@@ -74,13 +74,21 @@ const VariableRow = ({ variable, onUpdate, onRemove }) => {
         </AnimatePresence>
       </div>
 
-      <button onClick={toggleMode} className="p-2 text-neutral-500 rounded-md hover:bg-neutral-200 hover:text-neutral-800">
-        <ArrowRightLeft size={14} />
-      </button>
+      <div className="flex items-center justify-end gap-1 sm:justify-start">
+        <button
+          onClick={toggleMode}
+          className="rounded-xl p-2 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-800"
+        >
+          <ArrowRightLeft size={14} />
+        </button>
 
-      <button onClick={onRemove} className="text-neutral-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-        <X size={16} />
-      </button>
+        <button
+          onClick={onRemove}
+          className="rounded-xl p-2 text-neutral-500 transition-opacity hover:bg-red-50 hover:text-red-500 sm:opacity-0 sm:group-hover:opacity-100"
+        >
+          <X size={16} />
+        </button>
+      </div>
     </div>
   );
 };

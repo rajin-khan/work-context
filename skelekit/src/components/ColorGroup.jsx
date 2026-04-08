@@ -27,6 +27,7 @@ const getRandomPaletteSource = (exclude) => {
 };
 
 const defaultShadeTintConfig = { enabled: false, count: 8, palette: [] };
+const defaultShadowConfig = { enabled: false };
 
 const ColorGroup = ({ group, onUpdateGroup, onRemoveGroup }) => {
   const paletteSourceRef = useRef(getRandomPaletteSource(null));
@@ -53,6 +54,7 @@ const ColorGroup = ({ group, onUpdateGroup, onRemoveGroup }) => {
       shadesConfig: { ...defaultShadeTintConfig },
       tintsConfig: { ...defaultShadeTintConfig },
       transparentConfig: { enabled: false },
+      shadowConfig: { ...defaultShadowConfig },
       utilityConfig: { text: false, background: false, border: false, fill: false },
       ...props,
     };

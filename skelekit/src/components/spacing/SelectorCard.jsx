@@ -69,12 +69,12 @@ const SelectorCard = ({ rule, onUpdate, onRemove, spacingVariableOptions, proper
   };
 
   return (
-    <div className="border-t border-neutral-200/60 py-6 first:border-t-0 px-2">
-      <div className="flex items-start gap-8">
+    <div className="border-t border-neutral-200/60 px-4 py-4 first:border-t-0 sm:px-6 sm:py-6">
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:gap-8">
         {/* Left Section: Selector Name */}
-        <div className="w-64 flex items-center gap-3">
+        <div className="flex w-full min-w-0 items-center gap-3 xl:w-64 xl:flex-none">
           <GripVertical size={16} className="text-neutral-400/60 cursor-grab" />
-          <div className="flex items-center bg-neutral-50/50 border border-neutral-200 rounded-lg px-4 py-2.5 focus-within:bg-white focus-within:border-neutral-300 focus-within:shadow-sm transition-all group/input flex-1">
+          <div className="group/input flex flex-1 items-center rounded-2xl border border-neutral-200 bg-neutral-50/50 px-4 py-2.5 transition-all focus-within:border-neutral-300 focus-within:bg-white focus-within:shadow-sm">
             <span className="text-neutral-500 font-mono text-sm">.</span>
             <input
               type="text"
@@ -88,7 +88,7 @@ const SelectorCard = ({ rule, onUpdate, onRemove, spacingVariableOptions, proper
           </div>
           <button 
             onClick={handleCopySelector} 
-            className="p-2 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg border border-neutral-200 hover:border-neutral-300 transition-all"
+            className="rounded-xl border border-neutral-200 p-2 text-neutral-400 transition-all hover:border-neutral-300 hover:bg-neutral-100 hover:text-neutral-700"
             title="Copy selector"
           >
             <Copy size={14} />
@@ -96,7 +96,7 @@ const SelectorCard = ({ rule, onUpdate, onRemove, spacingVariableOptions, proper
         </div>
 
         {/* Right Section: Property Panel */}
-        <div className="flex-1 bg-neutral-50/30 border border-neutral-200 rounded-lg p-5 pr-6 relative overflow-visible">
+        <div className="relative min-w-0 flex-1 overflow-visible rounded-[22px] border border-neutral-200 bg-neutral-50/30 p-4 sm:p-5 sm:pr-6">
           <button 
             onClick={onRemove} 
             className="absolute -top-2.5 -right-2.5 w-7 h-7 flex items-center justify-center bg-white border border-neutral-200 rounded-full hover:border-red-300 hover:bg-red-50 hover:text-red-500 transition-all shadow-sm z-10"
@@ -130,7 +130,7 @@ const SelectorCard = ({ rule, onUpdate, onRemove, spacingVariableOptions, proper
           
           <button
             onClick={handleAddProperty}
-            className="mt-4 w-7 h-7 flex items-center justify-center border border-neutral-300 rounded-full hover:border-neutral-400 hover:bg-white transition-all group"
+            className="group mt-4 flex h-8 w-8 items-center justify-center rounded-full border border-neutral-300 transition-all hover:border-neutral-400 hover:bg-white"
             title="Add property"
           >
             <Plus size={16} className="text-neutral-500 group-hover:text-neutral-700" />

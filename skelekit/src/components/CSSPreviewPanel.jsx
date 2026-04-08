@@ -1,244 +1,349 @@
 // src/components/CSSPreviewPanel.jsx
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, {
+  Suspense,
+  lazy,
+  memo,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import ReactDOM from 'react-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { X, Copy, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { generateAndFormatCSS, generateSkelementorCSS } from '../utils/cssGenerator';
 import { downloadFile } from '../utils/download';
 
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { prism } from 'react-syntax-highlighter/dist/esm/styles/prism'; 
+const GENERATING_MESSAGE = '/* Generating CSS... */';
+const loadCSSPreviewCodeView = () => import('./export/CSSPreviewCodeView');
+const loadPackageBuilder = () => import('../utils/canonicalArtifacts');
+const CSSPreviewCodeView = lazy(loadCSSPreviewCodeView);
 
-const CSSPreviewPanel = (props) => {
-  // ** THE FIX IS HERE: We destructure all incoming props from the single `props` object. **
-  const { 
-    isOpen, 
-    onClose, 
-    colorGroups, 
+export const preloadCSSPreviewPanel = () => loadCSSPreviewCodeView();
+
+const CSSPreviewPanel = memo((props) => {
+  const {
+    isOpen,
+    onClose,
+    returnFocusRef,
+    colorGroups,
     isSpacingEnabled,
-    spacingScale, 
+    spacingScale,
     spacingGroups,
     isTypographyEnabled,
     typographyScale,
     typographyGroups,
     typographyGeneratorConfig,
     typographySelectorGroups,
+    typographySelectorGroupsByBreakpoint,
     typographyVariableGroups,
-    generatorConfig, 
-    selectorGroups, 
+    typographyVariableGroupsByBreakpoint,
+    generatorConfig,
+    selectorGroups,
+    selectorGroupsByBreakpoint,
     variableGroups,
+    variableGroupsByBreakpoint,
     customCSS,
     layoutSelectorGroups,
+    layoutSelectorGroupsByBreakpoint,
     layoutVariableGroups,
+    layoutVariableGroupsByBreakpoint,
     designSelectorGroups,
-    designVariableGroups
+    designSelectorGroupsByBreakpoint,
+    designVariableGroups,
+    designVariableGroupsByBreakpoint,
+    breakpointPresets,
   } = props;
 
-  const [generatedCSS, setGeneratedCSS] = useState('/* Generating CSS... */');
-  const [activeTab, setActiveTab] = useState('normal'); // 'normal' or 'skelementor'
+  const closeButtonRef = useRef(null);
+  const previousActiveElementRef = useRef(null);
+  const [generatedCSS, setGeneratedCSS] = useState(GENERATING_MESSAGE);
+  const [isGenerating, setIsGenerating] = useState(true);
+  const [isPackaging, setIsPackaging] = useState(false);
+
+  const exportData = useMemo(
+    () => ({
+      colors: colorGroups.flatMap((group) => group.colors),
+      spacingScale,
+      spacingGroups,
+      isTypographyEnabled,
+      typographyScale,
+      typographyGroups,
+      typographyGeneratorConfig,
+      typographySelectorGroups,
+      typographySelectorGroupsByBreakpoint,
+      typographyVariableGroups,
+      typographyVariableGroupsByBreakpoint,
+      generatorConfig,
+      selectorGroups,
+      selectorGroupsByBreakpoint,
+      variableGroups,
+      variableGroupsByBreakpoint,
+      isSpacingEnabled,
+      customCSS,
+      layoutSelectorGroups,
+      layoutSelectorGroupsByBreakpoint,
+      layoutVariableGroups,
+      layoutVariableGroupsByBreakpoint,
+      designSelectorGroups,
+      designSelectorGroupsByBreakpoint,
+      designVariableGroups,
+      designVariableGroupsByBreakpoint,
+      breakpointPresets,
+    }),
+    [
+      colorGroups,
+      spacingScale,
+      spacingGroups,
+      isTypographyEnabled,
+      typographyScale,
+      typographyGroups,
+      typographyGeneratorConfig,
+      typographySelectorGroups,
+      typographySelectorGroupsByBreakpoint,
+      typographyVariableGroups,
+      typographyVariableGroupsByBreakpoint,
+      generatorConfig,
+      selectorGroups,
+      selectorGroupsByBreakpoint,
+      variableGroups,
+      variableGroupsByBreakpoint,
+      isSpacingEnabled,
+      customCSS,
+      layoutSelectorGroups,
+      layoutSelectorGroupsByBreakpoint,
+      layoutVariableGroups,
+      layoutVariableGroupsByBreakpoint,
+      designSelectorGroups,
+      designSelectorGroupsByBreakpoint,
+      designVariableGroups,
+      designVariableGroupsByBreakpoint,
+      breakpointPresets,
+    ]
+  );
+
+  const canExport =
+    generatedCSS.trim().length > 0 &&
+    generatedCSS !== GENERATING_MESSAGE &&
+    !isGenerating &&
+    !isPackaging;
 
   useEffect(() => {
-    if (isOpen) {
-      const generate = async () => {
-        const allColors = colorGroups.flatMap(group => group.colors);
-        
-        if (activeTab === 'skelementor') {
-          // Generate Skelementor-compatible CSS
-          const css = await generateSkelementorCSS({
-            colors: allColors,
-            spacingScale, 
-            spacingGroups,
-            isTypographyEnabled,
-            typographyScale,
-            typographyGroups,
-            typographyGeneratorConfig,
-            typographyVariableGroups,
-            generatorConfig, 
-            isSpacingEnabled,
-          });
-          setGeneratedCSS(css);
-        } else {
-          // Generate normal CSS
-          const css = await generateAndFormatCSS({
-            colors: allColors,
-            spacingScale, 
-            spacingGroups,
-            isTypographyEnabled,
-            typographyScale,
-            typographyGroups,
-            typographyGeneratorConfig,
-            typographySelectorGroups,
-            typographyVariableGroups,
-            generatorConfig, 
-            selectorGroups, 
-            variableGroups,
-            isSpacingEnabled,
-            customCSS,
-            layoutSelectorGroups,
-            layoutVariableGroups,
-            designSelectorGroups,
-            designVariableGroups
-          });
-          setGeneratedCSS(css);
-        }
-      };
-
-      generate();
+    if (!isOpen) {
+      return undefined;
     }
-    // The dependency array correctly lists all the individual props that should trigger a regeneration.
-  }, [
-    isOpen, activeTab, colorGroups, spacingScale, spacingGroups, 
-    isTypographyEnabled, typographyScale, typographyGroups, 
-    typographyGeneratorConfig, typographySelectorGroups, typographyVariableGroups, 
-    generatorConfig, selectorGroups, variableGroups, isSpacingEnabled, customCSS, 
-    layoutSelectorGroups, layoutVariableGroups, designSelectorGroups, designVariableGroups
-  ]);
+
+    previousActiveElementRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
+    setGeneratedCSS(GENERATING_MESSAGE);
+    setIsGenerating(true);
+
+    const handleEsc = (event) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    const { style } = document.body;
+    const previousOverflow = style.overflow;
+    const previousPaddingRight = style.paddingRight;
+    const scrollBarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+
+    style.overflow = 'hidden';
+    if (scrollBarWidth > 0) {
+      style.paddingRight = `${scrollBarWidth}px`;
+    }
+
+    window.addEventListener('keydown', handleEsc);
+    const focusId = window.requestAnimationFrame(() => {
+      closeButtonRef.current?.focus({ preventScroll: true });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(focusId);
+      window.removeEventListener('keydown', handleEsc);
+      style.overflow = previousOverflow;
+      style.paddingRight = previousPaddingRight;
+
+      const focusTarget =
+        returnFocusRef?.current || previousActiveElementRef.current;
+      if (focusTarget?.focus) {
+        window.requestAnimationFrame(() => {
+          focusTarget.focus({ preventScroll: true });
+        });
+      }
+    };
+  }, [isOpen, onClose, returnFocusRef]);
 
   const handleCopy = () => {
+    if (!canExport) {
+      return;
+    }
+
     navigator.clipboard.writeText(generatedCSS);
     toast.success('CSS copied to clipboard!');
   };
 
-  const base64Encode = (value) => {
+  const handleDownload = () => {
+    if (!canExport) {
+      return;
+    }
+
+    downloadFile(generatedCSS, 'theme.css');
+  };
+
+  const handleDownloadSkele = async () => {
+    if (!canExport) {
+      return;
+    }
+
+    setIsPackaging(true);
     try {
-      return btoa(unescape(encodeURIComponent(value)));
-    } catch (error) {
-      console.error('Failed to encode content for .skele package', error);
-      return btoa(value);
+      const { buildSkelePackageV2 } = await loadPackageBuilder();
+      const payload = buildSkelePackageV2(generatedCSS, 'Skelekit Export');
+      downloadFile(
+        JSON.stringify(payload, null, 2),
+        'skelementor-theme.skele',
+        'application/json;charset=utf-8'
+      );
+      toast.success('Skelementor v2 package downloaded');
+    } finally {
+      setIsPackaging(false);
     }
   };
 
-  const handleDownload = () => {
-    const fileName = activeTab === 'skelementor' ? `skelementor-theme.css` : `theme.css`;
-    downloadFile(generatedCSS, fileName);
-  };
+  if (typeof document === 'undefined') {
+    return null;
+  }
 
-  const handleDownloadSkele = () => {
-    const payload = {
-      version: '1.0',
-      format: 'skelementor-css-package',
-      source: 'Skelekit Export',
-      created_at: new Date().toISOString(),
-      payload: {
-        encoding: 'base64',
-        css: base64Encode(generatedCSS)
-      }
-    };
-
-    downloadFile(
-      JSON.stringify(payload, null, 2),
-      'skelementor-theme.skele',
-      'application/json;charset=utf-8'
-    );
-    toast.success('.skele package downloaded');
-  };
-
-  return (
+  return ReactDOM.createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
-          <motion.div
+          <motion.button
+            type="button"
+            aria-label="Close export panel"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/40 z-40"
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-40 bg-black/42 backdrop-blur-[1px]"
             onClick={onClose}
           />
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed top-0 right-0 h-full w-full max-w-lg bg-white border-l border-neutral-300 shadow-2xl z-50 flex flex-col"
-          >
-            <header className="flex flex-col border-b border-neutral-200 shrink-0">
-              <div className="flex items-center justify-between p-4">
-                <h2 className="text-lg font-semibold text-neutral-800">Export CSS</h2>
-                <button
-                  onClick={onClose}
-                  className="p-2 text-neutral-600 rounded-md hover:bg-neutral-100 hover:text-neutral-800 transition-colors"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-              <div className="flex border-t border-neutral-200">
-                <button
-                  onClick={() => setActiveTab('normal')}
-                  className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-                    activeTab === 'normal'
-                      ? 'bg-neutral-100 text-neutral-800 border-b-2 border-neutral-800'
-                      : 'text-neutral-600 hover:text-neutral-800 hover:bg-neutral-50'
-                  }`}
-                >
-                  Normal
-                </button>
-                <button
-                  onClick={() => setActiveTab('skelementor')}
-                  className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-                    activeTab === 'skelementor'
-                      ? 'bg-neutral-100 text-neutral-800 border-b-2 border-neutral-800'
-                      : 'text-neutral-600 hover:text-neutral-800 hover:bg-neutral-50'
-                  }`}
-                >
-                  Skelementor Plugin
-                </button>
-              </div>
-            </header>
-            
-            <main className="flex-1 overflow-auto bg-white">
-              <SyntaxHighlighter
-                language="css"
-                style={prism}
-                customStyle={{
-                  background: '#ffffff',
-                  margin: 0,
-                  padding: '1rem',
-                  height: '100%',
-                  fontSize: '13px',
-                }}
-                codeTagProps={{
-                    style: {
-                        fontFamily: '"JetBrains Mono", "Fira Code", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace',
-                    }
-                }}
-              >
-                {generatedCSS}
-              </SyntaxHighlighter>
-            </main>
 
-            <footer className="p-4 border-t border-neutral-200 shrink-0">
-              <div className="flex flex-wrap justify-end gap-3">
-                <button
-                  onClick={handleCopy}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 text-neutral-700 bg-white shadow-sm hover:bg-neutral-50 transition-colors"
-                >
-                  <Copy size={16} />
-                  Copy CSS
-                </button>
-                <button
-                  onClick={handleDownload}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-neutral-900 text-white shadow hover:bg-neutral-800 transition-colors"
-                >
-                  <Download size={16} />
-                  Download CSS
-                </button>
-                {activeTab === 'skelementor' && (
+          <div className="pointer-events-none fixed inset-0 z-50 flex justify-end">
+            <motion.section
+              role="dialog"
+              aria-modal="true"
+              aria-label="Export CSS"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', stiffness: 280, damping: 34, mass: 0.9 }}
+              className="pointer-events-auto flex h-full w-full max-w-[min(100vw,48rem)] flex-col border-l border-neutral-200 bg-white shadow-2xl"
+            >
+              <header className="shrink-0 border-b border-neutral-200 bg-white/92 backdrop-blur">
+                <div className="flex items-start justify-between gap-4 px-4 py-4 sm:px-5">
+                  <div className="min-w-0">
+                    <h2 className="text-lg font-semibold text-neutral-800">
+                      Export CSS
+                    </h2>
+                    <p className="mt-1 text-sm text-neutral-500">
+                      One source of truth for CSS and `.skele` exports.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {(isGenerating || isPackaging) && (
+                      <span className="rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 text-xs font-medium text-neutral-600">
+                        {isPackaging ? 'Packaging…' : 'Refreshing…'}
+                      </span>
+                    )}
+                    <button
+                      ref={closeButtonRef}
+                      onClick={onClose}
+                      className="rounded-xl p-2 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-800"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+                </div>
+              </header>
+
+              <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
+                <div className="shrink-0 border-b border-neutral-200 px-4 py-3 sm:px-5">
+                  <div className="rounded-2xl border border-neutral-200 bg-neutral-50 px-3.5 py-3 text-sm text-neutral-700">
+                    <p className="font-medium text-neutral-800">
+                      Exported CSS is the source of truth
+                    </p>
+                    <p className="mt-1 text-neutral-600">
+                      `Download .skele` packages exactly the CSS shown below, with
+                      dynamic class and variable snapshots.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="min-h-0 flex-1 overflow-hidden bg-[radial-gradient(circle_at_top,rgba(241,245,249,0.92),rgba(255,255,255,1)_42%)]">
+                  <Suspense
+                    fallback={
+                      <div className="flex h-full flex-col gap-3 px-4 py-4 sm:px-5">
+                        <div className="h-4 w-32 rounded-full bg-neutral-200" />
+                        <div className="h-4 w-48 rounded-full bg-neutral-100" />
+                        <div className="h-4 w-40 rounded-full bg-neutral-100" />
+                        <div className="mt-2 h-4 w-60 rounded-full bg-neutral-100" />
+                        <div className="h-4 w-52 rounded-full bg-neutral-100" />
+                      </div>
+                    }
+                  >
+                    <CSSPreviewCodeView
+                      isOpen={isOpen}
+                      exportData={exportData}
+                      generatedCSS={generatedCSS}
+                      onGeneratedCSSChange={setGeneratedCSS}
+                      onGeneratingChange={setIsGenerating}
+                    />
+                  </Suspense>
+                </div>
+              </main>
+
+              <footer className="shrink-0 border-t border-neutral-200 bg-white/92 p-4 backdrop-blur sm:px-5">
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
                   <button
-                    onClick={handleDownloadSkele}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow hover:bg-blue-500 transition-colors"
+                    onClick={handleCopy}
+                    disabled={!canExport}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm font-medium text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <Copy size={16} />
+                    Copy CSS
+                  </button>
+                  <button
+                    onClick={handleDownload}
+                    disabled={!canExport}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-900 bg-neutral-900 px-4 py-2.5 text-sm font-semibold text-white shadow transition-colors hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <Download size={16} />
-                    Download .skele
+                    Download CSS
                   </button>
-                )}
-              </div>
-            </footer>
-          </motion.div>
+                  <button
+                    onClick={handleDownloadSkele}
+                    disabled={!canExport}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <Download size={16} />
+                    Download `.skele`
+                  </button>
+                </div>
+              </footer>
+            </motion.section>
+          </div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
-};
+});
 
 export default CSSPreviewPanel;

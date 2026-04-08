@@ -5,12 +5,18 @@ import EditablePill from '../ui/EditablePill';
 
 const PropertyRow = ({ property, onUpdate, onRemove, spacingVariableOptions, propertyOptions }) => {
   return (
-    <div className="flex items-center gap-3 group/row">
+    <div className="group/row flex flex-col gap-3 sm:flex-row sm:items-center">
       {/* Grid Icon */}
-      <Grid3x3 size={15} className="text-neutral-400/70 flex-shrink-0" />
+      <div className="flex items-center gap-3 sm:hidden">
+        <Grid3x3 size={15} className="flex-shrink-0 text-neutral-400/70" />
+        <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
+          Property
+        </span>
+      </div>
+      <Grid3x3 size={15} className="hidden flex-shrink-0 text-neutral-400/70 sm:block" />
       
       {/* Property Name */}
-      <div className="w-[140px] min-w-0 overflow-hidden">
+      <div className="min-w-0 overflow-hidden sm:w-[140px]">
         <EditablePill
           value={property.property}
           onChange={(prop) => onUpdate({ ...property, property: prop })}
@@ -22,10 +28,16 @@ const PropertyRow = ({ property, onUpdate, onRemove, spacingVariableOptions, pro
         />
       </div>
 
-      <span className="text-neutral-400/70 text-base flex-shrink-0">:</span>
+      <span className="hidden flex-shrink-0 text-base text-neutral-400/70 sm:block">:</span>
 
       {/* Code Icon */}
-      <Code size={15} className="text-neutral-400/70 flex-shrink-0" />
+      <div className="flex items-center gap-3 sm:hidden">
+        <Code size={15} className="flex-shrink-0 text-neutral-400/70" />
+        <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
+          Value
+        </span>
+      </div>
+      <Code size={15} className="hidden flex-shrink-0 text-neutral-400/70 sm:block" />
 
       {/* Value */}
       <div className="flex-1 min-w-0 overflow-hidden">
@@ -41,7 +53,7 @@ const PropertyRow = ({ property, onUpdate, onRemove, spacingVariableOptions, pro
       
       <button 
         onClick={onRemove} 
-        className="opacity-0 group-hover/row:opacity-100 text-neutral-400 hover:text-red-500 transition-all flex-shrink-0 p-1.5 rounded hover:bg-red-50"
+        className="self-end rounded-xl p-1.5 text-neutral-400 transition-all hover:bg-red-50 hover:text-red-500 sm:self-auto sm:opacity-0 sm:group-hover/row:opacity-100"
       >
         <X size={15} />
       </button>

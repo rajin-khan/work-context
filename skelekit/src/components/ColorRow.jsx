@@ -6,6 +6,7 @@ import { ChevronDown, Trash2, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ColorPickerPopover from './ColorPickerPopover';
 import ShadeTintGenerator from './ShadeTintGenerator';
+import ShadowGenerator from './ShadowGenerator';
 import Switch from './ui/Switch';
 import UtilityClassGenerator from './ui/UtilityClassGenerator';
 import toast from 'react-hot-toast';
@@ -214,6 +215,10 @@ const ColorRow = ({ color, onUpdate, onDelete }) => {
               format={color.format}
               config={{...color.tintsConfig, editingState: editingSwatch, setEditingState: setEditingSwatch}}
               onConfigChange={(newValues) => handleConfigChange('tints', newValues)}
+            />
+            <ShadowGenerator
+              config={color.shadowConfig || { enabled: false }}
+              onConfigChange={(newValues) => handleConfigChange('shadow', newValues)}
             />
             <div className="bg-white p-4 border-t border-neutral-200">
                 <div className="flex items-center justify-between">

@@ -34,27 +34,27 @@ const VariableGroup = ({ group, onUpdate, onRemove }) => {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="relative max-w-5xl mx-auto my-8 px-4 group"
+      className="group relative mx-auto my-8 max-w-5xl px-4"
     >
-      <div className="bg-white border border-neutral-300 rounded-xl shadow-2xl overflow-hidden">
+      <div className="overflow-hidden rounded-[24px] border border-neutral-300 bg-white shadow-xl">
         <button 
           onClick={onRemove}
-          className="absolute top-5 right-6 p-1.5 text-neutral-500 rounded-full hover:bg-neutral-100 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all z-10"
+          className="absolute top-4 right-4 z-10 rounded-full p-1.5 text-neutral-500 transition-all hover:bg-neutral-100 hover:text-red-500 sm:top-5 sm:right-6 sm:opacity-0 sm:group-hover:opacity-100"
           aria-label="Remove variable group"
         >
           <X size={18} />
         </button>
 
-        <header className="flex items-center justify-between p-6 border-b border-neutral-200">
+        <header className="flex items-center justify-between border-b border-neutral-200 p-4 sm:p-6">
           <input
             type="text"
             value={group.name}
             onChange={(e) => onUpdate({ ...group, name: e.target.value })}
-            className="text-2xl font-bold text-neutral-800 tracking-tight bg-transparent focus:outline-none focus:bg-neutral-100 rounded px-2 -mx-2"
+            className="min-w-0 flex-1 rounded-xl bg-transparent px-2 text-xl font-bold tracking-tight text-neutral-800 focus:bg-neutral-100 focus:outline-none sm:text-2xl"
           />
         </header>
 
-        <div className="p-6 space-y-3">
+        <div className="space-y-3 p-4 sm:p-6">
           <AnimatePresence>
             {group.variables.map(variable => (
               <motion.div
@@ -75,10 +75,10 @@ const VariableGroup = ({ group, onUpdate, onRemove }) => {
           </AnimatePresence>
         </div>
 
-        <footer className="px-6 py-4 border-t border-neutral-200/50">
+        <footer className="border-t border-neutral-200/50 px-4 py-4 sm:px-6">
           <button 
             onClick={handleAddVariable}
-            className="flex items-center gap-2 text-sm text-neutral-600 hover:text-neutral-800 transition-colors"
+            className="flex items-center gap-2 rounded-xl px-1 py-1 text-sm text-neutral-600 transition-colors hover:text-neutral-800"
           >
             <Plus size={16} /> Add Variable
           </button>

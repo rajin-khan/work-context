@@ -42,6 +42,25 @@ body {
 .range-slider:active::-webkit-slider-thumb { transform: scale(1.1); }
 .range-slider:active::-moz-range-thumb { transform: scale(1.1); }
 
+.range-slider.range-slider-color-picker {
+  height: 8px;
+}
+
+.range-slider.range-slider-color-picker::-webkit-slider-thumb {
+  margin-top: -4px;
+}
+
+.range-slider.range-slider-color-picker::-moz-range-track {
+  height: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 99px;
+}
+
+.range-slider.range-slider-color-picker::-moz-range-thumb {
+  border: 0;
+}
+
 /* Input[type=number] arrow hiding */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }

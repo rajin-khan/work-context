@@ -26,6 +26,8 @@ const PageRenderer = (props) => {
     handleEnableSpacing,
     isTypographyEnabled,
     handleEnableTypography,
+    isResponsiveEditing,
+    activeBreakpointPreset,
   } = props;
 
   const renderActivePage = () => {
@@ -147,15 +149,36 @@ const PageRenderer = (props) => {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activePage + isSpacingEnabled + isTypographyEnabled}
-          className="h-full"
-        >
-          {renderActivePage()}
-        </motion.div>
-      </AnimatePresence>
+    <div
+      className={`flex-1 overflow-y-auto ${
+        isResponsiveEditing
+          ? 'bg-[linear-gradient(180deg,rgba(16,185,129,0.08),rgba(249,250,251,1)_140px)]'
+          : ''
+      }`}
+    >
+      {isResponsiveEditing && activeBreakpointPreset && (
+        <div className="sticky top-0 z-10 border-b border-emerald-200 bg-emerald-50/95 px-4 py-2 text-sm text-emerald-800 backdrop-blur sm:px-6">
+          Editing {activeBreakpointPreset.label} override
+        </div>
+      )}
+      <div
+        className={`${
+          isResponsiveEditing ? 'min-h-full ring-2 ring-inset ring-emerald-300' : ''
+        }`}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activePage}
+            className={isResponsiveEditing ? 'min-h-full' : 'h-full'}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+          >
+            {renderActivePage()}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 };

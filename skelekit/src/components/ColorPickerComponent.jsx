@@ -4,6 +4,9 @@ import { CustomPicker } from 'react-color';
 import { Saturation, Hue, Alpha } from 'react-color/lib/components/common';
 import CustomSlider from './ui/CustomSlider';
 
+const PICKER_POINTER_SIZE = 16;
+const REACT_COLOR_TRACK_HEIGHT = 10;
+
 // ** THIS IS THE CHANGE: Added onChangeComplete to props **
 const CustomColorPicker = ({ rgb, hsl, hsv, onChange, onChangeComplete, format }) => {
   const showRgbSliders = ['HEX', 'HEXA', 'RGB', 'RGBA'].includes(format.toUpperCase());
@@ -41,8 +44,14 @@ const CustomColorPicker = ({ rgb, hsl, hsv, onChange, onChangeComplete, format }
 
   const DraggablePointer = () => (
     <div 
-      className="w-4 h-4 rounded-full bg-white shadow-md transform -translate-x-1/2 -translate-y-1/2"
-      style={{ boxShadow: '0 0 0 1.5px rgba(0, 0, 0, 0.5)' }}
+      className="rounded-full bg-white shadow-md"
+      style={{
+        width: `${PICKER_POINTER_SIZE}px`,
+        height: `${PICKER_POINTER_SIZE}px`,
+        marginTop: `${REACT_COLOR_TRACK_HEIGHT / 2}px`,
+        transform: 'translate(-50%, -50%)',
+        boxShadow: '0 0 0 1.5px rgba(0, 0, 0, 0.5)',
+      }}
     />
   );
   
@@ -51,7 +60,7 @@ const CustomColorPicker = ({ rgb, hsl, hsv, onChange, onChangeComplete, format }
   );
 
   const reactColorSliderStyle = {
-    height: '10px',
+    height: `${REACT_COLOR_TRACK_HEIGHT}px`,
     borderRadius: '9999px',
   };
 
@@ -67,7 +76,7 @@ const CustomColorPicker = ({ rgb, hsl, hsv, onChange, onChangeComplete, format }
         {!showHslSliders && (
           <div className="flex flex-col gap-1.5">
             <label className="text-xs text-neutral-600 font-medium px-1">Hue</label>
-            <div className="relative w-full h-4 flex items-center">
+            <div className="relative w-full h-5 flex items-center">
               {/* ** THIS IS THE CHANGE: Added onChangeComplete passthrough ** */}
               <Hue hsl={hsl} onChange={onChange} onChangeComplete={onChangeComplete} direction="horizontal" pointer={DraggablePointer} style={reactColorSliderStyle} />
             </div>
@@ -77,7 +86,7 @@ const CustomColorPicker = ({ rgb, hsl, hsv, onChange, onChangeComplete, format }
         {showAlphaSlider && (
            <div className="flex flex-col gap-1.5">
             <label className="text-xs text-neutral-600 font-medium px-1">Alpha</label>
-            <div className="relative w-full h-4 flex items-center">
+            <div className="relative w-full h-5 flex items-center">
               {/* ** THIS IS THE CHANGE: Added onChangeComplete passthrough ** */}
               <Alpha rgb={rgb} hsl={hsl} onChange={onChange} onChangeComplete={onChangeComplete} pointer={DraggablePointer} style={reactColorSliderStyle} />
             </div>
@@ -87,18 +96,18 @@ const CustomColorPicker = ({ rgb, hsl, hsv, onChange, onChangeComplete, format }
         {showRgbSliders && (
           <div className="flex flex-col gap-3 pt-1">
             {/* ** THIS IS THE CHANGE: Added onMouseUp handlers ** */}
-            <CustomSlider label="Red" value={rgb.r} max="255" onChange={(e) => handleRgbChange('r', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.red} />
-            <CustomSlider label="Green" value={rgb.g} max="255" onChange={(e) => handleRgbChange('g', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.green} />
-            <CustomSlider label="Blue" value={rgb.b} max="255" onChange={(e) => handleRgbChange('b', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.blue} />
+            <CustomSlider label="Red" value={rgb.r} max="255" onChange={(e) => handleRgbChange('r', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.red} variant="color-picker" />
+            <CustomSlider label="Green" value={rgb.g} max="255" onChange={(e) => handleRgbChange('g', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.green} variant="color-picker" />
+            <CustomSlider label="Blue" value={rgb.b} max="255" onChange={(e) => handleRgbChange('b', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.blue} variant="color-picker" />
           </div>
         )}
 
         {showHslSliders && (
           <div className="flex flex-col gap-3 pt-1">
             {/* ** THIS IS THE CHANGE: Added onMouseUp handlers ** */}
-            <CustomSlider label="Hue" value={Math.round(hsl.h)} max="360" onChange={(e) => handleHslChange('h', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.hue} />
-            <CustomSlider label="Saturation" value={Math.round(hsl.s * 100)} max="100" onChange={(e) => handleHslChange('s', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.saturation} />
-            <CustomSlider label="Lightness" value={Math.round(hsl.l * 100)} max="100" onChange={(e) => handleHslChange('l', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.lightness} />
+            <CustomSlider label="Hue" value={Math.round(hsl.h)} max="360" onChange={(e) => handleHslChange('h', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.hue} variant="color-picker" />
+            <CustomSlider label="Saturation" value={Math.round(hsl.s * 100)} max="100" onChange={(e) => handleHslChange('s', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.saturation} variant="color-picker" />
+            <CustomSlider label="Lightness" value={Math.round(hsl.l * 100)} max="100" onChange={(e) => handleHslChange('l', e.target.value)} onMouseUp={handleSliderMouseUp} style={sliderTrackStyles.lightness} variant="color-picker" />
           </div>
         )}
       </div>

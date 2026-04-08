@@ -27,21 +27,21 @@ const SelectorGroup = ({ group, onUpdate, onRemove, spacingVariableOptions, prop
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="relative max-w-6xl mx-auto my-12 px-4"
+      className="relative mx-auto my-8 max-w-6xl px-4 sm:my-12"
     >
-      <div className="bg-white border border-neutral-200/80 rounded-xl shadow-sm">
-        <header className="px-8 py-5 border-b border-neutral-200/60 bg-white">
-          <div className="flex items-center justify-between">
+      <div className="overflow-hidden rounded-[24px] border border-neutral-200/80 bg-white shadow-sm">
+        <header className="border-b border-neutral-200/60 bg-white px-4 py-4 sm:px-8 sm:py-5">
+          <div className="flex items-center justify-between gap-3">
             <input
               type="text"
               value={group.name}
               onChange={(e) => onUpdate({ ...group, name: e.target.value })}
-              className="text-xl font-semibold text-neutral-900 bg-transparent focus:outline-none focus:bg-neutral-50 rounded-lg px-3 py-1 -mx-3 -my-1 transition-colors"
+              className="min-w-0 flex-1 rounded-xl bg-transparent px-3 py-1 text-lg font-semibold text-neutral-900 transition-colors focus:bg-neutral-50 focus:outline-none sm:text-xl"
               placeholder="Group name"
             />
             <button 
               onClick={onRemove}
-              className="p-2 text-neutral-500 rounded-lg hover:bg-neutral-100 hover:text-red-500 transition-all"
+              className="rounded-xl p-2 text-neutral-500 transition-all hover:bg-neutral-100 hover:text-red-500"
               aria-label="Remove selector group"
             >
               <X size={18} />
@@ -50,7 +50,7 @@ const SelectorGroup = ({ group, onUpdate, onRemove, spacingVariableOptions, prop
         </header>
 
         {/* Column Headers */}
-        <div className="px-8 py-3.5 border-b border-neutral-200/60 bg-neutral-50/50">
+        <div className="hidden border-b border-neutral-200/60 bg-neutral-50/50 px-8 py-3.5 lg:block">
           <div className="grid grid-cols-[256px_1fr] gap-8 pr-4">
             <span className="text-xs font-semibold text-neutral-600 uppercase tracking-wider">Selector</span>
             <span className="text-xs font-semibold text-neutral-600 uppercase tracking-wider">CSS Property & Value</span>
@@ -81,10 +81,10 @@ const SelectorGroup = ({ group, onUpdate, onRemove, spacingVariableOptions, prop
         </div>
 
         {/* Add Button */}
-        <div className="px-8 py-5 border-t border-neutral-200/60 bg-neutral-50/30">
+        <div className="border-t border-neutral-200/60 bg-neutral-50/30 px-4 py-4 sm:px-8 sm:py-5">
           <button 
             onClick={handleAddRule}
-            className="flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
+            className="flex items-center gap-2 rounded-xl px-1 py-1 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900"
           >
             <Plus size={16} /> Add Selector
           </button>

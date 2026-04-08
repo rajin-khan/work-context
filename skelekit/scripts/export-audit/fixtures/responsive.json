@@ -1,0 +1,326 @@
+{
+  "colors": [
+    {
+      "id": "accent",
+      "name": "--accent",
+      "value": "#0ea5e9",
+      "format": "HEX",
+      "shadesConfig": {
+        "enabled": false,
+        "count": 0,
+        "palette": []
+      },
+      "tintsConfig": {
+        "enabled": false,
+        "count": 0,
+        "palette": []
+      },
+      "transparentConfig": {
+        "enabled": false
+      },
+      "shadowConfig": {
+        "enabled": false
+      },
+      "utilityConfig": {
+        "text": true,
+        "background": true,
+        "border": false,
+        "fill": false
+      }
+    }
+  ],
+  "spacingGroups": [
+    {
+      "id": "space-core",
+      "name": "Responsive Space",
+      "settings": {
+        "namingConvention": "space",
+        "minSize": 16,
+        "maxSize": 24,
+        "minScaleRatio": 1.2,
+        "maxScaleRatio": 1.333,
+        "baseScaleIndex": "m",
+        "negativeSteps": 1,
+        "positiveSteps": 2
+      }
+    }
+  ],
+  "isTypographyEnabled": true,
+  "typographyGroups": [
+    {
+      "id": "type-core",
+      "name": "Responsive Type",
+      "settings": {
+        "namingConvention": "text",
+        "minSize": 16,
+        "maxSize": 20,
+        "minScaleRatio": 1.2,
+        "maxScaleRatio": 1.25,
+        "baseScaleIndex": "m",
+        "negativeSteps": 1,
+        "positiveSteps": 2
+      }
+    }
+  ],
+  "typographyGeneratorConfig": [
+    {
+      "id": "type-class",
+      "className": ".audit-type-*",
+      "properties": ["font-size"],
+      "enabled": true,
+      "scaleGroupId": "type-core"
+    }
+  ],
+  "typographySelectorGroups": [
+    {
+      "id": "type-selectors",
+      "name": "Responsive Type Selectors",
+      "rules": [
+        {
+          "id": "heading-rule",
+          "selector": ".audit-title",
+          "properties": [
+            {
+              "id": "heading-size",
+              "property": "font-size",
+              "value": "var(--text-xl)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "typographyVariableGroups": [
+    {
+      "id": "type-vars",
+      "name": "Responsive Type Variables",
+      "variables": [
+        {
+          "id": "measure",
+          "name": "--measure",
+          "value": "65ch",
+          "mode": "single",
+          "minValue": 0,
+          "maxValue": 0
+        }
+      ]
+    }
+  ],
+  "generatorConfig": [
+    {
+      "id": "space-class",
+      "className": ".audit-gap-*",
+      "properties": ["gap"],
+      "enabled": true,
+      "scaleGroupId": "space-core"
+    }
+  ],
+  "selectorGroups": [
+    {
+      "id": "space-selectors",
+      "name": "Responsive Space Selectors",
+      "rules": [
+        {
+          "id": "card-rule",
+          "selector": ".audit-card",
+          "properties": [
+            {
+              "id": "card-padding",
+              "property": "padding",
+              "value": "var(--space-m)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variableGroups": [
+    {
+      "id": "space-vars",
+      "name": "Responsive Space Variables",
+      "variables": [
+        {
+          "id": "stack-gap",
+          "name": "--space-stack-gap",
+          "value": "var(--space-m)",
+          "mode": "single",
+          "minValue": 0,
+          "maxValue": 0
+        }
+      ]
+    }
+  ],
+  "isSpacingEnabled": true,
+  "customCSS": ".audit-shell {\n  min-height: 100dvh;\n}",
+  "layoutSelectorGroups": [
+    {
+      "id": "layout-selectors",
+      "name": "Responsive Layout Selectors",
+      "rules": [
+        {
+          "id": "grid-rule",
+          "selector": ".audit-grid",
+          "properties": [
+            {
+              "id": "grid-columns",
+              "property": "grid-template-columns",
+              "value": "repeat(2, minmax(0, 1fr))"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "layoutVariableGroups": [],
+  "designSelectorGroups": [],
+  "designVariableGroups": [
+    {
+      "id": "design-vars",
+      "name": "Responsive Design Variables",
+      "variables": [
+        {
+          "id": "radius-card",
+          "name": "--radius-card",
+          "value": "20px",
+          "mode": "single",
+          "minValue": 0,
+          "maxValue": 0
+        }
+      ]
+    }
+  ],
+  "selectorGroupsByBreakpoint": {
+    "mobile": [
+      {
+        "id": "mobile-space-selectors",
+        "name": "Mobile Card",
+        "rules": [
+          {
+            "id": "mobile-card-rule",
+            "selector": ".audit-card",
+            "properties": [
+              {
+                "id": "mobile-card-padding",
+                "property": "padding",
+                "value": "var(--space-s)"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "variableGroupsByBreakpoint": {
+    "mobile": [
+      {
+        "id": "mobile-space-vars",
+        "name": "Mobile Space Variables",
+        "variables": [
+          {
+            "id": "mobile-stack-gap",
+            "name": "--space-stack-gap",
+            "value": "var(--space-s)",
+            "mode": "single",
+            "minValue": 0,
+            "maxValue": 0
+          }
+        ]
+      }
+    ]
+  },
+  "typographySelectorGroupsByBreakpoint": {
+    "tablet": [
+      {
+        "id": "tablet-type-selectors",
+        "name": "Tablet Headings",
+        "rules": [
+          {
+            "id": "tablet-title-rule",
+            "selector": ".audit-title",
+            "properties": [
+              {
+                "id": "tablet-title-size",
+                "property": "font-size",
+                "value": "var(--text-l)"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "typographyVariableGroupsByBreakpoint": {},
+  "layoutSelectorGroupsByBreakpoint": {
+    "tablet": [
+      {
+        "id": "tablet-layout-selectors",
+        "name": "Tablet Grid",
+        "rules": [
+          {
+            "id": "tablet-grid-rule",
+            "selector": ".audit-grid",
+            "properties": [
+              {
+                "id": "tablet-grid-columns",
+                "property": "grid-template-columns",
+                "value": "1fr"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "layoutVariableGroupsByBreakpoint": {},
+  "designSelectorGroupsByBreakpoint": {},
+  "designVariableGroupsByBreakpoint": {
+    "mobile": [
+      {
+        "id": "mobile-design-vars",
+        "name": "Mobile Design Variables",
+        "variables": [
+          {
+            "id": "mobile-radius-card",
+            "name": "--radius-card",
+            "value": "14px",
+            "mode": "single",
+            "minValue": 0,
+            "maxValue": 0
+          }
+        ]
+      }
+    ]
+  },
+  "breakpointPresets": [
+    {
+      "id": "tablet",
+      "key": "tablet",
+      "label": "Tablet",
+      "kind": "elementor",
+      "queryType": "max",
+      "minWidth": null,
+      "maxWidth": 1024,
+      "isDefault": true,
+      "isRemovable": false,
+      "isSyncSafe": true,
+      "isEditable": false,
+      "isActive": true,
+      "suffix": "--on-m"
+    },
+    {
+      "id": "mobile",
+      "key": "mobile",
+      "label": "Mobile",
+      "kind": "elementor",
+      "queryType": "max",
+      "minWidth": null,
+      "maxWidth": 767,
+      "isDefault": true,
+      "isRemovable": false,
+      "isSyncSafe": true,
+      "isEditable": false,
+      "isActive": true,
+      "suffix": "--on-xs"
+    }
+  ]
+}

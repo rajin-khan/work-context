@@ -1,0 +1,309 @@
+{
+  "colors": [
+    {
+      "id": "brand-primary",
+      "name": "--brand-primary",
+      "value": "#2563eb",
+      "format": "HEX",
+      "shadesConfig": {
+        "enabled": true,
+        "count": 2,
+        "palette": ["#1d4ed8", "#1e40af"]
+      },
+      "tintsConfig": {
+        "enabled": true,
+        "count": 1,
+        "palette": ["#60a5fa"]
+      },
+      "transparentConfig": {
+        "enabled": true
+      },
+      "shadowConfig": {
+        "enabled": true
+      },
+      "utilityConfig": {
+        "text": true,
+        "background": true,
+        "border": true,
+        "fill": false
+      }
+    },
+    {
+      "id": "ink",
+      "name": "--ink",
+      "value": "#0f172a",
+      "format": "HEX",
+      "shadesConfig": {
+        "enabled": false,
+        "count": 0,
+        "palette": []
+      },
+      "tintsConfig": {
+        "enabled": false,
+        "count": 0,
+        "palette": []
+      },
+      "transparentConfig": {
+        "enabled": false
+      },
+      "shadowConfig": {
+        "enabled": false
+      },
+      "utilityConfig": {
+        "text": true,
+        "background": false,
+        "border": false,
+        "fill": false
+      }
+    }
+  ],
+  "spacingGroups": [
+    {
+      "id": "space-core",
+      "name": "Core Space",
+      "settings": {
+        "namingConvention": "space",
+        "minSize": 16,
+        "maxSize": 24,
+        "minScaleRatio": 1.2,
+        "maxScaleRatio": 1.333,
+        "baseScaleIndex": "m",
+        "negativeSteps": 1,
+        "positiveSteps": 2
+      }
+    }
+  ],
+  "isTypographyEnabled": true,
+  "typographyGroups": [
+    {
+      "id": "type-core",
+      "name": "Core Type",
+      "settings": {
+        "namingConvention": "text",
+        "minSize": 16,
+        "maxSize": 20,
+        "minScaleRatio": 1.2,
+        "maxScaleRatio": 1.25,
+        "baseScaleIndex": "m",
+        "negativeSteps": 1,
+        "positiveSteps": 2
+      }
+    }
+  ],
+  "typographyGeneratorConfig": [
+    {
+      "id": "type-class",
+      "className": ".audit-text-*",
+      "properties": ["font-size"],
+      "enabled": true,
+      "scaleGroupId": "type-core"
+    }
+  ],
+  "typographySelectorGroups": [
+    {
+      "id": "type-selectors",
+      "name": "Audit Type Selectors",
+      "rules": [
+        {
+          "id": "body-rule",
+          "selector": "body",
+          "properties": [
+            {
+              "id": "body-font",
+              "property": "font-family",
+              "value": "var(--font-family-sans)"
+            },
+            {
+              "id": "body-color",
+              "property": "color",
+              "value": "var(--ink)"
+            }
+          ]
+        },
+        {
+          "id": "heading-rule",
+          "selector": ".audit-heading",
+          "properties": [
+            {
+              "id": "heading-size",
+              "property": "font-size",
+              "value": "var(--text-xl)"
+            },
+            {
+              "id": "heading-tracking",
+              "property": "letter-spacing",
+              "value": "var(--tracking-display)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "typographyVariableGroups": [
+    {
+      "id": "type-vars",
+      "name": "Audit Type Variables",
+      "variables": [
+        {
+          "id": "font-family-sans",
+          "name": "--font-family-sans",
+          "value": "Inter",
+          "mode": "single",
+          "minValue": 0,
+          "maxValue": 0
+        },
+        {
+          "id": "tracking-display",
+          "name": "--tracking-display",
+          "value": "0.02em",
+          "mode": "single",
+          "minValue": 0,
+          "maxValue": 0
+        }
+      ]
+    }
+  ],
+  "generatorConfig": [
+    {
+      "id": "space-class",
+      "className": ".audit-pad-*",
+      "properties": ["padding"],
+      "enabled": true,
+      "scaleGroupId": "space-core"
+    }
+  ],
+  "selectorGroups": [
+    {
+      "id": "space-selectors",
+      "name": "Audit Space Selectors",
+      "rules": [
+        {
+          "id": "audit-stack-rule",
+          "selector": ".audit-stack",
+          "properties": [
+            {
+              "id": "stack-gap",
+              "property": "gap",
+              "value": "var(--space-stack-gap)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variableGroups": [
+    {
+      "id": "space-vars",
+      "name": "Audit Space Variables",
+      "variables": [
+        {
+          "id": "stack-gap",
+          "name": "--space-stack-gap",
+          "value": "var(--space-m)",
+          "mode": "single",
+          "minValue": 0,
+          "maxValue": 0
+        },
+        {
+          "id": "hero-gap",
+          "name": "--space-hero-gap",
+          "value": "",
+          "mode": "minmax",
+          "minValue": 32,
+          "maxValue": 96
+        }
+      ]
+    }
+  ],
+  "isSpacingEnabled": true,
+  "customCSS": ".custom-audit {\n  isolation: isolate;\n}",
+  "layoutSelectorGroups": [
+    {
+      "id": "layout-selectors",
+      "name": "Audit Layout Selectors",
+      "rules": [
+        {
+          "id": "container-rule",
+          "selector": ".audit-container",
+          "properties": [
+            {
+              "id": "container-max",
+              "property": "max-width",
+              "value": "var(--content-max)"
+            },
+            {
+              "id": "container-margin",
+              "property": "margin-inline",
+              "value": "auto"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "layoutVariableGroups": [
+    {
+      "id": "layout-vars",
+      "name": "Audit Layout Variables",
+      "variables": [
+        {
+          "id": "content-max",
+          "name": "--content-max",
+          "value": "72rem",
+          "mode": "single",
+          "minValue": 0,
+          "maxValue": 0
+        }
+      ]
+    }
+  ],
+  "designSelectorGroups": [
+    {
+      "id": "design-selectors",
+      "name": "Audit Design Selectors",
+      "rules": [
+        {
+          "id": "card-rule",
+          "selector": ".audit-card",
+          "properties": [
+            {
+              "id": "card-radius",
+              "property": "border-radius",
+              "value": "var(--radius-card)"
+            },
+            {
+              "id": "card-border",
+              "property": "border-color",
+              "value": "var(--brand-primary)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "designVariableGroups": [
+    {
+      "id": "design-vars",
+      "name": "Audit Design Variables",
+      "variables": [
+        {
+          "id": "radius-card",
+          "name": "--radius-card",
+          "value": "18px",
+          "mode": "single",
+          "minValue": 0,
+          "maxValue": 0
+        }
+      ]
+    }
+  ],
+  "selectorGroupsByBreakpoint": {},
+  "variableGroupsByBreakpoint": {},
+  "typographySelectorGroupsByBreakpoint": {},
+  "typographyVariableGroupsByBreakpoint": {},
+  "layoutSelectorGroupsByBreakpoint": {},
+  "layoutVariableGroupsByBreakpoint": {},
+  "designSelectorGroupsByBreakpoint": {},
+  "designVariableGroupsByBreakpoint": {},
+  "breakpointPresets": []
+}

@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "check:framework": "node scripts/check-framework-parity.mjs",
+    "check:export-audit": "node scripts/check-export-audit.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

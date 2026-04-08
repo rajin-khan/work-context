@@ -1,32 +1,32 @@
 // src/App.jsx
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import CSSPreviewPanel from './components/CSSPreviewPanel';
+import CSSPreviewPanel, {
+  preloadCSSPreviewPanel,
+} from './components/CSSPreviewPanel';
 import PageRenderer from './components/PageRenderer';
 import Modal from './components/ui/Modal';
 import ComponentEditor from './components/components/ComponentEditor';
+import BreakpointToolbar from './components/breakpoints/BreakpointToolbar';
+import BreakpointManagerModal from './components/breakpoints/BreakpointManagerModal';
 import { initialClassDefinitions } from './components/spacing/ClassGenerator';
 import { initialTypographyClassDefinitions } from './components/typography/TypographyClassGenerator';
 import { generateSpacingScale } from './utils/spacingCalculator';
-import { nanoid } from 'nanoid';
-import { Search, Grid2X2 } from 'lucide-react';
-import LoadingScreen from './pages/LoadingScreen';
 import {
-  skelementorColorGroups,
-  skelementorSpacingGroups,
-  skelementorTypographyGroups,
-  skelementorDesignVariableGroups,
-  skelementorComponents,
-  skelementorLayoutVariableGroups,
-  skelementorLayoutSelectorGroups,
-  skelementorDesignSelectorGroups,
-  skelementorTypographySelectorGroups,
-  skelementorTypographyVariableGroups,
-  skelementorSpacingSelectorGroups,
-  skelementorSpacingVariableGroups,
-  skelementorCustomCSS
-} from './presets/skelementorPreset';
+  ALL_BREAKPOINTS_ID,
+  DEFAULT_PAGE_VIEWPORT_BY_PAGE,
+  buildDefaultBreakpointPresets,
+  getActiveBreakpointPresets,
+  getBreakpointPresetById,
+  getResponsiveCollection,
+  isResponsivePage,
+  removeResponsiveCollection,
+  replaceResponsiveCollection,
+} from './utils/breakpoints';
+import { migrateWorkspaceData } from './utils/workspaceMigration';
+import { nanoid } from 'nanoid';
+import LoadingScreen from './pages/LoadingScreen';
 
 const defaultSpacingSettings = {
   namingConvention: 'space', minSize: 16, maxSize: 28, minScaleRatio: 1.25,
@@ -39,8 +39,11 @@ const defaultTypographySettings = {
 };
 
 const LOCAL_STORAGE_KEY = 'skelekit-workspace';
+const WORKSPACE_PERSIST_DEBOUNCE_MS = 220;
+const loadSkelementorPreset = () => import('./presets/skelementorPreset');
 
 function App() {
+  const previewButtonRef = useRef(null);
   const [workspaceLoaded, setWorkspaceLoaded] = useState(false);
   const [colorGroups, setColorGroups] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -56,12 +59,25 @@ function App() {
   const [components, setComponents] = useState([]);
   const [draftComponent, setDraftComponent] = useState(null);
   const [selectorGroups, setSelectorGroups] = useState([]);
+  const [selectorGroupsByBreakpoint, setSelectorGroupsByBreakpoint] = useState({});
   const [variableGroups, setVariableGroups] = useState([]);
+  const [variableGroupsByBreakpoint, setVariableGroupsByBreakpoint] = useState({});
   const [layoutSelectorGroups, setLayoutSelectorGroups] = useState([]);
+  const [layoutSelectorGroupsByBreakpoint, setLayoutSelectorGroupsByBreakpoint] = useState({});
   const [layoutVariableGroups, setLayoutVariableGroups] = useState([]);
+  const [layoutVariableGroupsByBreakpoint, setLayoutVariableGroupsByBreakpoint] = useState({});
   const [designSelectorGroups, setDesignSelectorGroups] = useState([]);
+  const [designSelectorGroupsByBreakpoint, setDesignSelectorGroupsByBreakpoint] = useState({});
   const [designVariableGroups, setDesignVariableGroups] = useState([]);
+  const [designVariableGroupsByBreakpoint, setDesignVariableGroupsByBreakpoint] = useState({});
+  const [breakpointPresets, setBreakpointPresets] = useState(() => buildDefaultBreakpointPresets());
+  const [pageViewportByPage, setPageViewportByPage] = useState(
+    DEFAULT_PAGE_VIEWPORT_BY_PAGE
+  );
+  const [isBreakpointManagerOpen, setIsBreakpointManagerOpen] = useState(false);
   const [customCSS, setCustomCSS] = useState('/* Your custom styles go here */');
+  const [typographySelectorGroupsByBreakpoint, setTypographySelectorGroupsByBreakpoint] = useState({});
+  const [typographyVariableGroupsByBreakpoint, setTypographyVariableGroupsByBreakpoint] = useState({});
 
   // --- START OF THE FIX: LOCALSTORAGE LOGIC ---
 
@@ -70,7 +86,7 @@ function App() {
     const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (savedData) {
       try {
-        const parsedData = JSON.parse(savedData);
+        const parsedData = migrateWorkspaceData(JSON.parse(savedData));
         setColorGroups(parsedData.colorGroups || []);
         setActivePage(parsedData.activePage || 'Colors');
         setIsSpacingEnabled(parsedData.isSpacingEnabled || false);
@@ -83,11 +99,37 @@ function App() {
         setTypographyVariableGroups(parsedData.typographyVariableGroups || []);
         setComponents(parsedData.components || []);
         setSelectorGroups(parsedData.selectorGroups || []);
+        setSelectorGroupsByBreakpoint(parsedData.selectorGroupsByBreakpoint || {});
         setVariableGroups(parsedData.variableGroups || []);
+        setVariableGroupsByBreakpoint(parsedData.variableGroupsByBreakpoint || {});
         setLayoutSelectorGroups(parsedData.layoutSelectorGroups || []);
+        setLayoutSelectorGroupsByBreakpoint(
+          parsedData.layoutSelectorGroupsByBreakpoint || {}
+        );
         setLayoutVariableGroups(parsedData.layoutVariableGroups || []);
+        setLayoutVariableGroupsByBreakpoint(
+          parsedData.layoutVariableGroupsByBreakpoint || {}
+        );
         setDesignSelectorGroups(parsedData.designSelectorGroups || []);
+        setDesignSelectorGroupsByBreakpoint(
+          parsedData.designSelectorGroupsByBreakpoint || {}
+        );
         setDesignVariableGroups(parsedData.designVariableGroups || []);
+        setDesignVariableGroupsByBreakpoint(
+          parsedData.designVariableGroupsByBreakpoint || {}
+        );
+        setTypographySelectorGroupsByBreakpoint(
+          parsedData.typographySelectorGroupsByBreakpoint || {}
+        );
+        setTypographyVariableGroupsByBreakpoint(
+          parsedData.typographyVariableGroupsByBreakpoint || {}
+        );
+        setBreakpointPresets(
+          parsedData.breakpointPresets || buildDefaultBreakpointPresets()
+        );
+        setPageViewportByPage(
+          parsedData.pageViewportByPage || DEFAULT_PAGE_VIEWPORT_BY_PAGE
+        );
         setCustomCSS(parsedData.customCSS || '/* Your custom styles go here */');
         
         setWorkspaceLoaded(true); // Bypass the loading screen
@@ -98,47 +140,200 @@ function App() {
     }
   }, []); // Empty array ensures this runs only once on mount
 
+  const workspaceData = useMemo(
+    () => ({
+      colorGroups,
+      activePage,
+      isSpacingEnabled,
+      spacingGroups,
+      generatorConfig,
+      isTypographyEnabled,
+      typographyGroups,
+      typographyGeneratorConfig,
+      typographySelectorGroups,
+      typographyVariableGroups,
+      components,
+      selectorGroups,
+      selectorGroupsByBreakpoint,
+      variableGroups,
+      variableGroupsByBreakpoint,
+      layoutSelectorGroups,
+      layoutSelectorGroupsByBreakpoint,
+      layoutVariableGroups,
+      layoutVariableGroupsByBreakpoint,
+      designSelectorGroups,
+      designSelectorGroupsByBreakpoint,
+      designVariableGroups,
+      designVariableGroupsByBreakpoint,
+      customCSS,
+      breakpointPresets,
+      pageViewportByPage,
+      typographySelectorGroupsByBreakpoint,
+      typographyVariableGroupsByBreakpoint,
+    }),
+    [
+      colorGroups,
+      activePage,
+      isSpacingEnabled,
+      spacingGroups,
+      generatorConfig,
+      isTypographyEnabled,
+      typographyGroups,
+      typographyGeneratorConfig,
+      typographySelectorGroups,
+      typographyVariableGroups,
+      components,
+      selectorGroups,
+      selectorGroupsByBreakpoint,
+      variableGroups,
+      variableGroupsByBreakpoint,
+      layoutSelectorGroups,
+      layoutSelectorGroupsByBreakpoint,
+      layoutVariableGroups,
+      layoutVariableGroupsByBreakpoint,
+      designSelectorGroups,
+      designSelectorGroupsByBreakpoint,
+      designVariableGroups,
+      designVariableGroupsByBreakpoint,
+      customCSS,
+      breakpointPresets,
+      pageViewportByPage,
+      typographySelectorGroupsByBreakpoint,
+      typographyVariableGroupsByBreakpoint,
+    ]
+  );
+
   // Effect to SAVE data to localStorage whenever any state changes
   useEffect(() => {
-    if (workspaceLoaded) {
-      const workspaceData = {
-        colorGroups, activePage, isSpacingEnabled, spacingGroups, generatorConfig,
-        isTypographyEnabled, typographyGroups, typographyGeneratorConfig,
-        typographySelectorGroups, typographyVariableGroups, components, selectorGroups,
-        variableGroups, layoutSelectorGroups, layoutVariableGroups, designSelectorGroups,
-        designVariableGroups, customCSS
-      };
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(workspaceData));
+    if (!workspaceLoaded) {
+      return undefined;
     }
-  }, [
-    workspaceLoaded, colorGroups, activePage, isSpacingEnabled, spacingGroups,
-    generatorConfig, isTypographyEnabled, typographyGroups, typographyGeneratorConfig,
-    typographySelectorGroups, typographyVariableGroups, components, selectorGroups,
-    variableGroups, layoutSelectorGroups, layoutVariableGroups, designSelectorGroups,
-    designVariableGroups, customCSS
-  ]);
+
+    let idleId = null;
+    const persistWorkspace = () => {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(workspaceData));
+    };
+
+    const timeoutId = window.setTimeout(() => {
+      if ('requestIdleCallback' in window) {
+        idleId = window.requestIdleCallback(persistWorkspace, {
+          timeout: WORKSPACE_PERSIST_DEBOUNCE_MS,
+        });
+        return;
+      }
+
+      persistWorkspace();
+    }, WORKSPACE_PERSIST_DEBOUNCE_MS);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+
+      if (idleId !== null && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId);
+      }
+    };
+  }, [workspaceLoaded, workspaceData]);
 
   // --- END OF THE FIX ---
 
-  const handleWorkspaceSelect = (choice) => {
+  const handleWorkspaceSelect = async (choice) => {
+    const defaultBreakpointPresets = buildDefaultBreakpointPresets();
     if (choice === 'preset') {
-      setColorGroups(skelementorColorGroups);
-      setSpacingGroups(skelementorSpacingGroups);
-      setTypographyGroups(skelementorTypographyGroups);
-      setDesignVariableGroups(skelementorDesignVariableGroups);
-      setComponents(skelementorComponents);
-      setIsSpacingEnabled(true);
-      setIsTypographyEnabled(true);
-      setGeneratorConfig(prev => prev.map(gen => ({ ...gen, scaleGroupId: skelementorSpacingGroups[0]?.id || null })));
-      setTypographyGeneratorConfig(prev => prev.map(gen => ({ ...gen, scaleGroupId: skelementorTypographyGroups[0]?.id || null })));
-      setLayoutVariableGroups(skelementorLayoutVariableGroups);
-      setLayoutSelectorGroups(skelementorLayoutSelectorGroups);
-      setDesignSelectorGroups(skelementorDesignSelectorGroups);
-      setTypographySelectorGroups(skelementorTypographySelectorGroups);
-      setTypographyVariableGroups(skelementorTypographyVariableGroups);
-      setSelectorGroups(skelementorSpacingSelectorGroups);
-      setVariableGroups(skelementorSpacingVariableGroups);
-      setCustomCSS(skelementorCustomCSS);
+      const preset = await loadSkelementorPreset();
+      const legacySpacingGroups = preset.skelementorSpacingGroups || [];
+      const legacyTypographyGroups = preset.skelementorTypographyGroups || [];
+      const workspace =
+        preset.buildSkelementorPresetWorkspace?.() ||
+        preset.skelementorWorkspace || {
+          colorGroups: preset.skelementorColorGroups || [],
+          isSpacingEnabled: true,
+          spacingGroups: legacySpacingGroups,
+          isTypographyEnabled: true,
+          typographyGroups: legacyTypographyGroups,
+          typographySelectorGroups: preset.skelementorTypographySelectorGroups || [],
+          typographyVariableGroups: preset.skelementorTypographyVariableGroups || [],
+          components: preset.skelementorComponents || [],
+          selectorGroups: preset.skelementorSpacingSelectorGroups || [],
+          selectorGroupsByBreakpoint: {},
+          variableGroups: preset.skelementorSpacingVariableGroups || [],
+          variableGroupsByBreakpoint: {},
+          layoutSelectorGroups: preset.skelementorLayoutSelectorGroups || [],
+          layoutSelectorGroupsByBreakpoint: {},
+          layoutVariableGroups: preset.skelementorLayoutVariableGroups || [],
+          layoutVariableGroupsByBreakpoint: {},
+          designSelectorGroups: preset.skelementorDesignSelectorGroups || [],
+          designSelectorGroupsByBreakpoint: {},
+          designVariableGroups: preset.skelementorDesignVariableGroups || [],
+          designVariableGroupsByBreakpoint: {},
+          typographySelectorGroupsByBreakpoint: {},
+          typographyVariableGroupsByBreakpoint: {},
+          breakpointPresets: defaultBreakpointPresets,
+          pageViewportByPage: DEFAULT_PAGE_VIEWPORT_BY_PAGE,
+          customCSS:
+            preset.skelementorCustomCSS || '/* Your custom styles go here */',
+        };
+
+      setColorGroups(workspace.colorGroups || []);
+      setSpacingGroups(workspace.spacingGroups || []);
+      setTypographyGroups(workspace.typographyGroups || []);
+      setDesignVariableGroups(workspace.designVariableGroups || []);
+      setComponents(workspace.components || []);
+      setIsSpacingEnabled(workspace.isSpacingEnabled || false);
+      setIsTypographyEnabled(workspace.isTypographyEnabled || false);
+      setGeneratorConfig(
+        (workspace.generatorConfig?.length
+          ? workspace.generatorConfig
+          : null) ||
+          initialClassDefinitions.map((definition) => ({
+            ...definition,
+            enabled: true,
+            scaleGroupId: null,
+          }))
+      );
+      setTypographyGeneratorConfig(
+        (workspace.typographyGeneratorConfig?.length
+          ? workspace.typographyGeneratorConfig
+          : null) ||
+          initialTypographyClassDefinitions.map((definition) => ({
+            ...definition,
+            enabled: true,
+            scaleGroupId: null,
+          }))
+      );
+      setLayoutVariableGroups(workspace.layoutVariableGroups || []);
+      setLayoutSelectorGroups(workspace.layoutSelectorGroups || []);
+      setDesignSelectorGroups(workspace.designSelectorGroups || []);
+      setTypographySelectorGroups(workspace.typographySelectorGroups || []);
+      setTypographyVariableGroups(workspace.typographyVariableGroups || []);
+      setSelectorGroups(workspace.selectorGroups || []);
+      setVariableGroups(workspace.variableGroups || []);
+      setSelectorGroupsByBreakpoint(workspace.selectorGroupsByBreakpoint || {});
+      setVariableGroupsByBreakpoint(workspace.variableGroupsByBreakpoint || {});
+      setLayoutSelectorGroupsByBreakpoint(
+        workspace.layoutSelectorGroupsByBreakpoint || {}
+      );
+      setLayoutVariableGroupsByBreakpoint(
+        workspace.layoutVariableGroupsByBreakpoint || {}
+      );
+      setDesignSelectorGroupsByBreakpoint(
+        workspace.designSelectorGroupsByBreakpoint || {}
+      );
+      setDesignVariableGroupsByBreakpoint(
+        workspace.designVariableGroupsByBreakpoint || {}
+      );
+      setTypographySelectorGroupsByBreakpoint(
+        workspace.typographySelectorGroupsByBreakpoint || {}
+      );
+      setTypographyVariableGroupsByBreakpoint(
+        workspace.typographyVariableGroupsByBreakpoint || {}
+      );
+      setBreakpointPresets(
+        workspace.breakpointPresets || defaultBreakpointPresets
+      );
+      setPageViewportByPage(
+        workspace.pageViewportByPage || DEFAULT_PAGE_VIEWPORT_BY_PAGE
+      );
+      setCustomCSS(workspace.customCSS || '/* Your custom styles go here */');
     }
     // If 'blank', we just reset the state to defaults
     else {
@@ -149,11 +344,110 @@ function App() {
         setLayoutVariableGroups([]); setLayoutSelectorGroups([]); setDesignSelectorGroups([]);
         setTypographySelectorGroups([]); setTypographyVariableGroups([]);
         setSelectorGroups([]); setVariableGroups([]); setCustomCSS('/* Your custom styles go here */');
+        setSelectorGroupsByBreakpoint({}); setVariableGroupsByBreakpoint({});
+        setLayoutSelectorGroupsByBreakpoint({}); setLayoutVariableGroupsByBreakpoint({});
+        setDesignSelectorGroupsByBreakpoint({}); setDesignVariableGroupsByBreakpoint({});
+        setTypographySelectorGroupsByBreakpoint({}); setTypographyVariableGroupsByBreakpoint({});
+    }
+    if (choice !== 'preset') {
+      setBreakpointPresets(defaultBreakpointPresets);
+      setPageViewportByPage(DEFAULT_PAGE_VIEWPORT_BY_PAGE);
     }
     setWorkspaceLoaded(true);
   };
+
+  const getViewportForPage = (pageId) =>
+    pageViewportByPage[pageId] || ALL_BREAKPOINTS_ID;
+
+  const updatePageViewport = (pageId, viewportId) => {
+    setPageViewportByPage((prev) => ({
+      ...prev,
+      [pageId]: viewportId,
+    }));
+  };
+
+  const applyResponsiveCollectionUpdate = (
+    pageId,
+    setBaseCollection,
+    setCollectionMap,
+    updater
+  ) => {
+    const viewport = getViewportForPage(pageId);
+    if (viewport === ALL_BREAKPOINTS_ID) {
+      setBaseCollection((prev) => updater(prev));
+      return;
+    }
+
+    setCollectionMap((prev) =>
+      replaceResponsiveCollection(prev, viewport, updater(prev[viewport] || []))
+    );
+  };
+
+  const buildSelectorGroup = ({
+    name,
+    selector,
+    property = '',
+    value = '',
+  }) => ({
+    id: nanoid(),
+    name,
+    rules: [
+      {
+        id: nanoid(),
+        selector,
+        properties: [{ id: nanoid(), property, value }],
+      },
+    ],
+  });
+
+  const buildVariableGroup = ({ name, variableName, value = '' }) => ({
+    id: nanoid(),
+    name,
+    variables: [
+      {
+        id: nanoid(),
+        name: variableName,
+        value,
+        mode: 'single',
+        minValue: 0,
+        maxValue: 0,
+      },
+    ],
+  });
+
+  const clearBreakpointData = (breakpointId) => {
+    setSelectorGroupsByBreakpoint((prev) => removeResponsiveCollection(prev, breakpointId));
+    setVariableGroupsByBreakpoint((prev) => removeResponsiveCollection(prev, breakpointId));
+    setTypographySelectorGroupsByBreakpoint((prev) =>
+      removeResponsiveCollection(prev, breakpointId)
+    );
+    setTypographyVariableGroupsByBreakpoint((prev) =>
+      removeResponsiveCollection(prev, breakpointId)
+    );
+    setLayoutSelectorGroupsByBreakpoint((prev) =>
+      removeResponsiveCollection(prev, breakpointId)
+    );
+    setLayoutVariableGroupsByBreakpoint((prev) =>
+      removeResponsiveCollection(prev, breakpointId)
+    );
+    setDesignSelectorGroupsByBreakpoint((prev) =>
+      removeResponsiveCollection(prev, breakpointId)
+    );
+    setDesignVariableGroupsByBreakpoint((prev) =>
+      removeResponsiveCollection(prev, breakpointId)
+    );
+    setPageViewportByPage((prev) =>
+      Object.fromEntries(
+        Object.entries(prev).map(([pageId, viewportId]) => [
+          pageId,
+          viewportId === breakpointId ? ALL_BREAKPOINTS_ID : viewportId,
+        ])
+      )
+    );
+  };
   
   const allColorVariables = useMemo(() => {
+    const alphaSteps = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90];
     return colorGroups.flatMap(group =>
       group.colors.flatMap(color => {
         const vars = [{ label: `var(${color.name})`, value: `var(${color.name})` }];
@@ -166,6 +460,13 @@ function App() {
         if (color.tintsConfig?.enabled) {
           color.tintsConfig.palette.forEach((_, i) => {
             const varName = `${color.name}-l-${i + 1}`;
+            vars.push({ label: `var(${varName})`, value: `var(${varName})` });
+          });
+        }
+        if (color.shadowConfig?.enabled) {
+          const colorBaseName = color.name.replace(/^--/, '');
+          alphaSteps.forEach(step => {
+            const varName = `--shadow-${colorBaseName}-${step}`;
             vars.push({ label: `var(${varName})`, value: `var(${varName})` });
           });
         }
@@ -300,52 +601,62 @@ function App() {
     handleUpdateTypographyGroup(groupId, { [key]: newSteps });
   };
   const handleAddTypographySelectorGroup = () =>
-    setTypographySelectorGroups((prev) => [
-      ...prev,
-      {
-        id: nanoid(),
-        name: 'New Type Selector Group',
-        rules: [
-          {
-            id: nanoid(),
-            selector: '.heading-1',
-            properties: [
-              { id: nanoid(), property: 'font-size', value: 'var(--text-xl)' },
-            ],
-          },
-        ],
-      },
-    ]);
+    applyResponsiveCollectionUpdate(
+      'Typography Selectors',
+      setTypographySelectorGroups,
+      setTypographySelectorGroupsByBreakpoint,
+      (prev) => [
+        ...prev,
+        buildSelectorGroup({
+          name: 'New Type Selector Group',
+          selector: '.heading-1',
+          property: 'font-size',
+          value: 'var(--text-xl)',
+        }),
+      ]
+    );
   const handleUpdateTypographySelectorGroup = (updatedGroup) =>
-    setTypographySelectorGroups((prev) =>
-      prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
+    applyResponsiveCollectionUpdate(
+      'Typography Selectors',
+      setTypographySelectorGroups,
+      setTypographySelectorGroupsByBreakpoint,
+      (prev) => prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
     );
   const handleRemoveTypographySelectorGroup = (id) =>
-    setTypographySelectorGroups((prev) => prev.filter((g) => g.id !== id));
+    applyResponsiveCollectionUpdate(
+      'Typography Selectors',
+      setTypographySelectorGroups,
+      setTypographySelectorGroupsByBreakpoint,
+      (prev) => prev.filter((g) => g.id !== id)
+    );
   const handleAddTypographyVariableGroup = () =>
-    setTypographyVariableGroups((prev) => [
-      ...prev,
-      {
-        id: nanoid(),
-        name: 'New Type Variable Group',
-        variables: [
-          {
-            id: nanoid(),
-            name: '--font-weight-bold',
-            value: '700',
-            mode: 'single',
-            minValue: 0,
-            maxValue: 0,
-          },
-        ],
-      },
-    ]);
+    applyResponsiveCollectionUpdate(
+      'Typography Variables',
+      setTypographyVariableGroups,
+      setTypographyVariableGroupsByBreakpoint,
+      (prev) => [
+        ...prev,
+        buildVariableGroup({
+          name: 'New Type Variable Group',
+          variableName: '--font-weight-bold',
+          value: '700',
+        }),
+      ]
+    );
   const handleUpdateTypographyVariableGroup = (updatedGroup) =>
-    setTypographyVariableGroups((prev) =>
-      prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
+    applyResponsiveCollectionUpdate(
+      'Typography Variables',
+      setTypographyVariableGroups,
+      setTypographyVariableGroupsByBreakpoint,
+      (prev) => prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
     );
   const handleRemoveTypographyVariableGroup = (id) =>
-    setTypographyVariableGroups((prev) => prev.filter((g) => g.id !== id));
+    applyResponsiveCollectionUpdate(
+      'Typography Variables',
+      setTypographyVariableGroups,
+      setTypographyVariableGroupsByBreakpoint,
+      (prev) => prev.filter((g) => g.id !== id)
+    );
 
   const handleEnableSpacing = () => {
     if (spacingGroups.length === 0) {
@@ -743,142 +1054,345 @@ function App() {
   const handleRemoveClass = (id) =>
     setGeneratorConfig((prev) => prev.filter((item) => item.id !== id));
   const handleAddSelectorGroup = () =>
-    setSelectorGroups((prev) => [
-      ...prev,
-      {
-        id: nanoid(),
-        name: 'Custom Selector Group',
-        rules: [
-          {
-            id: nanoid(),
-            selector: '.class-name',
-            properties: [{ id: nanoid(), property: '', value: '' }],
-          },
-        ],
-      },
-    ]);
+    applyResponsiveCollectionUpdate(
+      'Spacing Selectors',
+      setSelectorGroups,
+      setSelectorGroupsByBreakpoint,
+      (prev) => [
+        ...prev,
+        buildSelectorGroup({
+          name: 'Custom Selector Group',
+          selector: '.class-name',
+        }),
+      ]
+    );
   const handleUpdateSelectorGroup = (updatedGroup) =>
-    setSelectorGroups((prev) =>
-      prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
+    applyResponsiveCollectionUpdate(
+      'Spacing Selectors',
+      setSelectorGroups,
+      setSelectorGroupsByBreakpoint,
+      (prev) => prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
     );
   const handleRemoveSelectorGroup = (id) =>
-    setSelectorGroups((prev) => prev.filter((g) => g.id !== id));
+    applyResponsiveCollectionUpdate(
+      'Spacing Selectors',
+      setSelectorGroups,
+      setSelectorGroupsByBreakpoint,
+      (prev) => prev.filter((g) => g.id !== id)
+    );
   const handleAddVariableGroup = () =>
-    setVariableGroups((prev) => [
-      ...prev,
-      {
-        id: nanoid(),
-        name: 'Custom Variable Group',
-        variables: [
-          {
-            id: nanoid(),
-            name: '--variable',
-            value: '',
-            mode: 'single',
-            minValue: 0,
-            maxValue: 0,
-          },
-        ],
-      },
-    ]);
+    applyResponsiveCollectionUpdate(
+      'Spacing Variables',
+      setVariableGroups,
+      setVariableGroupsByBreakpoint,
+      (prev) => [
+        ...prev,
+        buildVariableGroup({
+          name: 'Custom Variable Group',
+          variableName: '--variable',
+        }),
+      ]
+    );
   const handleUpdateVariableGroup = (updatedGroup) =>
-    setVariableGroups((prev) =>
-      prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
+    applyResponsiveCollectionUpdate(
+      'Spacing Variables',
+      setVariableGroups,
+      setVariableGroupsByBreakpoint,
+      (prev) => prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
     );
   const handleRemoveVariableGroup = (id) =>
-    setVariableGroups((prev) => prev.filter((g) => g.id !== id));
+    applyResponsiveCollectionUpdate(
+      'Spacing Variables',
+      setVariableGroups,
+      setVariableGroupsByBreakpoint,
+      (prev) => prev.filter((g) => g.id !== id)
+    );
   const handleAddLayoutSelectorGroup = () =>
-    setLayoutSelectorGroups((prev) => [
-      ...prev,
-      {
-        id: nanoid(),
-        name: 'Layout Selector Group',
-        rules: [
-          {
-            id: nanoid(),
-            selector: '.container',
-            properties: [{ id: nanoid(), property: 'width', value: '100%' }],
-          },
-        ],
-      },
-    ]);
+    applyResponsiveCollectionUpdate(
+      'Layout Selectors',
+      setLayoutSelectorGroups,
+      setLayoutSelectorGroupsByBreakpoint,
+      (prev) => [
+        ...prev,
+        buildSelectorGroup({
+          name: 'Layout Selector Group',
+          selector: '.container',
+          property: 'width',
+          value: '100%',
+        }),
+      ]
+    );
   const handleUpdateLayoutSelectorGroup = (updatedGroup) =>
-    setLayoutSelectorGroups((prev) =>
-      prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
+    applyResponsiveCollectionUpdate(
+      'Layout Selectors',
+      setLayoutSelectorGroups,
+      setLayoutSelectorGroupsByBreakpoint,
+      (prev) => prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
     );
   const handleRemoveLayoutSelectorGroup = (id) =>
-    setLayoutSelectorGroups((prev) => prev.filter((g) => g.id !== id));
+    applyResponsiveCollectionUpdate(
+      'Layout Selectors',
+      setLayoutSelectorGroups,
+      setLayoutSelectorGroupsByBreakpoint,
+      (prev) => prev.filter((g) => g.id !== id)
+    );
   const handleAddLayoutVariableGroup = () =>
-    setLayoutVariableGroups((prev) => [
-      ...prev,
-      {
-        id: nanoid(),
-        name: 'Layout Variable Group',
-        variables: [
-          {
-            id: nanoid(),
-            name: '--header-height',
-            value: '60px',
-            mode: 'single',
-            minValue: 0,
-            maxValue: 0,
-          },
-        ],
-      },
-    ]);
+    applyResponsiveCollectionUpdate(
+      'Layout Variables',
+      setLayoutVariableGroups,
+      setLayoutVariableGroupsByBreakpoint,
+      (prev) => [
+        ...prev,
+        buildVariableGroup({
+          name: 'Layout Variable Group',
+          variableName: '--header-height',
+          value: '60px',
+        }),
+      ]
+    );
   const handleUpdateLayoutVariableGroup = (updatedGroup) =>
-    setLayoutVariableGroups((prev) =>
-      prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
+    applyResponsiveCollectionUpdate(
+      'Layout Variables',
+      setLayoutVariableGroups,
+      setLayoutVariableGroupsByBreakpoint,
+      (prev) => prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
     );
   const handleRemoveLayoutVariableGroup = (id) =>
-    setLayoutVariableGroups((prev) => prev.filter((g) => g.id !== id));
+    applyResponsiveCollectionUpdate(
+      'Layout Variables',
+      setLayoutVariableGroups,
+      setLayoutVariableGroupsByBreakpoint,
+      (prev) => prev.filter((g) => g.id !== id)
+    );
   const handleAddDesignSelectorGroup = () =>
-    setDesignSelectorGroups((prev) => [
-      ...prev,
-      {
-        id: nanoid(),
-        name: 'Design Selector Group',
-        rules: [
-          {
-            id: nanoid(),
-            selector: '.button',
-            properties: [
-              { id: nanoid(), property: 'border-radius', value: '8px' },
-            ],
-          },
-        ],
-      },
-    ]);
+    applyResponsiveCollectionUpdate(
+      'Design Selectors',
+      setDesignSelectorGroups,
+      setDesignSelectorGroupsByBreakpoint,
+      (prev) => [
+        ...prev,
+        buildSelectorGroup({
+          name: 'Design Selector Group',
+          selector: '.button',
+          property: 'border-radius',
+          value: '8px',
+        }),
+      ]
+    );
   const handleUpdateDesignSelectorGroup = (updatedGroup) =>
-    setDesignSelectorGroups((prev) =>
-      prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
+    applyResponsiveCollectionUpdate(
+      'Design Selectors',
+      setDesignSelectorGroups,
+      setDesignSelectorGroupsByBreakpoint,
+      (prev) => prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
     );
   const handleRemoveDesignSelectorGroup = (id) =>
-    setDesignSelectorGroups((prev) => prev.filter((g) => g.id !== id));
+    applyResponsiveCollectionUpdate(
+      'Design Selectors',
+      setDesignSelectorGroups,
+      setDesignSelectorGroupsByBreakpoint,
+      (prev) => prev.filter((g) => g.id !== id)
+    );
   const handleAddDesignVariableGroup = () =>
-    setDesignVariableGroups((prev) => [
-      ...prev,
-      {
-        id: nanoid(),
-        name: 'Design Variable Group',
-        variables: [
-          {
-            id: nanoid(),
-            name: '--border-radius-md',
-            value: '8px',
-            mode: 'single',
-            minValue: 0,
-            maxValue: 0,
-          },
-        ],
-      },
-    ]);
+    applyResponsiveCollectionUpdate(
+      'Design Variables',
+      setDesignVariableGroups,
+      setDesignVariableGroupsByBreakpoint,
+      (prev) => [
+        ...prev,
+        buildVariableGroup({
+          name: 'Design Variable Group',
+          variableName: '--border-radius-md',
+          value: '8px',
+        }),
+      ]
+    );
   const handleUpdateDesignVariableGroup = (updatedGroup) =>
-    setDesignVariableGroups((prev) =>
-      prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
+    applyResponsiveCollectionUpdate(
+      'Design Variables',
+      setDesignVariableGroups,
+      setDesignVariableGroupsByBreakpoint,
+      (prev) => prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
     );
   const handleRemoveDesignVariableGroup = (id) =>
-    setDesignVariableGroups((prev) => prev.filter((g) => g.id !== id));
+    applyResponsiveCollectionUpdate(
+      'Design Variables',
+      setDesignVariableGroups,
+      setDesignVariableGroupsByBreakpoint,
+      (prev) => prev.filter((g) => g.id !== id)
+    );
+
+  const currentViewport = getViewportForPage(activePage);
+  const activeBreakpointPreset = getBreakpointPresetById(
+    breakpointPresets,
+    currentViewport
+  );
+  const isResponsiveActivePage = isResponsivePage(activePage);
+  const isResponsiveEditing =
+    isResponsiveActivePage && currentViewport !== ALL_BREAKPOINTS_ID;
+  const activeBreakpointPresets = useMemo(
+    () => getActiveBreakpointPresets(breakpointPresets),
+    [breakpointPresets]
+  );
+
+  const responsiveCollections = useMemo(
+    () => ({
+      responsiveSelectorGroups: getResponsiveCollection(
+        selectorGroups,
+        selectorGroupsByBreakpoint,
+        pageViewportByPage['Spacing Selectors'] || ALL_BREAKPOINTS_ID
+      ),
+      responsiveVariableGroups: getResponsiveCollection(
+        variableGroups,
+        variableGroupsByBreakpoint,
+        pageViewportByPage['Spacing Variables'] || ALL_BREAKPOINTS_ID
+      ),
+      responsiveTypographySelectorGroups: getResponsiveCollection(
+        typographySelectorGroups,
+        typographySelectorGroupsByBreakpoint,
+        pageViewportByPage['Typography Selectors'] || ALL_BREAKPOINTS_ID
+      ),
+      responsiveTypographyVariableGroups: getResponsiveCollection(
+        typographyVariableGroups,
+        typographyVariableGroupsByBreakpoint,
+        pageViewportByPage['Typography Variables'] || ALL_BREAKPOINTS_ID
+      ),
+      responsiveLayoutSelectorGroups: getResponsiveCollection(
+        layoutSelectorGroups,
+        layoutSelectorGroupsByBreakpoint,
+        pageViewportByPage['Layout Selectors'] || ALL_BREAKPOINTS_ID
+      ),
+      responsiveLayoutVariableGroups: getResponsiveCollection(
+        layoutVariableGroups,
+        layoutVariableGroupsByBreakpoint,
+        pageViewportByPage['Layout Variables'] || ALL_BREAKPOINTS_ID
+      ),
+      responsiveDesignSelectorGroups: getResponsiveCollection(
+        designSelectorGroups,
+        designSelectorGroupsByBreakpoint,
+        pageViewportByPage['Design Selectors'] || ALL_BREAKPOINTS_ID
+      ),
+      responsiveDesignVariableGroups: getResponsiveCollection(
+        designVariableGroups,
+        designVariableGroupsByBreakpoint,
+        pageViewportByPage['Design Variables'] || ALL_BREAKPOINTS_ID
+      ),
+    }),
+    [
+      selectorGroups,
+      selectorGroupsByBreakpoint,
+      variableGroups,
+      variableGroupsByBreakpoint,
+      typographySelectorGroups,
+      typographySelectorGroupsByBreakpoint,
+      typographyVariableGroups,
+      typographyVariableGroupsByBreakpoint,
+      layoutSelectorGroups,
+      layoutSelectorGroupsByBreakpoint,
+      layoutVariableGroups,
+      layoutVariableGroupsByBreakpoint,
+      designSelectorGroups,
+      designSelectorGroupsByBreakpoint,
+      designVariableGroups,
+      designVariableGroupsByBreakpoint,
+      pageViewportByPage,
+    ]
+  );
+  const {
+    responsiveSelectorGroups,
+    responsiveVariableGroups,
+    responsiveTypographySelectorGroups,
+    responsiveTypographyVariableGroups,
+    responsiveLayoutSelectorGroups,
+    responsiveLayoutVariableGroups,
+    responsiveDesignSelectorGroups,
+    responsiveDesignVariableGroups,
+  } = responsiveCollections;
+
+  const previewPanelProps = useMemo(
+    () => ({
+      colorGroups,
+      isSpacingEnabled,
+      spacingScale,
+      spacingGroups,
+      isTypographyEnabled,
+      typographyScale,
+      typographyGroups,
+      typographyGeneratorConfig,
+      typographySelectorGroups,
+      typographySelectorGroupsByBreakpoint,
+      typographyVariableGroups,
+      typographyVariableGroupsByBreakpoint,
+      generatorConfig,
+      selectorGroups,
+      selectorGroupsByBreakpoint,
+      variableGroups,
+      variableGroupsByBreakpoint,
+      customCSS,
+      layoutSelectorGroups,
+      layoutSelectorGroupsByBreakpoint,
+      layoutVariableGroups,
+      layoutVariableGroupsByBreakpoint,
+      designSelectorGroups,
+      designSelectorGroupsByBreakpoint,
+      designVariableGroups,
+      designVariableGroupsByBreakpoint,
+      breakpointPresets,
+    }),
+    [
+      colorGroups,
+      isSpacingEnabled,
+      spacingScale,
+      spacingGroups,
+      isTypographyEnabled,
+      typographyScale,
+      typographyGroups,
+      typographyGeneratorConfig,
+      typographySelectorGroups,
+      typographySelectorGroupsByBreakpoint,
+      typographyVariableGroups,
+      typographyVariableGroupsByBreakpoint,
+      generatorConfig,
+      selectorGroups,
+      selectorGroupsByBreakpoint,
+      variableGroups,
+      variableGroupsByBreakpoint,
+      customCSS,
+      layoutSelectorGroups,
+      layoutSelectorGroupsByBreakpoint,
+      layoutVariableGroups,
+      layoutVariableGroupsByBreakpoint,
+      designSelectorGroups,
+      designSelectorGroupsByBreakpoint,
+      designVariableGroups,
+      designVariableGroupsByBreakpoint,
+      breakpointPresets,
+    ]
+  );
+
+  const handleToggleBreakpointPreset = (presetId) => {
+    setBreakpointPresets((prev) =>
+      prev.map((preset) => {
+        if (preset.id !== presetId) {
+          return preset;
+        }
+
+        if (preset.isDefault) {
+          return preset;
+        }
+
+        const nextIsActive = !preset.isActive;
+        if (!nextIsActive) {
+          clearBreakpointData(preset.id);
+        }
+
+        return {
+          ...preset,
+          isActive: nextIsActive,
+        };
+      })
+    );
+  };
 
   if (!workspaceLoaded) {
     return <LoadingScreen onSelect={handleWorkspaceSelect} />;
@@ -890,30 +1404,36 @@ function App() {
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activePage={activePage} onNavigate={setActivePage} />
         <div className="flex-1 flex flex-col bg-gray-50">
-          <div className="flex items-center justify-between px-6 py-3 border-b border-neutral-200 shrink-0">
-            <div className="flex items-center gap-2">
-              <button className="px-3 py-1.5 text-sm font-medium bg-white border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50 transition-colors">
-                All breakpoints
-              </button>
-              <button className="flex items-center justify-center w-8 h-8 text-sm font-medium bg-white border border-neutral-300 rounded-md text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-colors">
-                +
-              </button>
+          <div className="shrink-0 border-b border-neutral-200 px-4 py-3 sm:px-6">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="min-w-0">
+              {isResponsiveActivePage ? (
+                <BreakpointToolbar
+                  presets={activeBreakpointPresets}
+                  selectedViewport={currentViewport}
+                  selectedPreset={activeBreakpointPreset}
+                  onSelectViewport={(viewportId) =>
+                    updatePageViewport(activePage, viewportId)
+                  }
+                  onOpenManager={() => setIsBreakpointManagerOpen(true)}
+                />
+              ) : (
+                <div className="rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm font-medium text-neutral-500">
+                  Breakpoints available on selector and variable pages
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <button className="p-2 text-neutral-600 rounded-md hover:bg-neutral-100 hover:text-neutral-800 transition-colors">
-                  <Search size={16} />
-                </button>
-                <button className="p-2 text-neutral-600 rounded-md hover:bg-neutral-100 hover:text-neutral-800 transition-colors">
-                  <Grid2X2 size={16} />
-                </button>
-              </div>
+            <div className="flex w-full items-center justify-end lg:w-auto">
               <button
+                ref={previewButtonRef}
+                onMouseEnter={preloadCSSPreviewPanel}
+                onFocus={preloadCSSPreviewPanel}
                 onClick={() => setIsPreviewOpen(true)}
-                className="px-4 py-2 text-sm font-semibold bg-black text-white rounded-md hover:bg-neutral-800 transition-colors shadow-[0_0_15px_rgba(0,0,0,0.2)]"
+                className="inline-flex w-full items-center justify-center rounded-2xl bg-black px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-800 sm:w-auto"
               >
                 Export
               </button>
+            </div>
             </div>
           </div>
 
@@ -944,11 +1464,11 @@ function App() {
             onAddTypographyClass={handleAddTypographyClass}
             onRemoveTypographyClass={handleRemoveTypographyClass}
             onTypographyGeneratorChange={handleTypographyGeneratorChange}
-            typographySelectorGroups={typographySelectorGroups}
+            typographySelectorGroups={responsiveTypographySelectorGroups}
             onAddTypographySelectorGroup={handleAddTypographySelectorGroup}
             onUpdateTypographySelectorGroup={handleUpdateTypographySelectorGroup}
             onRemoveTypographySelectorGroup={handleRemoveTypographySelectorGroup}
-            typographyVariableGroups={typographyVariableGroups}
+            typographyVariableGroups={responsiveTypographyVariableGroups}
             onAddTypographyVariableGroup={handleAddTypographyVariableGroup}
             onUpdateTypographyVariableGroup={handleUpdateTypographyVariableGroup}
             onRemoveTypographyVariableGroup={handleRemoveTypographyVariableGroup}
@@ -957,35 +1477,38 @@ function App() {
             onGeneratorChange={handleGeneratorChange}
             onAddClass={handleAddClass}
             onRemoveClass={handleRemoveClass}
-            selectorGroups={selectorGroups}
+            selectorGroups={responsiveSelectorGroups}
             onAddSelectorGroup={handleAddSelectorGroup}
             onUpdateSelectorGroup={handleUpdateSelectorGroup}
             onRemoveSelectorGroup={handleRemoveSelectorGroup}
-            variableGroups={variableGroups}
+            variableGroups={responsiveVariableGroups}
             onAddVariableGroup={handleAddVariableGroup}
             onUpdateVariableGroup={handleUpdateVariableGroup}
             onRemoveVariableGroup={handleRemoveVariableGroup}
             customCSS={customCSS}
             setCustomCSS={setCustomCSS}
-            layoutSelectorGroups={layoutSelectorGroups}
+            layoutSelectorGroups={responsiveLayoutSelectorGroups}
             onAddLayoutSelectorGroup={handleAddLayoutSelectorGroup}
             onUpdateLayoutSelectorGroup={handleUpdateLayoutSelectorGroup}
             onRemoveLayoutSelectorGroup={handleRemoveLayoutSelectorGroup}
-            layoutVariableGroups={layoutVariableGroups}
+            layoutVariableGroups={responsiveLayoutVariableGroups}
             onAddLayoutVariableGroup={handleAddLayoutVariableGroup}
             onUpdateLayoutVariableGroup={handleUpdateLayoutVariableGroup}
             onRemoveLayoutVariableGroup={handleRemoveLayoutVariableGroup}
-            designSelectorGroups={designSelectorGroups}
+            designSelectorGroups={responsiveDesignSelectorGroups}
             onAddDesignSelectorGroup={handleAddDesignSelectorGroup}
             onUpdateDesignSelectorGroup={handleUpdateDesignSelectorGroup}
             onRemoveDesignSelectorGroup={handleRemoveDesignSelectorGroup}
-            designVariableGroups={designVariableGroups}
+            designVariableGroups={responsiveDesignVariableGroups}
             onAddDesignVariableGroup={handleAddDesignVariableGroup}
             onUpdateDesignVariableGroup={handleUpdateDesignVariableGroup}
             onRemoveDesignVariableGroup={handleRemoveDesignVariableGroup}
             components={components}
             onAddComponent={handleAddComponent}
             onEditComponent={handleEditComponent}
+            currentResponsiveViewport={currentViewport}
+            activeBreakpointPreset={activeBreakpointPreset}
+            isResponsiveEditing={isResponsiveEditing}
           />
         </div>
       </div>
@@ -993,27 +1516,17 @@ function App() {
       <CSSPreviewPanel
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
-        {...{
-          colorGroups,
-          isSpacingEnabled,
-          spacingScale,
-          spacingGroups,
-          isTypographyEnabled,
-          typographyScale,
-          typographyGroups,
-          typographyGeneratorConfig,
-          typographySelectorGroups,
-          typographyVariableGroups,
-          generatorConfig,
-          selectorGroups,
-          variableGroups,
-          customCSS,
-          layoutSelectorGroups,
-          layoutVariableGroups,
-          designSelectorGroups,
-          designVariableGroups,
-        }}
+        returnFocusRef={previewButtonRef}
+        {...previewPanelProps}
       />
+      {isBreakpointManagerOpen && (
+        <BreakpointManagerModal
+          isOpen={isBreakpointManagerOpen}
+          presets={breakpointPresets}
+          onClose={() => setIsBreakpointManagerOpen(false)}
+          onTogglePreset={handleToggleBreakpointPreset}
+        />
+      )}
       <Modal
         isOpen={!!draftComponent}
         onSave={handleSaveComponent}
