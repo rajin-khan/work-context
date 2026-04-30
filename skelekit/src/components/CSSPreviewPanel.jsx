@@ -13,6 +13,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { X, Copy, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { downloadFile } from '../utils/download';
+import ExportSelectionPanel from './export/ExportSelectionPanel';
 
 const GENERATING_MESSAGE = '/* Generating CSS... */';
 const loadCSSPreviewCodeView = () => import('./export/CSSPreviewCodeView');
@@ -53,6 +54,9 @@ const CSSPreviewPanel = memo((props) => {
     designVariableGroups,
     designVariableGroupsByBreakpoint,
     breakpointPresets,
+    exportSelection,
+    isExportSelectionEnabled = false,
+    setExportSelection,
   } = props;
 
   const closeButtonRef = useRef(null);
@@ -60,6 +64,7 @@ const CSSPreviewPanel = memo((props) => {
   const [generatedCSS, setGeneratedCSS] = useState(GENERATING_MESSAGE);
   const [isGenerating, setIsGenerating] = useState(true);
   const [isPackaging, setIsPackaging] = useState(false);
+  const [activeExportTab, setActiveExportTab] = useState('customize');
 
   const exportData = useMemo(
     () => ({
@@ -90,6 +95,7 @@ const CSSPreviewPanel = memo((props) => {
       designVariableGroups,
       designVariableGroupsByBreakpoint,
       breakpointPresets,
+      exportSelection: isExportSelectionEnabled ? exportSelection : undefined,
     }),
     [
       colorGroups,
@@ -119,6 +125,8 @@ const CSSPreviewPanel = memo((props) => {
       designVariableGroups,
       designVariableGroupsByBreakpoint,
       breakpointPresets,
+      exportSelection,
+      isExportSelectionEnabled,
     ]
   );
 
@@ -131,6 +139,10 @@ const CSSPreviewPanel = memo((props) => {
   useEffect(() => {
     if (!isOpen) {
       return undefined;
+    }
+
+    if (!isExportSelectionEnabled) {
+      setActiveExportTab('preview');
     }
 
     previousActiveElementRef.current =
@@ -177,7 +189,7 @@ const CSSPreviewPanel = memo((props) => {
         });
       }
     };
-  }, [isOpen, onClose, returnFocusRef]);
+  }, [isOpen, isExportSelectionEnabled, onClose, returnFocusRef]);
 
   const handleCopy = () => {
     if (!canExport) {
@@ -244,7 +256,11 @@ const CSSPreviewPanel = memo((props) => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 280, damping: 34, mass: 0.9 }}
-              className="pointer-events-auto flex h-full w-full max-w-[min(100vw,48rem)] flex-col border-l border-neutral-200 bg-white shadow-2xl"
+              className={`pointer-events-auto flex h-full w-full flex-col border-l border-neutral-200 bg-white shadow-2xl ${
+                isExportSelectionEnabled
+                  ? 'max-w-[min(100vw,76rem)]'
+                  : 'max-w-[min(100vw,58rem)]'
+              }`}
             >
               <header className="shrink-0 border-b border-neutral-200 bg-white/92 backdrop-blur">
                 <div className="flex items-start justify-between gap-4 px-4 py-4 sm:px-5">
@@ -275,7 +291,28 @@ const CSSPreviewPanel = memo((props) => {
 
               <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
                 <div className="shrink-0 border-b border-neutral-200 px-4 py-3 sm:px-5">
-                  <div className="rounded-2xl border border-neutral-200 bg-neutral-50 px-3.5 py-3 text-sm text-neutral-700">
+                  {isExportSelectionEnabled && (
+                    <div className="mb-3 inline-grid grid-cols-2 rounded-lg border border-neutral-200 bg-neutral-100 p-1 lg:hidden">
+                      {[
+                        ['customize', 'Customize'],
+                        ['preview', 'Preview'],
+                      ].map(([id, label]) => (
+                        <button
+                          key={id}
+                          type="button"
+                          onClick={() => setActiveExportTab(id)}
+                          className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                            activeExportTab === id
+                              ? 'bg-white text-neutral-900 shadow-sm'
+                              : 'text-neutral-600 hover:text-neutral-900'
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <div className="rounded-lg border border-neutral-200 bg-neutral-50 px-3.5 py-3 text-sm text-neutral-700">
                     <p className="font-medium text-neutral-800">
                       Exported CSS is the source of truth
                     </p>
@@ -286,26 +323,51 @@ const CSSPreviewPanel = memo((props) => {
                   </div>
                 </div>
 
-                <div className="min-h-0 flex-1 overflow-hidden bg-[radial-gradient(circle_at_top,rgba(241,245,249,0.92),rgba(255,255,255,1)_42%)]">
-                  <Suspense
-                    fallback={
-                      <div className="flex h-full flex-col gap-3 px-4 py-4 sm:px-5">
-                        <div className="h-4 w-32 rounded-full bg-neutral-200" />
-                        <div className="h-4 w-48 rounded-full bg-neutral-100" />
-                        <div className="h-4 w-40 rounded-full bg-neutral-100" />
-                        <div className="mt-2 h-4 w-60 rounded-full bg-neutral-100" />
-                        <div className="h-4 w-52 rounded-full bg-neutral-100" />
-                      </div>
-                    }
+                <div
+                  className={`grid min-h-0 flex-1 grid-cols-1 overflow-hidden ${
+                    isExportSelectionEnabled
+                      ? 'lg:grid-cols-[22rem_minmax(0,1fr)]'
+                      : ''
+                  }`}
+                >
+                  {isExportSelectionEnabled && (
+                    <div
+                      className={`min-h-0 ${activeExportTab === 'customize' ? 'block' : 'hidden'} lg:block`}
+                    >
+                      <ExportSelectionPanel
+                        exportSelection={exportSelection}
+                        onExportSelectionChange={setExportSelection}
+                      />
+                    </div>
+                  )}
+
+                  <div
+                    className={`min-h-0 overflow-hidden bg-[radial-gradient(circle_at_top,rgba(241,245,249,0.92),rgba(255,255,255,1)_42%)] ${
+                      !isExportSelectionEnabled || activeExportTab === 'preview'
+                        ? 'block'
+                        : 'hidden'
+                    } lg:block`}
                   >
-                    <CSSPreviewCodeView
-                      isOpen={isOpen}
-                      exportData={exportData}
-                      generatedCSS={generatedCSS}
-                      onGeneratedCSSChange={setGeneratedCSS}
-                      onGeneratingChange={setIsGenerating}
-                    />
-                  </Suspense>
+                    <Suspense
+                      fallback={
+                        <div className="flex h-full flex-col gap-3 px-4 py-4 sm:px-5">
+                          <div className="h-4 w-32 rounded-full bg-neutral-200" />
+                          <div className="h-4 w-48 rounded-full bg-neutral-100" />
+                          <div className="h-4 w-40 rounded-full bg-neutral-100" />
+                          <div className="mt-2 h-4 w-60 rounded-full bg-neutral-100" />
+                          <div className="h-4 w-52 rounded-full bg-neutral-100" />
+                        </div>
+                      }
+                    >
+                      <CSSPreviewCodeView
+                        isOpen={isOpen}
+                        exportData={exportData}
+                        generatedCSS={generatedCSS}
+                        onGeneratedCSSChange={setGeneratedCSS}
+                        onGeneratingChange={setIsGenerating}
+                      />
+                    </Suspense>
+                  </div>
                 </div>
               </main>
 

@@ -25,6 +25,8 @@ import {
   replaceResponsiveCollection,
 } from './utils/breakpoints';
 import { migrateWorkspaceData } from './utils/workspaceMigration';
+import { buildDefaultExportSelection } from './utils/exportSelection';
+import { SKELEMENTOR_FRAMEWORK_TYPE } from './presets/skelementorFrameworkConstants';
 import { nanoid } from 'nanoid';
 import LoadingScreen from './pages/LoadingScreen';
 
@@ -40,7 +42,37 @@ const defaultTypographySettings = {
 
 const LOCAL_STORAGE_KEY = 'skelekit-workspace';
 const WORKSPACE_PERSIST_DEBOUNCE_MS = 220;
+const SKELEMENTOR_WORKSPACE_SOURCE = 'skelementor-preset';
+const CUSTOM_WORKSPACE_SOURCE = 'custom';
 const loadSkelementorPreset = () => import('./presets/skelementorPreset');
+
+const hasSkelementorFrameworkMeta = (value, depth = 0) => {
+  if (!value || depth > 5) {
+    return false;
+  }
+
+  if (Array.isArray(value)) {
+    return value.some((item) => hasSkelementorFrameworkMeta(item, depth + 1));
+  }
+
+  if (typeof value !== 'object') {
+    return false;
+  }
+
+  if (value.__frameworkMeta?.type === SKELEMENTOR_FRAMEWORK_TYPE) {
+    return true;
+  }
+
+  return Object.values(value).some((nestedValue) =>
+    hasSkelementorFrameworkMeta(nestedValue, depth + 1)
+  );
+};
+
+const getWorkspaceSource = (workspace = {}) =>
+  workspace.workspaceSource ||
+  (hasSkelementorFrameworkMeta(workspace)
+    ? SKELEMENTOR_WORKSPACE_SOURCE
+    : CUSTOM_WORKSPACE_SOURCE);
 
 function App() {
   const previewButtonRef = useRef(null);
@@ -76,6 +108,8 @@ function App() {
   );
   const [isBreakpointManagerOpen, setIsBreakpointManagerOpen] = useState(false);
   const [customCSS, setCustomCSS] = useState('/* Your custom styles go here */');
+  const [exportSelection, setExportSelection] = useState(undefined);
+  const [workspaceSource, setWorkspaceSource] = useState(CUSTOM_WORKSPACE_SOURCE);
   const [typographySelectorGroupsByBreakpoint, setTypographySelectorGroupsByBreakpoint] = useState({});
   const [typographyVariableGroupsByBreakpoint, setTypographyVariableGroupsByBreakpoint] = useState({});
 
@@ -87,6 +121,7 @@ function App() {
     if (savedData) {
       try {
         const parsedData = migrateWorkspaceData(JSON.parse(savedData));
+        const nextWorkspaceSource = getWorkspaceSource(parsedData);
         setColorGroups(parsedData.colorGroups || []);
         setActivePage(parsedData.activePage || 'Colors');
         setIsSpacingEnabled(parsedData.isSpacingEnabled || false);
@@ -131,6 +166,12 @@ function App() {
           parsedData.pageViewportByPage || DEFAULT_PAGE_VIEWPORT_BY_PAGE
         );
         setCustomCSS(parsedData.customCSS || '/* Your custom styles go here */');
+        setExportSelection(
+          nextWorkspaceSource === SKELEMENTOR_WORKSPACE_SOURCE
+            ? parsedData.exportSelection || buildDefaultExportSelection()
+            : undefined
+        );
+        setWorkspaceSource(nextWorkspaceSource);
         
         setWorkspaceLoaded(true); // Bypass the loading screen
       } catch (error) {
@@ -170,6 +211,8 @@ function App() {
       pageViewportByPage,
       typographySelectorGroupsByBreakpoint,
       typographyVariableGroupsByBreakpoint,
+      exportSelection,
+      workspaceSource,
     }),
     [
       colorGroups,
@@ -200,6 +243,8 @@ function App() {
       pageViewportByPage,
       typographySelectorGroupsByBreakpoint,
       typographyVariableGroupsByBreakpoint,
+      exportSelection,
+      workspaceSource,
     ]
   );
 
@@ -334,6 +379,8 @@ function App() {
         workspace.pageViewportByPage || DEFAULT_PAGE_VIEWPORT_BY_PAGE
       );
       setCustomCSS(workspace.customCSS || '/* Your custom styles go here */');
+      setExportSelection(workspace.exportSelection || buildDefaultExportSelection());
+      setWorkspaceSource(SKELEMENTOR_WORKSPACE_SOURCE);
     }
     // If 'blank', we just reset the state to defaults
     else {
@@ -348,6 +395,8 @@ function App() {
         setLayoutSelectorGroupsByBreakpoint({}); setLayoutVariableGroupsByBreakpoint({});
         setDesignSelectorGroupsByBreakpoint({}); setDesignVariableGroupsByBreakpoint({});
         setTypographySelectorGroupsByBreakpoint({}); setTypographyVariableGroupsByBreakpoint({});
+        setExportSelection(undefined);
+        setWorkspaceSource(CUSTOM_WORKSPACE_SOURCE);
     }
     if (choice !== 'preset') {
       setBreakpointPresets(defaultBreakpointPresets);
@@ -1338,6 +1387,9 @@ function App() {
       designVariableGroups,
       designVariableGroupsByBreakpoint,
       breakpointPresets,
+      exportSelection,
+      isExportSelectionEnabled: workspaceSource === SKELEMENTOR_WORKSPACE_SOURCE,
+      setExportSelection,
     }),
     [
       colorGroups,
@@ -1367,6 +1419,8 @@ function App() {
       designVariableGroups,
       designVariableGroupsByBreakpoint,
       breakpointPresets,
+      exportSelection,
+      workspaceSource,
     ]
   );
 

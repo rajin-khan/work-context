@@ -1,1095 +1,3282 @@
 {
-  "items": {
-    "sk-var-color-primary": {
-      "id": "sk-var-color-primary",
-      "type": "global-color-variable",
-      "label": "color-primary",
-      "value": "#3b82f6",
-      "order": 1,
-      "css_name": "color-primary"
-    },
-    "sk-var-color-secondary": {
-      "id": "sk-var-color-secondary",
-      "type": "global-color-variable",
-      "label": "color-secondary",
-      "value": "#10b981",
-      "order": 2,
-      "css_name": "color-secondary"
-    },
-    "sk-var-color-accent": {
-      "id": "sk-var-color-accent",
-      "type": "global-color-variable",
-      "label": "color-accent",
-      "value": "#ef4444",
-      "order": 3,
-      "css_name": "color-accent"
-    },
-    "sk-var-color-surface": {
-      "id": "sk-var-color-surface",
-      "type": "global-color-variable",
-      "label": "color-surface",
-      "value": "#ffffff",
-      "order": 4,
-      "css_name": "color-surface"
-    },
-    "sk-var-color-surface-2": {
-      "id": "sk-var-color-surface-2",
-      "type": "global-color-variable",
-      "label": "color-surface-2",
-      "value": "#f3f4f6",
-      "order": 5,
-      "css_name": "color-surface-2"
-    },
-    "sk-var-color-text": {
-      "id": "sk-var-color-text",
-      "type": "global-color-variable",
-      "label": "color-text",
-      "value": "#111827",
-      "order": 6,
-      "css_name": "color-text"
-    },
-    "sk-var-color-muted": {
-      "id": "sk-var-color-muted",
-      "type": "global-color-variable",
-      "label": "color-muted",
-      "value": "#6b7280",
-      "order": 7,
-      "css_name": "color-muted"
-    },
-    "sk-var-text-white": {
-      "id": "sk-var-text-white",
-      "type": "global-color-variable",
-      "label": "text-white",
-      "value": "#ffffff",
-      "order": 8,
-      "css_name": "text-white"
-    },
-    "sk-var-text-black": {
-      "id": "sk-var-text-black",
-      "type": "global-color-variable",
-      "label": "text-black",
-      "value": "#000000",
-      "order": 9,
-      "css_name": "text-black"
-    },
-    "sk-var-text-gray-dark": {
-      "id": "sk-var-text-gray-dark",
-      "type": "global-color-variable",
-      "label": "text-gray-dark",
-      "value": "#374151",
-      "order": 10,
-      "css_name": "text-gray-dark"
-    },
-    "sk-var-text-gray": {
-      "id": "sk-var-text-gray",
-      "type": "global-color-variable",
-      "label": "text-gray",
-      "value": "#6b7280",
-      "order": 11,
-      "css_name": "text-gray"
-    },
-    "sk-var-text-gray-light": {
-      "id": "sk-var-text-gray-light",
-      "type": "global-color-variable",
-      "label": "text-gray-light",
-      "value": "#9ca3af",
-      "order": 12,
-      "css_name": "text-gray-light"
-    },
-    "sk-var-text-blue": {
-      "id": "sk-var-text-blue",
-      "type": "global-color-variable",
-      "label": "text-blue",
-      "value": "#3b82f6",
-      "order": 13,
-      "css_name": "text-blue"
-    },
-    "sk-var-text-green": {
-      "id": "sk-var-text-green",
-      "type": "global-color-variable",
-      "label": "text-green",
-      "value": "#10b981",
-      "order": 14,
-      "css_name": "text-green"
-    },
-    "sk-var-text-red": {
-      "id": "sk-var-text-red",
-      "type": "global-color-variable",
-      "label": "text-red",
-      "value": "#ef4444",
-      "order": 15,
-      "css_name": "text-red"
-    },
-    "sk-var-text-yellow": {
-      "id": "sk-var-text-yellow",
-      "type": "global-color-variable",
-      "label": "text-yellow",
-      "value": "#f59e0b",
-      "order": 16,
-      "css_name": "text-yellow"
-    },
-    "sk-var-bg-white": {
-      "id": "sk-var-bg-white",
-      "type": "global-color-variable",
-      "label": "bg-white",
-      "value": "#ffffff",
-      "order": 17,
-      "css_name": "bg-white"
-    },
-    "sk-var-bg-black": {
-      "id": "sk-var-bg-black",
-      "type": "global-color-variable",
-      "label": "bg-black",
-      "value": "#000000",
-      "order": 18,
-      "css_name": "bg-black"
-    },
-    "sk-var-bg-gray-dark": {
-      "id": "sk-var-bg-gray-dark",
-      "type": "global-color-variable",
-      "label": "bg-gray-dark",
-      "value": "#374151",
-      "order": 19,
-      "css_name": "bg-gray-dark"
-    },
-    "sk-var-bg-gray": {
-      "id": "sk-var-bg-gray",
-      "type": "global-color-variable",
-      "label": "bg-gray",
-      "value": "#6b7280",
-      "order": 20,
-      "css_name": "bg-gray"
-    },
-    "sk-var-bg-gray-light": {
-      "id": "sk-var-bg-gray-light",
-      "type": "global-color-variable",
-      "label": "bg-gray-light",
-      "value": "#f3f4f6",
-      "order": 21,
-      "css_name": "bg-gray-light"
-    },
-    "sk-var-bg-blue": {
-      "id": "sk-var-bg-blue",
-      "type": "global-color-variable",
-      "label": "bg-blue",
-      "value": "#3b82f6",
-      "order": 22,
-      "css_name": "bg-blue"
-    },
-    "sk-var-bg-green": {
-      "id": "sk-var-bg-green",
-      "type": "global-color-variable",
-      "label": "bg-green",
-      "value": "#10b981",
-      "order": 23,
-      "css_name": "bg-green"
-    },
-    "sk-var-bg-red": {
-      "id": "sk-var-bg-red",
-      "type": "global-color-variable",
-      "label": "bg-red",
-      "value": "#ef4444",
-      "order": 24,
-      "css_name": "bg-red"
-    },
-    "sk-var-bg-yellow": {
-      "id": "sk-var-bg-yellow",
-      "type": "global-color-variable",
-      "label": "bg-yellow",
-      "value": "#f59e0b",
-      "order": 25,
-      "css_name": "bg-yellow"
-    },
-    "sk-var-border-white": {
-      "id": "sk-var-border-white",
-      "type": "global-color-variable",
-      "label": "border-white",
-      "value": "#ffffff",
-      "order": 26,
-      "css_name": "border-white"
-    },
-    "sk-var-border-black": {
-      "id": "sk-var-border-black",
-      "type": "global-color-variable",
-      "label": "border-black",
-      "value": "#000000",
-      "order": 27,
-      "css_name": "border-black"
-    },
-    "sk-var-border-gray": {
-      "id": "sk-var-border-gray",
-      "type": "global-color-variable",
-      "label": "border-gray",
-      "value": "#6b7280",
-      "order": 28,
-      "css_name": "border-gray"
-    },
-    "sk-var-border-gray-light": {
-      "id": "sk-var-border-gray-light",
-      "type": "global-color-variable",
-      "label": "border-gray-light",
-      "value": "#e5e7eb",
-      "order": 29,
-      "css_name": "border-gray-light"
-    },
-    "sk-var-border-blue": {
-      "id": "sk-var-border-blue",
-      "type": "global-color-variable",
-      "label": "border-blue",
-      "value": "#3b82f6",
-      "order": 30,
-      "css_name": "border-blue"
-    },
-    "sk-var-space-auto": {
-      "id": "sk-var-space-auto",
-      "type": "global-size-variable",
-      "label": "space-auto",
-      "value": "auto",
-      "order": 31,
-      "css_name": "space-auto"
-    },
-    "sk-var-space-0": {
-      "id": "sk-var-space-0",
-      "type": "global-size-variable",
-      "label": "space-0",
-      "value": "0px",
-      "order": 32,
-      "css_name": "space-0"
-    },
-    "sk-var-space-px": {
-      "id": "sk-var-space-px",
-      "type": "global-size-variable",
-      "label": "space-px",
-      "value": "1px",
-      "order": 33,
-      "css_name": "space-px"
-    },
-    "sk-var-space-1": {
-      "id": "sk-var-space-1",
-      "type": "global-custom-size-variable",
-      "label": "space-1",
-      "value": "clamp(0.25rem, calc(0.21rem + 0.09vw), 0.31rem)",
-      "order": 34,
-      "css_name": "space-1"
-    },
-    "sk-var-space-2": {
-      "id": "sk-var-space-2",
-      "type": "global-custom-size-variable",
-      "label": "space-2",
-      "value": "clamp(0.5rem, calc(0.43rem + 0.18vw), 0.63rem)",
-      "order": 35,
-      "css_name": "space-2"
-    },
-    "sk-var-space-3": {
-      "id": "sk-var-space-3",
-      "type": "global-custom-size-variable",
-      "label": "space-3",
-      "value": "clamp(0.75rem, calc(0.64rem + 0.27vw), 0.94rem)",
-      "order": 36,
-      "css_name": "space-3"
-    },
-    "sk-var-space-4": {
-      "id": "sk-var-space-4",
-      "type": "global-custom-size-variable",
-      "label": "space-4",
-      "value": "clamp(1rem, calc(0.85rem + 0.37vw), 1.25rem)",
-      "order": 37,
-      "css_name": "space-4"
-    },
-    "sk-var-space-6": {
-      "id": "sk-var-space-6",
-      "type": "global-custom-size-variable",
-      "label": "space-6",
-      "value": "clamp(1.5rem, calc(1.28rem + 0.56vw), 1.88rem)",
-      "order": 38,
-      "css_name": "space-6"
-    },
-    "sk-var-space-8": {
-      "id": "sk-var-space-8",
-      "type": "global-custom-size-variable",
-      "label": "space-8",
-      "value": "clamp(2rem, calc(1.71rem + 0.74vw), 2.5rem)",
-      "order": 39,
-      "css_name": "space-8"
-    },
-    "sk-var-space-12": {
-      "id": "sk-var-space-12",
-      "type": "global-custom-size-variable",
-      "label": "space-12",
-      "value": "clamp(3rem, calc(2.56rem + 1.1vw), 3.75rem)",
-      "order": 40,
-      "css_name": "space-12"
-    },
-    "sk-var-space-neg-px": {
-      "id": "sk-var-space-neg-px",
-      "type": "global-size-variable",
-      "label": "space-neg-px",
-      "value": "-1px",
-      "order": 41,
-      "css_name": "space-neg-px"
-    },
-    "sk-var-space-neg-1": {
-      "id": "sk-var-space-neg-1",
-      "type": "global-custom-size-variable",
-      "label": "space-neg-1",
-      "value": "calc(-1 * clamp(0.25rem, calc(0.21rem + 0.09vw), 0.31rem))",
-      "order": 42,
-      "css_name": "space-neg-1"
-    },
-    "sk-var-space-neg-2": {
-      "id": "sk-var-space-neg-2",
-      "type": "global-custom-size-variable",
-      "label": "space-neg-2",
-      "value": "calc(-1 * clamp(0.5rem, calc(0.43rem + 0.18vw), 0.63rem))",
-      "order": 43,
-      "css_name": "space-neg-2"
-    },
-    "sk-var-space-neg-3": {
-      "id": "sk-var-space-neg-3",
-      "type": "global-custom-size-variable",
-      "label": "space-neg-3",
-      "value": "calc(-1 * clamp(0.75rem, calc(0.64rem + 0.27vw), 0.94rem))",
-      "order": 44,
-      "css_name": "space-neg-3"
-    },
-    "sk-var-space-neg-4": {
-      "id": "sk-var-space-neg-4",
-      "type": "global-custom-size-variable",
-      "label": "space-neg-4",
-      "value": "calc(-1 * clamp(1rem, calc(0.85rem + 0.37vw), 1.25rem))",
-      "order": 45,
-      "css_name": "space-neg-4"
-    },
-    "sk-var-space-neg-6": {
-      "id": "sk-var-space-neg-6",
-      "type": "global-custom-size-variable",
-      "label": "space-neg-6",
-      "value": "calc(-1 * clamp(1.5rem, calc(1.28rem + 0.56vw), 1.88rem))",
-      "order": 46,
-      "css_name": "space-neg-6"
-    },
-    "sk-var-space-neg-8": {
-      "id": "sk-var-space-neg-8",
-      "type": "global-custom-size-variable",
-      "label": "space-neg-8",
-      "value": "calc(-1 * clamp(2rem, calc(1.71rem + 0.74vw), 2.5rem))",
-      "order": 47,
-      "css_name": "space-neg-8"
-    },
-    "sk-var-space-neg-12": {
-      "id": "sk-var-space-neg-12",
-      "type": "global-custom-size-variable",
-      "label": "space-neg-12",
-      "value": "calc(-1 * clamp(3rem, calc(2.56rem + 1.1vw), 3.75rem))",
-      "order": 48,
-      "css_name": "space-neg-12"
-    },
-    "sk-var-gap-10": {
-      "id": "sk-var-gap-10",
-      "type": "global-custom-size-variable",
-      "label": "gap-10",
-      "value": "clamp(2.5rem, calc(2.14rem + 0.93vw), 3.13rem)",
-      "order": 49,
-      "css_name": "gap-10"
-    },
-    "sk-var-gap-14": {
-      "id": "sk-var-gap-14",
-      "type": "global-custom-size-variable",
-      "label": "gap-14",
-      "value": "clamp(3.5rem, calc(2.99rem + 1.29vw), 4.38rem)",
-      "order": 50,
-      "css_name": "gap-14"
-    },
-    "sk-var-gap-16": {
-      "id": "sk-var-gap-16",
-      "type": "global-custom-size-variable",
-      "label": "gap-16",
-      "value": "clamp(4rem, calc(3.42rem + 1.48vw), 5rem)",
-      "order": 51,
-      "css_name": "gap-16"
-    },
-    "sk-var-gap-18": {
-      "id": "sk-var-gap-18",
-      "type": "global-custom-size-variable",
-      "label": "gap-18",
-      "value": "clamp(4.5rem, calc(3.84rem + 1.67vw), 5.63rem)",
-      "order": 52,
-      "css_name": "gap-18"
-    },
-    "sk-var-gap-20": {
-      "id": "sk-var-gap-20",
-      "type": "global-custom-size-variable",
-      "label": "gap-20",
-      "value": "clamp(5rem, calc(4.27rem + 1.85vw), 6.25rem)",
-      "order": 53,
-      "css_name": "gap-20"
-    },
-    "sk-var-gap-22": {
-      "id": "sk-var-gap-22",
-      "type": "global-custom-size-variable",
-      "label": "gap-22",
-      "value": "clamp(5.5rem, calc(4.7rem + 2.04vw), 6.88rem)",
-      "order": 54,
-      "css_name": "gap-22"
-    },
-    "sk-var-gap-24": {
-      "id": "sk-var-gap-24",
-      "type": "global-custom-size-variable",
-      "label": "gap-24",
-      "value": "clamp(6rem, calc(5.13rem + 2.22vw), 7.5rem)",
-      "order": 55,
-      "css_name": "gap-24"
-    },
-    "sk-var-font-family-sans": {
-      "id": "sk-var-font-family-sans",
-      "type": "global-font-variable",
-      "label": "font-family-sans",
-      "value": "Roboto",
-      "order": 56,
-      "css_name": "font-family-sans"
-    },
-    "sk-var-font-family-mono": {
-      "id": "sk-var-font-family-mono",
-      "type": "global-font-variable",
-      "label": "font-family-mono",
-      "value": "Menlo",
-      "order": 57,
-      "css_name": "font-family-mono"
-    },
-    "sk-var-font-size-2xs": {
-      "id": "sk-var-font-size-2xs",
-      "type": "global-custom-size-variable",
-      "label": "font-size-2xs",
-      "value": "clamp(0.58rem, calc(0.49rem + 0.09vw), 0.64rem)",
-      "order": 58,
-      "css_name": "font-size-2xs"
-    },
-    "sk-var-font-size-xs": {
-      "id": "sk-var-font-size-xs",
-      "type": "global-custom-size-variable",
-      "label": "font-size-xs",
-      "value": "clamp(0.69rem, calc(0.59rem + 0.16vw), 0.8rem)",
-      "order": 59,
-      "css_name": "font-size-xs"
-    },
-    "sk-var-font-size-sm": {
-      "id": "sk-var-font-size-sm",
-      "type": "global-custom-size-variable",
-      "label": "font-size-sm",
-      "value": "clamp(0.83rem, calc(0.71rem + 0.25vw), 1rem)",
-      "order": 60,
-      "css_name": "font-size-sm"
-    },
-    "sk-var-font-size-base": {
-      "id": "sk-var-font-size-base",
-      "type": "global-custom-size-variable",
-      "label": "font-size-base",
-      "value": "clamp(1rem, calc(0.85rem + 0.37vw), 1.25rem)",
-      "order": 61,
-      "css_name": "font-size-base"
-    },
-    "sk-var-font-size-lg": {
-      "id": "sk-var-font-size-lg",
-      "type": "global-custom-size-variable",
-      "label": "font-size-lg",
-      "value": "clamp(1.2rem, calc(1.02rem + 0.53vw), 1.56rem)",
-      "order": 62,
-      "css_name": "font-size-lg"
-    },
-    "sk-var-font-size-xl": {
-      "id": "sk-var-font-size-xl",
-      "type": "global-custom-size-variable",
-      "label": "font-size-xl",
-      "value": "clamp(1.44rem, calc(1.22rem + 0.75vw), 1.95rem)",
-      "order": 63,
-      "css_name": "font-size-xl"
-    },
-    "sk-var-font-size-2xl": {
-      "id": "sk-var-font-size-2xl",
-      "type": "global-custom-size-variable",
-      "label": "font-size-2xl",
-      "value": "clamp(1.73rem, calc(1.47rem + 1.05vw), 2.44rem)",
-      "order": 64,
-      "css_name": "font-size-2xl"
-    },
-    "sk-var-font-size-3xl": {
-      "id": "sk-var-font-size-3xl",
-      "type": "global-custom-size-variable",
-      "label": "font-size-3xl",
-      "value": "clamp(2.07rem, calc(1.76rem + 1.45vw), 3.05rem)",
-      "order": 65,
-      "css_name": "font-size-3xl"
-    },
-    "sk-var-font-size-4xl": {
-      "id": "sk-var-font-size-4xl",
-      "type": "global-custom-size-variable",
-      "label": "font-size-4xl",
-      "value": "clamp(2.49rem, calc(2.12rem + 1.97vw), 3.82rem)",
-      "order": 66,
-      "css_name": "font-size-4xl"
-    },
-    "sk-var-font-size-5xl": {
-      "id": "sk-var-font-size-5xl",
-      "type": "global-custom-size-variable",
-      "label": "font-size-5xl",
-      "value": "clamp(2.99rem, calc(2.54rem + 2.63vw), 4.77rem)",
-      "order": 67,
-      "css_name": "font-size-5xl"
-    },
-    "sk-var-font-size-6xl": {
-      "id": "sk-var-font-size-6xl",
-      "type": "global-custom-size-variable",
-      "label": "font-size-6xl",
-      "value": "clamp(3.59rem, calc(3.08rem + 3.47vw), 5.96rem)",
-      "order": 68,
-      "css_name": "font-size-6xl"
-    },
-    "sk-var-font-size-7xl": {
-      "id": "sk-var-font-size-7xl",
-      "type": "global-custom-size-variable",
-      "label": "font-size-7xl",
-      "value": "clamp(4.31rem, calc(3.74rem + 4.58vw), 7.45rem)",
-      "order": 69,
-      "css_name": "font-size-7xl"
-    },
-    "sk-var-font-size-8xl": {
-      "id": "sk-var-font-size-8xl",
-      "type": "global-custom-size-variable",
-      "label": "font-size-8xl",
-      "value": "clamp(5.17rem, calc(4.51rem + 6.05vw), 9.31rem)",
-      "order": 70,
-      "css_name": "font-size-8xl"
-    },
-    "sk-var-font-size-9xl": {
-      "id": "sk-var-font-size-9xl",
-      "type": "global-custom-size-variable",
-      "label": "font-size-9xl",
-      "value": "clamp(6.2rem, calc(5.45rem + 7.98vw), 11.64rem)",
-      "order": 71,
-      "css_name": "font-size-9xl"
-    },
-    "sk-var-leading-tight": {
-      "id": "sk-var-leading-tight",
-      "type": "global-custom-size-variable",
-      "label": "leading-tight",
-      "value": "clamp(1, calc(0.85 + 0.37vw), 1.25)",
-      "order": 72,
-      "css_name": "leading-tight"
-    },
-    "sk-var-leading-normal": {
-      "id": "sk-var-leading-normal",
-      "type": "global-custom-size-variable",
-      "label": "leading-normal",
-      "value": "clamp(1.125, calc(0.96rem + 0.42vw), 1.41rem)",
-      "order": 73,
-      "css_name": "leading-normal"
-    },
-    "sk-var-leading-relaxed": {
-      "id": "sk-var-leading-relaxed",
-      "type": "global-custom-size-variable",
-      "label": "leading-relaxed",
-      "value": "clamp(1.5, calc(1.28rem + 0.56vw), 1.88rem)",
-      "order": 74,
-      "css_name": "leading-relaxed"
-    },
-    "sk-var-leading-loose": {
-      "id": "sk-var-leading-loose",
-      "type": "global-custom-size-variable",
-      "label": "leading-loose",
-      "value": "clamp(2, calc(1.71rem + 0.74vw), 2.5rem)",
-      "order": 75,
-      "css_name": "leading-loose"
-    },
-    "sk-var-tracking-tightest": {
-      "id": "sk-var-tracking-tightest",
-      "type": "global-size-variable",
-      "label": "tracking-tightest",
-      "value": "-0.1em",
-      "order": 76,
-      "css_name": "tracking-tightest"
-    },
-    "sk-var-tracking-extra-tight": {
-      "id": "sk-var-tracking-extra-tight",
-      "type": "global-size-variable",
-      "label": "tracking-extra-tight",
-      "value": "-0.075em",
-      "order": 77,
-      "css_name": "tracking-extra-tight"
-    },
-    "sk-var-tracking-tighter": {
-      "id": "sk-var-tracking-tighter",
-      "type": "global-size-variable",
-      "label": "tracking-tighter",
-      "value": "-0.05em",
-      "order": 78,
-      "css_name": "tracking-tighter"
-    },
-    "sk-var-tracking-tight": {
-      "id": "sk-var-tracking-tight",
-      "type": "global-size-variable",
-      "label": "tracking-tight",
-      "value": "-0.025em",
-      "order": 79,
-      "css_name": "tracking-tight"
-    },
-    "sk-var-tracking-normal": {
-      "id": "sk-var-tracking-normal",
-      "type": "global-size-variable",
-      "label": "tracking-normal",
-      "value": "0em",
-      "order": 80,
-      "css_name": "tracking-normal"
-    },
-    "sk-var-tracking-wide": {
-      "id": "sk-var-tracking-wide",
-      "type": "global-size-variable",
-      "label": "tracking-wide",
-      "value": "0.025em",
-      "order": 81,
-      "css_name": "tracking-wide"
-    },
-    "sk-var-tracking-wider": {
-      "id": "sk-var-tracking-wider",
-      "type": "global-size-variable",
-      "label": "tracking-wider",
-      "value": "0.05em",
-      "order": 82,
-      "css_name": "tracking-wider"
-    },
-    "sk-var-tracking-widest": {
-      "id": "sk-var-tracking-widest",
-      "type": "global-size-variable",
-      "label": "tracking-widest",
-      "value": "0.1em",
-      "order": 83,
-      "css_name": "tracking-widest"
-    },
-    "sk-var-tracking-extra-wide": {
-      "id": "sk-var-tracking-extra-wide",
-      "type": "global-size-variable",
-      "label": "tracking-extra-wide",
-      "value": "0.15em",
-      "order": 84,
-      "css_name": "tracking-extra-wide"
-    },
-    "sk-var-tracking-ultra-wide": {
-      "id": "sk-var-tracking-ultra-wide",
-      "type": "global-size-variable",
-      "label": "tracking-ultra-wide",
-      "value": "0.2em",
-      "order": 85,
-      "css_name": "tracking-ultra-wide"
-    },
-    "sk-var-w-full": {
-      "id": "sk-var-w-full",
-      "type": "global-size-variable",
-      "label": "w-full",
-      "value": "100%",
-      "order": 86,
-      "css_name": "w-full"
-    },
-    "sk-var-w-auto": {
-      "id": "sk-var-w-auto",
-      "type": "global-size-variable",
-      "label": "w-auto",
-      "value": "auto",
-      "order": 87,
-      "css_name": "w-auto"
-    },
-    "sk-var-w-1-2": {
-      "id": "sk-var-w-1-2",
-      "type": "global-size-variable",
-      "label": "w-1-2",
-      "value": "50%",
-      "order": 88,
-      "css_name": "w-1-2"
-    },
-    "sk-var-w-1-3": {
-      "id": "sk-var-w-1-3",
-      "type": "global-size-variable",
-      "label": "w-1-3",
-      "value": "33.333%",
-      "order": 89,
-      "css_name": "w-1-3"
-    },
-    "sk-var-w-2-3": {
-      "id": "sk-var-w-2-3",
-      "type": "global-size-variable",
-      "label": "w-2-3",
-      "value": "66.666%",
-      "order": 90,
-      "css_name": "w-2-3"
-    },
-    "sk-var-w-1-4": {
-      "id": "sk-var-w-1-4",
-      "type": "global-size-variable",
-      "label": "w-1-4",
-      "value": "25%",
-      "order": 91,
-      "css_name": "w-1-4"
-    },
-    "sk-var-w-3-4": {
-      "id": "sk-var-w-3-4",
-      "type": "global-size-variable",
-      "label": "w-3-4",
-      "value": "75%",
-      "order": 92,
-      "css_name": "w-3-4"
-    },
-    "sk-var-max-w-sm": {
-      "id": "sk-var-max-w-sm",
-      "type": "global-custom-size-variable",
-      "label": "max-w-sm",
-      "value": "clamp(20rem, calc(17rem + 7.4vw), 25rem)",
-      "order": 93,
-      "css_name": "max-w-sm"
-    },
-    "sk-var-max-w-md": {
-      "id": "sk-var-max-w-md",
-      "type": "global-custom-size-variable",
-      "label": "max-w-md",
-      "value": "clamp(30rem, calc(25.5rem + 11.1vw), 37.5rem)",
-      "order": 94,
-      "css_name": "max-w-md"
-    },
-    "sk-var-max-w-lg": {
-      "id": "sk-var-max-w-lg",
-      "type": "global-custom-size-variable",
-      "label": "max-w-lg",
-      "value": "clamp(40rem, calc(34rem + 14.8vw), 50rem)",
-      "order": 95,
-      "css_name": "max-w-lg"
-    },
-    "sk-var-max-w-xl": {
-      "id": "sk-var-max-w-xl",
-      "type": "global-custom-size-variable",
-      "label": "max-w-xl",
-      "value": "clamp(50rem, calc(42.5rem + 18.5vw), 62.5rem)",
-      "order": 96,
-      "css_name": "max-w-xl"
-    },
-    "sk-var-max-w-2xl": {
-      "id": "sk-var-max-w-2xl",
-      "type": "global-custom-size-variable",
-      "label": "max-w-2xl",
-      "value": "clamp(60rem, calc(51rem + 22.2vw), 75rem)",
-      "order": 97,
-      "css_name": "max-w-2xl"
-    },
-    "sk-var-max-w-full": {
-      "id": "sk-var-max-w-full",
-      "type": "global-size-variable",
-      "label": "max-w-full",
-      "value": "100%",
-      "order": 98,
-      "css_name": "max-w-full"
-    },
-    "sk-var-h-full": {
-      "id": "sk-var-h-full",
-      "type": "global-size-variable",
-      "label": "h-full",
-      "value": "100%",
-      "order": 99,
-      "css_name": "h-full"
-    },
-    "sk-var-h-auto": {
-      "id": "sk-var-h-auto",
-      "type": "global-size-variable",
-      "label": "h-auto",
-      "value": "auto",
-      "order": 100,
-      "css_name": "h-auto"
-    },
-    "sk-var-h-screen": {
-      "id": "sk-var-h-screen",
-      "type": "global-size-variable",
-      "label": "h-screen",
-      "value": "100vh",
-      "order": 101,
-      "css_name": "h-screen"
-    },
-    "sk-var-min-h-screen": {
-      "id": "sk-var-min-h-screen",
-      "type": "global-size-variable",
-      "label": "min-h-screen",
-      "value": "100vh",
-      "order": 102,
-      "css_name": "min-h-screen"
-    },
-    "sk-var-min-h-full": {
-      "id": "sk-var-min-h-full",
-      "type": "global-size-variable",
-      "label": "min-h-full",
-      "value": "100%",
-      "order": 103,
-      "css_name": "min-h-full"
-    },
-    "sk-var-border-0": {
-      "id": "sk-var-border-0",
-      "type": "global-size-variable",
-      "label": "border-0",
-      "value": "0px",
-      "order": 104,
-      "css_name": "border-0"
-    },
-    "sk-var-border-1": {
-      "id": "sk-var-border-1",
-      "type": "global-custom-size-variable",
-      "label": "border-1",
-      "value": "clamp(0.0625rem, calc(0.053rem + 0.023vw), 0.078rem)",
-      "order": 105,
-      "css_name": "border-1"
-    },
-    "sk-var-border-2": {
-      "id": "sk-var-border-2",
-      "type": "global-custom-size-variable",
-      "label": "border-2",
-      "value": "clamp(0.125rem, calc(0.107rem + 0.046vw), 0.156rem)",
-      "order": 106,
-      "css_name": "border-2"
-    },
-    "sk-var-border-4": {
-      "id": "sk-var-border-4",
-      "type": "global-custom-size-variable",
-      "label": "border-4",
-      "value": "clamp(0.25rem, calc(0.21rem + 0.09vw), 0.31rem)",
-      "order": 107,
-      "css_name": "border-4"
-    },
-    "sk-var-border-8": {
-      "id": "sk-var-border-8",
-      "type": "global-custom-size-variable",
-      "label": "border-8",
-      "value": "clamp(0.5rem, calc(0.43rem + 0.18vw), 0.63rem)",
-      "order": 108,
-      "css_name": "border-8"
-    },
-    "sk-var-border-10": {
-      "id": "sk-var-border-10",
-      "type": "global-custom-size-variable",
-      "label": "border-10",
-      "value": "clamp(0.625rem, calc(0.53rem + 0.22vw), 0.78rem)",
-      "order": 109,
-      "css_name": "border-10"
-    },
-    "sk-var-border-15": {
-      "id": "sk-var-border-15",
-      "type": "global-custom-size-variable",
-      "label": "border-15",
-      "value": "clamp(0.94rem, calc(0.8rem + 0.33vw), 1.17rem)",
-      "order": 110,
-      "css_name": "border-15"
-    },
-    "sk-var-border-20": {
-      "id": "sk-var-border-20",
-      "type": "global-custom-size-variable",
-      "label": "border-20",
-      "value": "clamp(1.25rem, calc(1.07rem + 0.44vw), 1.56rem)",
-      "order": 111,
-      "css_name": "border-20"
-    },
-    "sk-var-rounded-none": {
-      "id": "sk-var-rounded-none",
-      "type": "global-size-variable",
-      "label": "rounded-none",
-      "value": "0px",
-      "order": 112,
-      "css_name": "rounded-none"
-    },
-    "sk-var-rounded-sm": {
-      "id": "sk-var-rounded-sm",
-      "type": "global-size-variable",
-      "label": "rounded-sm",
-      "value": "4px",
-      "order": 113,
-      "css_name": "rounded-sm"
-    },
-    "sk-var-rounded": {
-      "id": "sk-var-rounded",
-      "type": "global-size-variable",
-      "label": "rounded",
-      "value": "6px",
-      "order": 114,
-      "css_name": "rounded"
-    },
-    "sk-var-rounded-lg": {
-      "id": "sk-var-rounded-lg",
-      "type": "global-size-variable",
-      "label": "rounded-lg",
-      "value": "8px",
-      "order": 115,
-      "css_name": "rounded-lg"
-    },
-    "sk-var-rounded-xl": {
-      "id": "sk-var-rounded-xl",
-      "type": "global-size-variable",
-      "label": "rounded-xl",
-      "value": "12px",
-      "order": 116,
-      "css_name": "rounded-xl"
-    },
-    "sk-var-rounded-2xl": {
-      "id": "sk-var-rounded-2xl",
-      "type": "global-size-variable",
-      "label": "rounded-2xl",
-      "value": "16px",
-      "order": 117,
-      "css_name": "rounded-2xl"
-    },
-    "sk-var-rounded-full": {
-      "id": "sk-var-rounded-full",
-      "type": "global-size-variable",
-      "label": "rounded-full",
-      "value": "9999px",
-      "order": 118,
-      "css_name": "rounded-full"
-    },
-    "sk-var-border-radius-sm": {
-      "id": "sk-var-border-radius-sm",
-      "type": "global-custom-size-variable",
-      "label": "border-radius-sm",
-      "value": "clamp(0.25rem, calc(0.21rem + 0.09vw), 0.31rem)",
-      "order": 119,
-      "css_name": "border-radius-sm"
-    },
-    "sk-var-border-radius-md": {
-      "id": "sk-var-border-radius-md",
-      "type": "global-custom-size-variable",
-      "label": "border-radius-md",
-      "value": "clamp(0.5rem, calc(0.43rem + 0.18vw), 0.63rem)",
-      "order": 120,
-      "css_name": "border-radius-md"
-    },
-    "sk-var-border-radius-lg": {
-      "id": "sk-var-border-radius-lg",
-      "type": "global-custom-size-variable",
-      "label": "border-radius-lg",
-      "value": "clamp(0.75rem, calc(0.64rem + 0.27vw), 0.94rem)",
-      "order": 121,
-      "css_name": "border-radius-lg"
-    }
-  },
-  "order": [
-    "sk-var-color-primary",
-    "sk-var-color-secondary",
-    "sk-var-color-accent",
-    "sk-var-color-surface",
-    "sk-var-color-surface-2",
-    "sk-var-color-text",
-    "sk-var-color-muted",
-    "sk-var-text-white",
-    "sk-var-text-black",
-    "sk-var-text-gray-dark",
-    "sk-var-text-gray",
-    "sk-var-text-gray-light",
-    "sk-var-text-blue",
-    "sk-var-text-green",
-    "sk-var-text-red",
-    "sk-var-text-yellow",
-    "sk-var-bg-white",
-    "sk-var-bg-black",
-    "sk-var-bg-gray-dark",
-    "sk-var-bg-gray",
-    "sk-var-bg-gray-light",
-    "sk-var-bg-blue",
-    "sk-var-bg-green",
-    "sk-var-bg-red",
-    "sk-var-bg-yellow",
-    "sk-var-border-white",
-    "sk-var-border-black",
-    "sk-var-border-gray",
-    "sk-var-border-gray-light",
-    "sk-var-border-blue",
-    "sk-var-space-auto",
-    "sk-var-space-0",
-    "sk-var-space-px",
-    "sk-var-space-1",
-    "sk-var-space-2",
-    "sk-var-space-3",
-    "sk-var-space-4",
-    "sk-var-space-6",
-    "sk-var-space-8",
-    "sk-var-space-12",
-    "sk-var-space-neg-px",
-    "sk-var-space-neg-1",
-    "sk-var-space-neg-2",
-    "sk-var-space-neg-3",
-    "sk-var-space-neg-4",
-    "sk-var-space-neg-6",
-    "sk-var-space-neg-8",
-    "sk-var-space-neg-12",
-    "sk-var-gap-10",
-    "sk-var-gap-14",
-    "sk-var-gap-16",
-    "sk-var-gap-18",
-    "sk-var-gap-20",
-    "sk-var-gap-22",
-    "sk-var-gap-24",
-    "sk-var-font-family-sans",
-    "sk-var-font-family-mono",
-    "sk-var-font-size-2xs",
-    "sk-var-font-size-xs",
-    "sk-var-font-size-sm",
-    "sk-var-font-size-base",
-    "sk-var-font-size-lg",
-    "sk-var-font-size-xl",
-    "sk-var-font-size-2xl",
-    "sk-var-font-size-3xl",
-    "sk-var-font-size-4xl",
-    "sk-var-font-size-5xl",
-    "sk-var-font-size-6xl",
-    "sk-var-font-size-7xl",
-    "sk-var-font-size-8xl",
-    "sk-var-font-size-9xl",
-    "sk-var-leading-tight",
-    "sk-var-leading-normal",
-    "sk-var-leading-relaxed",
-    "sk-var-leading-loose",
-    "sk-var-tracking-tightest",
-    "sk-var-tracking-extra-tight",
-    "sk-var-tracking-tighter",
-    "sk-var-tracking-tight",
-    "sk-var-tracking-normal",
-    "sk-var-tracking-wide",
-    "sk-var-tracking-wider",
-    "sk-var-tracking-widest",
-    "sk-var-tracking-extra-wide",
-    "sk-var-tracking-ultra-wide",
-    "sk-var-w-full",
-    "sk-var-w-auto",
-    "sk-var-w-1-2",
-    "sk-var-w-1-3",
-    "sk-var-w-2-3",
-    "sk-var-w-1-4",
-    "sk-var-w-3-4",
-    "sk-var-max-w-sm",
-    "sk-var-max-w-md",
-    "sk-var-max-w-lg",
-    "sk-var-max-w-xl",
-    "sk-var-max-w-2xl",
-    "sk-var-max-w-full",
-    "sk-var-h-full",
-    "sk-var-h-auto",
-    "sk-var-h-screen",
-    "sk-var-min-h-screen",
-    "sk-var-min-h-full",
-    "sk-var-border-0",
-    "sk-var-border-1",
-    "sk-var-border-2",
-    "sk-var-border-4",
-    "sk-var-border-8",
-    "sk-var-border-10",
-    "sk-var-border-15",
-    "sk-var-border-20",
-    "sk-var-rounded-none",
-    "sk-var-rounded-sm",
-    "sk-var-rounded",
-    "sk-var-rounded-lg",
-    "sk-var-rounded-xl",
-    "sk-var-rounded-2xl",
-    "sk-var-rounded-full",
-    "sk-var-border-radius-sm",
-    "sk-var-border-radius-md",
-    "sk-var-border-radius-lg"
-  ]
+    "items": {
+        "sk-var-color-white": {
+            "id": "sk-var-color-white",
+            "type": "global-color-variable",
+            "label": "color-white",
+            "value": "#ffffff",
+            "order": 1,
+            "css_name": "color-white"
+        },
+        "sk-var-color-black": {
+            "id": "sk-var-color-black",
+            "type": "global-color-variable",
+            "label": "color-black",
+            "value": "#000000",
+            "order": 2,
+            "css_name": "color-black"
+        },
+        "sk-var-color-gray-dark": {
+            "id": "sk-var-color-gray-dark",
+            "type": "global-color-variable",
+            "label": "color-gray-dark",
+            "value": "#374151",
+            "order": 3,
+            "css_name": "color-gray-dark"
+        },
+        "sk-var-color-gray": {
+            "id": "sk-var-color-gray",
+            "type": "global-color-variable",
+            "label": "color-gray",
+            "value": "#6b7280",
+            "order": 4,
+            "css_name": "color-gray"
+        },
+        "sk-var-color-text-gray-light": {
+            "id": "sk-var-color-text-gray-light",
+            "type": "global-color-variable",
+            "label": "color-text-gray-light",
+            "value": "#9ca3af",
+            "order": 5,
+            "css_name": "color-text-gray-light"
+        },
+        "sk-var-color-bg-gray-light": {
+            "id": "sk-var-color-bg-gray-light",
+            "type": "global-color-variable",
+            "label": "color-bg-gray-light",
+            "value": "#f3f4f6",
+            "order": 6,
+            "css_name": "color-bg-gray-light"
+        },
+        "sk-var-color-border-gray-light": {
+            "id": "sk-var-color-border-gray-light",
+            "type": "global-color-variable",
+            "label": "color-border-gray-light",
+            "value": "#e5e7eb",
+            "order": 7,
+            "css_name": "color-border-gray-light"
+        },
+        "sk-var-color-primary-l-5": {
+            "id": "sk-var-color-primary-l-5",
+            "type": "global-color-variable",
+            "label": "color-primary-l-5",
+            "value": "#ffffff",
+            "order": 8,
+            "css_name": "color-primary-l-5"
+        },
+        "sk-var-color-primary-l-4": {
+            "id": "sk-var-color-primary-l-4",
+            "type": "global-color-variable",
+            "label": "color-primary-l-4",
+            "value": "#dfe7ff",
+            "order": 9,
+            "css_name": "color-primary-l-4"
+        },
+        "sk-var-color-primary-l-3": {
+            "id": "sk-var-color-primary-l-3",
+            "type": "global-color-variable",
+            "label": "color-primary-l-3",
+            "value": "#bdd0ff",
+            "order": 10,
+            "css_name": "color-primary-l-3"
+        },
+        "sk-var-color-primary-l-2": {
+            "id": "sk-var-color-primary-l-2",
+            "type": "global-color-variable",
+            "label": "color-primary-l-2",
+            "value": "#93b1ff",
+            "order": 11,
+            "css_name": "color-primary-l-2"
+        },
+        "sk-var-color-primary-l-1": {
+            "id": "sk-var-color-primary-l-1",
+            "type": "global-color-variable",
+            "label": "color-primary-l-1",
+            "value": "#5f88ff",
+            "order": 12,
+            "css_name": "color-primary-l-1"
+        },
+        "sk-var-color-primary": {
+            "id": "sk-var-color-primary",
+            "type": "global-color-variable",
+            "label": "color-primary",
+            "value": "#0740f9",
+            "order": 13,
+            "css_name": "color-primary"
+        },
+        "sk-var-color-primary-d-1": {
+            "id": "sk-var-color-primary-d-1",
+            "type": "global-color-variable",
+            "label": "color-primary-d-1",
+            "value": "#0639dd",
+            "order": 14,
+            "css_name": "color-primary-d-1"
+        },
+        "sk-var-color-primary-d-2": {
+            "id": "sk-var-color-primary-d-2",
+            "type": "global-color-variable",
+            "label": "color-primary-d-2",
+            "value": "#052fba",
+            "order": 15,
+            "css_name": "color-primary-d-2"
+        },
+        "sk-var-color-primary-d-3": {
+            "id": "sk-var-color-primary-d-3",
+            "type": "global-color-variable",
+            "label": "color-primary-d-3",
+            "value": "#042695",
+            "order": 16,
+            "css_name": "color-primary-d-3"
+        },
+        "sk-var-color-primary-d-4": {
+            "id": "sk-var-color-primary-d-4",
+            "type": "global-color-variable",
+            "label": "color-primary-d-4",
+            "value": "#031c70",
+            "order": 17,
+            "css_name": "color-primary-d-4"
+        },
+        "sk-var-color-primary-d-5": {
+            "id": "sk-var-color-primary-d-5",
+            "type": "global-color-variable",
+            "label": "color-primary-d-5",
+            "value": "#02124b",
+            "order": 18,
+            "css_name": "color-primary-d-5"
+        },
+        "sk-var-color-secondary-l-5": {
+            "id": "sk-var-color-secondary-l-5",
+            "type": "global-color-variable",
+            "label": "color-secondary-l-5",
+            "value": "#ffffff",
+            "order": 19,
+            "css_name": "color-secondary-l-5"
+        },
+        "sk-var-color-secondary-l-4": {
+            "id": "sk-var-color-secondary-l-4",
+            "type": "global-color-variable",
+            "label": "color-secondary-l-4",
+            "value": "#f2fcff",
+            "order": 20,
+            "css_name": "color-secondary-l-4"
+        },
+        "sk-var-color-secondary-l-3": {
+            "id": "sk-var-color-secondary-l-3",
+            "type": "global-color-variable",
+            "label": "color-secondary-l-3",
+            "value": "#dff7fe",
+            "order": 21,
+            "css_name": "color-secondary-l-3"
+        },
+        "sk-var-color-secondary-l-2": {
+            "id": "sk-var-color-secondary-l-2",
+            "type": "global-color-variable",
+            "label": "color-secondary-l-2",
+            "value": "#caf2fe",
+            "order": 22,
+            "css_name": "color-secondary-l-2"
+        },
+        "sk-var-color-secondary-l-1": {
+            "id": "sk-var-color-secondary-l-1",
+            "type": "global-color-variable",
+            "label": "color-secondary-l-1",
+            "value": "#b9effd",
+            "order": 23,
+            "css_name": "color-secondary-l-1"
+        },
+        "sk-var-color-secondary": {
+            "id": "sk-var-color-secondary",
+            "type": "global-color-variable",
+            "label": "color-secondary",
+            "value": "#aaebfd",
+            "order": 24,
+            "css_name": "color-secondary"
+        },
+        "sk-var-color-secondary-d-1": {
+            "id": "sk-var-color-secondary-d-1",
+            "type": "global-color-variable",
+            "label": "color-secondary-d-1",
+            "value": "#7fd3ea",
+            "order": 25,
+            "css_name": "color-secondary-d-1"
+        },
+        "sk-var-color-secondary-d-2": {
+            "id": "sk-var-color-secondary-d-2",
+            "type": "global-color-variable",
+            "label": "color-secondary-d-2",
+            "value": "#5db9d4",
+            "order": 26,
+            "css_name": "color-secondary-d-2"
+        },
+        "sk-var-color-secondary-d-3": {
+            "id": "sk-var-color-secondary-d-3",
+            "type": "global-color-variable",
+            "label": "color-secondary-d-3",
+            "value": "#419cb6",
+            "order": 27,
+            "css_name": "color-secondary-d-3"
+        },
+        "sk-var-color-secondary-d-4": {
+            "id": "sk-var-color-secondary-d-4",
+            "type": "global-color-variable",
+            "label": "color-secondary-d-4",
+            "value": "#2b7f96",
+            "order": 28,
+            "css_name": "color-secondary-d-4"
+        },
+        "sk-var-color-secondary-d-5": {
+            "id": "sk-var-color-secondary-d-5",
+            "type": "global-color-variable",
+            "label": "color-secondary-d-5",
+            "value": "#1b5d70",
+            "order": 29,
+            "css_name": "color-secondary-d-5"
+        },
+        "sk-var-color-neutral-l-5": {
+            "id": "sk-var-color-neutral-l-5",
+            "type": "global-color-variable",
+            "label": "color-neutral-l-5",
+            "value": "#ffffff",
+            "order": 30,
+            "css_name": "color-neutral-l-5"
+        },
+        "sk-var-color-neutral-l-4": {
+            "id": "sk-var-color-neutral-l-4",
+            "type": "global-color-variable",
+            "label": "color-neutral-l-4",
+            "value": "#f3f4f6",
+            "order": 31,
+            "css_name": "color-neutral-l-4"
+        },
+        "sk-var-color-neutral-l-3": {
+            "id": "sk-var-color-neutral-l-3",
+            "type": "global-color-variable",
+            "label": "color-neutral-l-3",
+            "value": "#e5e7eb",
+            "order": 32,
+            "css_name": "color-neutral-l-3"
+        },
+        "sk-var-color-neutral-l-2": {
+            "id": "sk-var-color-neutral-l-2",
+            "type": "global-color-variable",
+            "label": "color-neutral-l-2",
+            "value": "#d1d5db",
+            "order": 33,
+            "css_name": "color-neutral-l-2"
+        },
+        "sk-var-color-neutral-l-1": {
+            "id": "sk-var-color-neutral-l-1",
+            "type": "global-color-variable",
+            "label": "color-neutral-l-1",
+            "value": "#9ca3af",
+            "order": 34,
+            "css_name": "color-neutral-l-1"
+        },
+        "sk-var-color-neutral": {
+            "id": "sk-var-color-neutral",
+            "type": "global-color-variable",
+            "label": "color-neutral",
+            "value": "#6b7280",
+            "order": 35,
+            "css_name": "color-neutral"
+        },
+        "sk-var-color-neutral-d-1": {
+            "id": "sk-var-color-neutral-d-1",
+            "type": "global-color-variable",
+            "label": "color-neutral-d-1",
+            "value": "#4b5563",
+            "order": 36,
+            "css_name": "color-neutral-d-1"
+        },
+        "sk-var-color-neutral-d-2": {
+            "id": "sk-var-color-neutral-d-2",
+            "type": "global-color-variable",
+            "label": "color-neutral-d-2",
+            "value": "#374151",
+            "order": 37,
+            "css_name": "color-neutral-d-2"
+        },
+        "sk-var-color-neutral-d-3": {
+            "id": "sk-var-color-neutral-d-3",
+            "type": "global-color-variable",
+            "label": "color-neutral-d-3",
+            "value": "#1f2937",
+            "order": 38,
+            "css_name": "color-neutral-d-3"
+        },
+        "sk-var-color-neutral-d-4": {
+            "id": "sk-var-color-neutral-d-4",
+            "type": "global-color-variable",
+            "label": "color-neutral-d-4",
+            "value": "#111827",
+            "order": 39,
+            "css_name": "color-neutral-d-4"
+        },
+        "sk-var-color-neutral-d-5": {
+            "id": "sk-var-color-neutral-d-5",
+            "type": "global-color-variable",
+            "label": "color-neutral-d-5",
+            "value": "#030712",
+            "order": 40,
+            "css_name": "color-neutral-d-5"
+        },
+        "sk-var-color-success-l-5": {
+            "id": "sk-var-color-success-l-5",
+            "type": "global-color-variable",
+            "label": "color-success-l-5",
+            "value": "#ffffff",
+            "order": 41,
+            "css_name": "color-success-l-5"
+        },
+        "sk-var-color-success-l-4": {
+            "id": "sk-var-color-success-l-4",
+            "type": "global-color-variable",
+            "label": "color-success-l-4",
+            "value": "#ebfaea",
+            "order": 42,
+            "css_name": "color-success-l-4"
+        },
+        "sk-var-color-success-l-3": {
+            "id": "sk-var-color-success-l-3",
+            "type": "global-color-variable",
+            "label": "color-success-l-3",
+            "value": "#d5f4d4",
+            "order": 43,
+            "css_name": "color-success-l-3"
+        },
+        "sk-var-color-success-l-2": {
+            "id": "sk-var-color-success-l-2",
+            "type": "global-color-variable",
+            "label": "color-success-l-2",
+            "value": "#afe7ae",
+            "order": 44,
+            "css_name": "color-success-l-2"
+        },
+        "sk-var-color-success-l-1": {
+            "id": "sk-var-color-success-l-1",
+            "type": "global-color-variable",
+            "label": "color-success-l-1",
+            "value": "#79d979",
+            "order": 45,
+            "css_name": "color-success-l-1"
+        },
+        "sk-var-color-success": {
+            "id": "sk-var-color-success",
+            "type": "global-color-variable",
+            "label": "color-success",
+            "value": "#3DC13C",
+            "order": 46,
+            "css_name": "color-success"
+        },
+        "sk-var-color-success-d-1": {
+            "id": "sk-var-color-success-d-1",
+            "type": "global-color-variable",
+            "label": "color-success-d-1",
+            "value": "#2faa31",
+            "order": 47,
+            "css_name": "color-success-d-1"
+        },
+        "sk-var-color-success-d-2": {
+            "id": "sk-var-color-success-d-2",
+            "type": "global-color-variable",
+            "label": "color-success-d-2",
+            "value": "#228e25",
+            "order": 48,
+            "css_name": "color-success-d-2"
+        },
+        "sk-var-color-success-d-3": {
+            "id": "sk-var-color-success-d-3",
+            "type": "global-color-variable",
+            "label": "color-success-d-3",
+            "value": "#17731a",
+            "order": 49,
+            "css_name": "color-success-d-3"
+        },
+        "sk-var-color-success-d-4": {
+            "id": "sk-var-color-success-d-4",
+            "type": "global-color-variable",
+            "label": "color-success-d-4",
+            "value": "#0f5811",
+            "order": 50,
+            "css_name": "color-success-d-4"
+        },
+        "sk-var-color-success-d-5": {
+            "id": "sk-var-color-success-d-5",
+            "type": "global-color-variable",
+            "label": "color-success-d-5",
+            "value": "#083b09",
+            "order": 51,
+            "css_name": "color-success-d-5"
+        },
+        "sk-var-color-warning-l-5": {
+            "id": "sk-var-color-warning-l-5",
+            "type": "global-color-variable",
+            "label": "color-warning-l-5",
+            "value": "#ffffff",
+            "order": 52,
+            "css_name": "color-warning-l-5"
+        },
+        "sk-var-color-warning-l-4": {
+            "id": "sk-var-color-warning-l-4",
+            "type": "global-color-variable",
+            "label": "color-warning-l-4",
+            "value": "#fff7e1",
+            "order": 53,
+            "css_name": "color-warning-l-4"
+        },
+        "sk-var-color-warning-l-3": {
+            "id": "sk-var-color-warning-l-3",
+            "type": "global-color-variable",
+            "label": "color-warning-l-3",
+            "value": "#feeebe",
+            "order": 54,
+            "css_name": "color-warning-l-3"
+        },
+        "sk-var-color-warning-l-2": {
+            "id": "sk-var-color-warning-l-2",
+            "type": "global-color-variable",
+            "label": "color-warning-l-2",
+            "value": "#fde08d",
+            "order": 55,
+            "css_name": "color-warning-l-2"
+        },
+        "sk-var-color-warning-l-1": {
+            "id": "sk-var-color-warning-l-1",
+            "type": "global-color-variable",
+            "label": "color-warning-l-1",
+            "value": "#f9cf4f",
+            "order": 56,
+            "css_name": "color-warning-l-1"
+        },
+        "sk-var-color-warning": {
+            "id": "sk-var-color-warning",
+            "type": "global-color-variable",
+            "label": "color-warning",
+            "value": "#F4BB1B",
+            "order": 57,
+            "css_name": "color-warning"
+        },
+        "sk-var-color-warning-d-1": {
+            "id": "sk-var-color-warning-d-1",
+            "type": "global-color-variable",
+            "label": "color-warning-d-1",
+            "value": "#d69c12",
+            "order": 58,
+            "css_name": "color-warning-d-1"
+        },
+        "sk-var-color-warning-d-2": {
+            "id": "sk-var-color-warning-d-2",
+            "type": "global-color-variable",
+            "label": "color-warning-d-2",
+            "value": "#b37d0c",
+            "order": 59,
+            "css_name": "color-warning-d-2"
+        },
+        "sk-var-color-warning-d-3": {
+            "id": "sk-var-color-warning-d-3",
+            "type": "global-color-variable",
+            "label": "color-warning-d-3",
+            "value": "#8f6008",
+            "order": 60,
+            "css_name": "color-warning-d-3"
+        },
+        "sk-var-color-warning-d-4": {
+            "id": "sk-var-color-warning-d-4",
+            "type": "global-color-variable",
+            "label": "color-warning-d-4",
+            "value": "#6f4905",
+            "order": 61,
+            "css_name": "color-warning-d-4"
+        },
+        "sk-var-color-warning-d-5": {
+            "id": "sk-var-color-warning-d-5",
+            "type": "global-color-variable",
+            "label": "color-warning-d-5",
+            "value": "#4b3103",
+            "order": 62,
+            "css_name": "color-warning-d-5"
+        },
+        "sk-var-color-error-l-5": {
+            "id": "sk-var-color-error-l-5",
+            "type": "global-color-variable",
+            "label": "color-error-l-5",
+            "value": "#ffffff",
+            "order": 63,
+            "css_name": "color-error-l-5"
+        },
+        "sk-var-color-error-l-4": {
+            "id": "sk-var-color-error-l-4",
+            "type": "global-color-variable",
+            "label": "color-error-l-4",
+            "value": "#ffe8e8",
+            "order": 64,
+            "css_name": "color-error-l-4"
+        },
+        "sk-var-color-error-l-3": {
+            "id": "sk-var-color-error-l-3",
+            "type": "global-color-variable",
+            "label": "color-error-l-3",
+            "value": "#ffc7c7",
+            "order": 65,
+            "css_name": "color-error-l-3"
+        },
+        "sk-var-color-error-l-2": {
+            "id": "sk-var-color-error-l-2",
+            "type": "global-color-variable",
+            "label": "color-error-l-2",
+            "value": "#ff9b9b",
+            "order": 66,
+            "css_name": "color-error-l-2"
+        },
+        "sk-var-color-error-l-1": {
+            "id": "sk-var-color-error-l-1",
+            "type": "global-color-variable",
+            "label": "color-error-l-1",
+            "value": "#f96a6a",
+            "order": 67,
+            "css_name": "color-error-l-1"
+        },
+        "sk-var-color-error": {
+            "id": "sk-var-color-error",
+            "type": "global-color-variable",
+            "label": "color-error",
+            "value": "#F13737",
+            "order": 68,
+            "css_name": "color-error"
+        },
+        "sk-var-color-error-d-1": {
+            "id": "sk-var-color-error-d-1",
+            "type": "global-color-variable",
+            "label": "color-error-d-1",
+            "value": "#d22c2c",
+            "order": 69,
+            "css_name": "color-error-d-1"
+        },
+        "sk-var-color-error-d-2": {
+            "id": "sk-var-color-error-d-2",
+            "type": "global-color-variable",
+            "label": "color-error-d-2",
+            "value": "#b02121",
+            "order": 70,
+            "css_name": "color-error-d-2"
+        },
+        "sk-var-color-error-d-3": {
+            "id": "sk-var-color-error-d-3",
+            "type": "global-color-variable",
+            "label": "color-error-d-3",
+            "value": "#8e1818",
+            "order": 71,
+            "css_name": "color-error-d-3"
+        },
+        "sk-var-color-error-d-4": {
+            "id": "sk-var-color-error-d-4",
+            "type": "global-color-variable",
+            "label": "color-error-d-4",
+            "value": "#671010",
+            "order": 72,
+            "css_name": "color-error-d-4"
+        },
+        "sk-var-color-error-d-5": {
+            "id": "sk-var-color-error-d-5",
+            "type": "global-color-variable",
+            "label": "color-error-d-5",
+            "value": "#450909",
+            "order": 73,
+            "css_name": "color-error-d-5"
+        },
+        "sk-var-space-auto": {
+            "id": "sk-var-space-auto",
+            "type": "global-size-variable",
+            "label": "space-auto",
+            "value": "auto",
+            "order": 74,
+            "css_name": "space-auto"
+        },
+        "sk-var-space-0": {
+            "id": "sk-var-space-0",
+            "type": "global-size-variable",
+            "label": "space-0",
+            "value": "0px",
+            "order": 75,
+            "css_name": "space-0"
+        },
+        "sk-var-space-px": {
+            "id": "sk-var-space-px",
+            "type": "global-size-variable",
+            "label": "space-px",
+            "value": "1px",
+            "order": 76,
+            "css_name": "space-px"
+        },
+        "sk-var-space-1": {
+            "id": "sk-var-space-1",
+            "type": "global-custom-size-variable",
+            "label": "space-1",
+            "value": "clamp(0.25rem, calc(0.21rem + 0.09vw), 0.31rem)",
+            "order": 77,
+            "css_name": "space-1"
+        },
+        "sk-var-space-2": {
+            "id": "sk-var-space-2",
+            "type": "global-custom-size-variable",
+            "label": "space-2",
+            "value": "clamp(0.5rem, calc(0.43rem + 0.18vw), 0.63rem)",
+            "order": 78,
+            "css_name": "space-2"
+        },
+        "sk-var-space-3": {
+            "id": "sk-var-space-3",
+            "type": "global-custom-size-variable",
+            "label": "space-3",
+            "value": "clamp(0.75rem, calc(0.64rem + 0.27vw), 0.94rem)",
+            "order": 79,
+            "css_name": "space-3"
+        },
+        "sk-var-space-4": {
+            "id": "sk-var-space-4",
+            "type": "global-custom-size-variable",
+            "label": "space-4",
+            "value": "clamp(1rem, calc(0.85rem + 0.37vw), 1.25rem)",
+            "order": 80,
+            "css_name": "space-4"
+        },
+        "sk-var-space-6": {
+            "id": "sk-var-space-6",
+            "type": "global-custom-size-variable",
+            "label": "space-6",
+            "value": "clamp(1.5rem, calc(1.28rem + 0.56vw), 1.88rem)",
+            "order": 81,
+            "css_name": "space-6"
+        },
+        "sk-var-space-8": {
+            "id": "sk-var-space-8",
+            "type": "global-custom-size-variable",
+            "label": "space-8",
+            "value": "clamp(2rem, calc(1.71rem + 0.74vw), 2.5rem)",
+            "order": 82,
+            "css_name": "space-8"
+        },
+        "sk-var-space-12": {
+            "id": "sk-var-space-12",
+            "type": "global-custom-size-variable",
+            "label": "space-12",
+            "value": "clamp(3rem, calc(2.56rem + 1.1vw), 3.75rem)",
+            "order": 83,
+            "css_name": "space-12"
+        },
+        "sk-var-space-neg-px": {
+            "id": "sk-var-space-neg-px",
+            "type": "global-size-variable",
+            "label": "space-neg-px",
+            "value": "-1px",
+            "order": 84,
+            "css_name": "space-neg-px"
+        },
+        "sk-var-space-neg-1": {
+            "id": "sk-var-space-neg-1",
+            "type": "global-custom-size-variable",
+            "label": "space-neg-1",
+            "value": "calc(-1 * clamp(0.25rem, calc(0.21rem + 0.09vw), 0.31rem))",
+            "order": 85,
+            "css_name": "space-neg-1"
+        },
+        "sk-var-space-neg-2": {
+            "id": "sk-var-space-neg-2",
+            "type": "global-custom-size-variable",
+            "label": "space-neg-2",
+            "value": "calc(-1 * clamp(0.5rem, calc(0.43rem + 0.18vw), 0.63rem))",
+            "order": 86,
+            "css_name": "space-neg-2"
+        },
+        "sk-var-space-neg-3": {
+            "id": "sk-var-space-neg-3",
+            "type": "global-custom-size-variable",
+            "label": "space-neg-3",
+            "value": "calc(-1 * clamp(0.75rem, calc(0.64rem + 0.27vw), 0.94rem))",
+            "order": 87,
+            "css_name": "space-neg-3"
+        },
+        "sk-var-space-neg-4": {
+            "id": "sk-var-space-neg-4",
+            "type": "global-custom-size-variable",
+            "label": "space-neg-4",
+            "value": "calc(-1 * clamp(1rem, calc(0.85rem + 0.37vw), 1.25rem))",
+            "order": 88,
+            "css_name": "space-neg-4"
+        },
+        "sk-var-space-neg-6": {
+            "id": "sk-var-space-neg-6",
+            "type": "global-custom-size-variable",
+            "label": "space-neg-6",
+            "value": "calc(-1 * clamp(1.5rem, calc(1.28rem + 0.56vw), 1.88rem))",
+            "order": 89,
+            "css_name": "space-neg-6"
+        },
+        "sk-var-space-neg-8": {
+            "id": "sk-var-space-neg-8",
+            "type": "global-custom-size-variable",
+            "label": "space-neg-8",
+            "value": "calc(-1 * clamp(2rem, calc(1.71rem + 0.74vw), 2.5rem))",
+            "order": 90,
+            "css_name": "space-neg-8"
+        },
+        "sk-var-space-neg-12": {
+            "id": "sk-var-space-neg-12",
+            "type": "global-custom-size-variable",
+            "label": "space-neg-12",
+            "value": "calc(-1 * clamp(3rem, calc(2.56rem + 1.1vw), 3.75rem))",
+            "order": 91,
+            "css_name": "space-neg-12"
+        },
+        "sk-var-gap-10": {
+            "id": "sk-var-gap-10",
+            "type": "global-custom-size-variable",
+            "label": "gap-10",
+            "value": "clamp(2.5rem, calc(2.14rem + 0.93vw), 3.13rem)",
+            "order": 92,
+            "css_name": "gap-10"
+        },
+        "sk-var-gap-14": {
+            "id": "sk-var-gap-14",
+            "type": "global-custom-size-variable",
+            "label": "gap-14",
+            "value": "clamp(3.5rem, calc(2.99rem + 1.29vw), 4.38rem)",
+            "order": 93,
+            "css_name": "gap-14"
+        },
+        "sk-var-gap-16": {
+            "id": "sk-var-gap-16",
+            "type": "global-custom-size-variable",
+            "label": "gap-16",
+            "value": "clamp(4rem, calc(3.42rem + 1.48vw), 5rem)",
+            "order": 94,
+            "css_name": "gap-16"
+        },
+        "sk-var-gap-18": {
+            "id": "sk-var-gap-18",
+            "type": "global-custom-size-variable",
+            "label": "gap-18",
+            "value": "clamp(4.5rem, calc(3.84rem + 1.67vw), 5.63rem)",
+            "order": 95,
+            "css_name": "gap-18"
+        },
+        "sk-var-gap-20": {
+            "id": "sk-var-gap-20",
+            "type": "global-custom-size-variable",
+            "label": "gap-20",
+            "value": "clamp(5rem, calc(4.27rem + 1.85vw), 6.25rem)",
+            "order": 96,
+            "css_name": "gap-20"
+        },
+        "sk-var-gap-22": {
+            "id": "sk-var-gap-22",
+            "type": "global-custom-size-variable",
+            "label": "gap-22",
+            "value": "clamp(5.5rem, calc(4.7rem + 2.04vw), 6.88rem)",
+            "order": 97,
+            "css_name": "gap-22"
+        },
+        "sk-var-gap-24": {
+            "id": "sk-var-gap-24",
+            "type": "global-custom-size-variable",
+            "label": "gap-24",
+            "value": "clamp(6rem, calc(5.13rem + 2.22vw), 7.5rem)",
+            "order": 98,
+            "css_name": "gap-24"
+        },
+        "sk-var-font-family-sans": {
+            "id": "sk-var-font-family-sans",
+            "type": "global-font-variable",
+            "label": "font-family-sans",
+            "value": "Roboto",
+            "order": 99,
+            "css_name": "font-family-sans"
+        },
+        "sk-var-font-family-mono": {
+            "id": "sk-var-font-family-mono",
+            "type": "global-font-variable",
+            "label": "font-family-mono",
+            "value": "Menlo",
+            "order": 100,
+            "css_name": "font-family-mono"
+        },
+        "sk-var-font-size-2xs": {
+            "id": "sk-var-font-size-2xs",
+            "type": "global-custom-size-variable",
+            "label": "font-size-2xs",
+            "value": "clamp(0.58rem, calc(0.49rem + 0.09vw), 0.64rem)",
+            "order": 101,
+            "css_name": "font-size-2xs"
+        },
+        "sk-var-font-size-xs": {
+            "id": "sk-var-font-size-xs",
+            "type": "global-custom-size-variable",
+            "label": "font-size-xs",
+            "value": "clamp(0.69rem, calc(0.59rem + 0.16vw), 0.8rem)",
+            "order": 102,
+            "css_name": "font-size-xs"
+        },
+        "sk-var-font-size-sm": {
+            "id": "sk-var-font-size-sm",
+            "type": "global-custom-size-variable",
+            "label": "font-size-sm",
+            "value": "clamp(0.83rem, calc(0.71rem + 0.25vw), 1rem)",
+            "order": 103,
+            "css_name": "font-size-sm"
+        },
+        "sk-var-font-size-base": {
+            "id": "sk-var-font-size-base",
+            "type": "global-custom-size-variable",
+            "label": "font-size-base",
+            "value": "clamp(1rem, calc(0.85rem + 0.37vw), 1.25rem)",
+            "order": 104,
+            "css_name": "font-size-base"
+        },
+        "sk-var-font-size-lg": {
+            "id": "sk-var-font-size-lg",
+            "type": "global-custom-size-variable",
+            "label": "font-size-lg",
+            "value": "clamp(1.2rem, calc(1.02rem + 0.53vw), 1.56rem)",
+            "order": 105,
+            "css_name": "font-size-lg"
+        },
+        "sk-var-font-size-xl": {
+            "id": "sk-var-font-size-xl",
+            "type": "global-custom-size-variable",
+            "label": "font-size-xl",
+            "value": "clamp(1.44rem, calc(1.22rem + 0.75vw), 1.95rem)",
+            "order": 106,
+            "css_name": "font-size-xl"
+        },
+        "sk-var-font-size-2xl": {
+            "id": "sk-var-font-size-2xl",
+            "type": "global-custom-size-variable",
+            "label": "font-size-2xl",
+            "value": "clamp(1.73rem, calc(1.47rem + 1.05vw), 2.44rem)",
+            "order": 107,
+            "css_name": "font-size-2xl"
+        },
+        "sk-var-font-size-3xl": {
+            "id": "sk-var-font-size-3xl",
+            "type": "global-custom-size-variable",
+            "label": "font-size-3xl",
+            "value": "clamp(2.07rem, calc(1.76rem + 1.45vw), 3.05rem)",
+            "order": 108,
+            "css_name": "font-size-3xl"
+        },
+        "sk-var-font-size-4xl": {
+            "id": "sk-var-font-size-4xl",
+            "type": "global-custom-size-variable",
+            "label": "font-size-4xl",
+            "value": "clamp(2.49rem, calc(2.12rem + 1.97vw), 3.82rem)",
+            "order": 109,
+            "css_name": "font-size-4xl"
+        },
+        "sk-var-font-size-5xl": {
+            "id": "sk-var-font-size-5xl",
+            "type": "global-custom-size-variable",
+            "label": "font-size-5xl",
+            "value": "clamp(2.99rem, calc(2.54rem + 2.63vw), 4.77rem)",
+            "order": 110,
+            "css_name": "font-size-5xl"
+        },
+        "sk-var-font-size-6xl": {
+            "id": "sk-var-font-size-6xl",
+            "type": "global-custom-size-variable",
+            "label": "font-size-6xl",
+            "value": "clamp(3.59rem, calc(3.08rem + 3.47vw), 5.96rem)",
+            "order": 111,
+            "css_name": "font-size-6xl"
+        },
+        "sk-var-font-size-7xl": {
+            "id": "sk-var-font-size-7xl",
+            "type": "global-custom-size-variable",
+            "label": "font-size-7xl",
+            "value": "clamp(4.31rem, calc(3.74rem + 4.58vw), 7.45rem)",
+            "order": 112,
+            "css_name": "font-size-7xl"
+        },
+        "sk-var-font-size-8xl": {
+            "id": "sk-var-font-size-8xl",
+            "type": "global-custom-size-variable",
+            "label": "font-size-8xl",
+            "value": "clamp(5.17rem, calc(4.51rem + 6.05vw), 9.31rem)",
+            "order": 113,
+            "css_name": "font-size-8xl"
+        },
+        "sk-var-font-size-9xl": {
+            "id": "sk-var-font-size-9xl",
+            "type": "global-custom-size-variable",
+            "label": "font-size-9xl",
+            "value": "clamp(6.2rem, calc(5.45rem + 7.98vw), 11.64rem)",
+            "order": 114,
+            "css_name": "font-size-9xl"
+        },
+        "sk-var-leading-tight": {
+            "id": "sk-var-leading-tight",
+            "type": "global-size-variable",
+            "label": "leading-tight",
+            "value": "20px",
+            "order": 115,
+            "css_name": "leading-tight"
+        },
+        "sk-var-leading-snug": {
+            "id": "sk-var-leading-snug",
+            "type": "global-size-variable",
+            "label": "leading-snug",
+            "value": "22px",
+            "order": 116,
+            "css_name": "leading-snug"
+        },
+        "sk-var-leading-normal": {
+            "id": "sk-var-leading-normal",
+            "type": "global-size-variable",
+            "label": "leading-normal",
+            "value": "24px",
+            "order": 117,
+            "css_name": "leading-normal"
+        },
+        "sk-var-leading-relaxed": {
+            "id": "sk-var-leading-relaxed",
+            "type": "global-size-variable",
+            "label": "leading-relaxed",
+            "value": "26px",
+            "order": 118,
+            "css_name": "leading-relaxed"
+        },
+        "sk-var-leading-loose": {
+            "id": "sk-var-leading-loose",
+            "type": "global-size-variable",
+            "label": "leading-loose",
+            "value": "32px",
+            "order": 119,
+            "css_name": "leading-loose"
+        },
+        "sk-var-tracking-tightest": {
+            "id": "sk-var-tracking-tightest",
+            "type": "global-size-variable",
+            "label": "tracking-tightest",
+            "value": "-0.1em",
+            "order": 120,
+            "css_name": "tracking-tightest"
+        },
+        "sk-var-tracking-extra-tight": {
+            "id": "sk-var-tracking-extra-tight",
+            "type": "global-size-variable",
+            "label": "tracking-extra-tight",
+            "value": "-0.075em",
+            "order": 121,
+            "css_name": "tracking-extra-tight"
+        },
+        "sk-var-tracking-tighter": {
+            "id": "sk-var-tracking-tighter",
+            "type": "global-size-variable",
+            "label": "tracking-tighter",
+            "value": "-0.05em",
+            "order": 122,
+            "css_name": "tracking-tighter"
+        },
+        "sk-var-tracking-tight": {
+            "id": "sk-var-tracking-tight",
+            "type": "global-size-variable",
+            "label": "tracking-tight",
+            "value": "-0.025em",
+            "order": 123,
+            "css_name": "tracking-tight"
+        },
+        "sk-var-tracking-normal": {
+            "id": "sk-var-tracking-normal",
+            "type": "global-size-variable",
+            "label": "tracking-normal",
+            "value": "0em",
+            "order": 124,
+            "css_name": "tracking-normal"
+        },
+        "sk-var-tracking-wide": {
+            "id": "sk-var-tracking-wide",
+            "type": "global-size-variable",
+            "label": "tracking-wide",
+            "value": "0.025em",
+            "order": 125,
+            "css_name": "tracking-wide"
+        },
+        "sk-var-tracking-wider": {
+            "id": "sk-var-tracking-wider",
+            "type": "global-size-variable",
+            "label": "tracking-wider",
+            "value": "0.05em",
+            "order": 126,
+            "css_name": "tracking-wider"
+        },
+        "sk-var-tracking-widest": {
+            "id": "sk-var-tracking-widest",
+            "type": "global-size-variable",
+            "label": "tracking-widest",
+            "value": "0.1em",
+            "order": 127,
+            "css_name": "tracking-widest"
+        },
+        "sk-var-tracking-extra-wide": {
+            "id": "sk-var-tracking-extra-wide",
+            "type": "global-size-variable",
+            "label": "tracking-extra-wide",
+            "value": "0.15em",
+            "order": 128,
+            "css_name": "tracking-extra-wide"
+        },
+        "sk-var-tracking-ultra-wide": {
+            "id": "sk-var-tracking-ultra-wide",
+            "type": "global-size-variable",
+            "label": "tracking-ultra-wide",
+            "value": "0.2em",
+            "order": 129,
+            "css_name": "tracking-ultra-wide"
+        },
+        "sk-var-w-full": {
+            "id": "sk-var-w-full",
+            "type": "global-size-variable",
+            "label": "w-full",
+            "value": "100%",
+            "order": 130,
+            "css_name": "w-full"
+        },
+        "sk-var-w-auto": {
+            "id": "sk-var-w-auto",
+            "type": "global-size-variable",
+            "label": "w-auto",
+            "value": "auto",
+            "order": 131,
+            "css_name": "w-auto"
+        },
+        "sk-var-w-px": {
+            "id": "sk-var-w-px",
+            "type": "global-size-variable",
+            "label": "w-px",
+            "value": "1px",
+            "order": 132,
+            "css_name": "w-px"
+        },
+        "sk-var-w-1-2": {
+            "id": "sk-var-w-1-2",
+            "type": "global-size-variable",
+            "label": "w-1-2",
+            "value": "50%",
+            "order": 133,
+            "css_name": "w-1-2"
+        },
+        "sk-var-w-1-3": {
+            "id": "sk-var-w-1-3",
+            "type": "global-size-variable",
+            "label": "w-1-3",
+            "value": "33.333%",
+            "order": 134,
+            "css_name": "w-1-3"
+        },
+        "sk-var-w-2-3": {
+            "id": "sk-var-w-2-3",
+            "type": "global-size-variable",
+            "label": "w-2-3",
+            "value": "66.666%",
+            "order": 135,
+            "css_name": "w-2-3"
+        },
+        "sk-var-w-1-4": {
+            "id": "sk-var-w-1-4",
+            "type": "global-size-variable",
+            "label": "w-1-4",
+            "value": "25%",
+            "order": 136,
+            "css_name": "w-1-4"
+        },
+        "sk-var-w-3-4": {
+            "id": "sk-var-w-3-4",
+            "type": "global-size-variable",
+            "label": "w-3-4",
+            "value": "75%",
+            "order": 137,
+            "css_name": "w-3-4"
+        },
+        "sk-var-w-screen": {
+            "id": "sk-var-w-screen",
+            "type": "global-size-variable",
+            "label": "w-screen",
+            "value": "100vw",
+            "order": 138,
+            "css_name": "w-screen"
+        },
+        "sk-var-w-3xs": {
+            "id": "sk-var-w-3xs",
+            "type": "global-size-variable",
+            "label": "w-3xs",
+            "value": "16rem",
+            "order": 139,
+            "css_name": "w-3xs"
+        },
+        "sk-var-w-2xs": {
+            "id": "sk-var-w-2xs",
+            "type": "global-size-variable",
+            "label": "w-2xs",
+            "value": "18rem",
+            "order": 140,
+            "css_name": "w-2xs"
+        },
+        "sk-var-w-xs": {
+            "id": "sk-var-w-xs",
+            "type": "global-size-variable",
+            "label": "w-xs",
+            "value": "20rem",
+            "order": 141,
+            "css_name": "w-xs"
+        },
+        "sk-var-w-sm": {
+            "id": "sk-var-w-sm",
+            "type": "global-size-variable",
+            "label": "w-sm",
+            "value": "24rem",
+            "order": 142,
+            "css_name": "w-sm"
+        },
+        "sk-var-w-md": {
+            "id": "sk-var-w-md",
+            "type": "global-size-variable",
+            "label": "w-md",
+            "value": "28rem",
+            "order": 143,
+            "css_name": "w-md"
+        },
+        "sk-var-w-lg": {
+            "id": "sk-var-w-lg",
+            "type": "global-size-variable",
+            "label": "w-lg",
+            "value": "32rem",
+            "order": 144,
+            "css_name": "w-lg"
+        },
+        "sk-var-w-xl": {
+            "id": "sk-var-w-xl",
+            "type": "global-size-variable",
+            "label": "w-xl",
+            "value": "36rem",
+            "order": 145,
+            "css_name": "w-xl"
+        },
+        "sk-var-w-2xl": {
+            "id": "sk-var-w-2xl",
+            "type": "global-size-variable",
+            "label": "w-2xl",
+            "value": "42rem",
+            "order": 146,
+            "css_name": "w-2xl"
+        },
+        "sk-var-w-3xl": {
+            "id": "sk-var-w-3xl",
+            "type": "global-size-variable",
+            "label": "w-3xl",
+            "value": "48rem",
+            "order": 147,
+            "css_name": "w-3xl"
+        },
+        "sk-var-w-4xl": {
+            "id": "sk-var-w-4xl",
+            "type": "global-size-variable",
+            "label": "w-4xl",
+            "value": "56rem",
+            "order": 148,
+            "css_name": "w-4xl"
+        },
+        "sk-var-w-5xl": {
+            "id": "sk-var-w-5xl",
+            "type": "global-size-variable",
+            "label": "w-5xl",
+            "value": "64rem",
+            "order": 149,
+            "css_name": "w-5xl"
+        },
+        "sk-var-w-6xl": {
+            "id": "sk-var-w-6xl",
+            "type": "global-size-variable",
+            "label": "w-6xl",
+            "value": "72rem",
+            "order": 150,
+            "css_name": "w-6xl"
+        },
+        "sk-var-w-7xl": {
+            "id": "sk-var-w-7xl",
+            "type": "global-size-variable",
+            "label": "w-7xl",
+            "value": "80rem",
+            "order": 151,
+            "css_name": "w-7xl"
+        },
+        "sk-var-min-w-full": {
+            "id": "sk-var-min-w-full",
+            "type": "global-size-variable",
+            "label": "min-w-full",
+            "value": "100%",
+            "order": 152,
+            "css_name": "min-w-full"
+        },
+        "sk-var-min-w-auto": {
+            "id": "sk-var-min-w-auto",
+            "type": "global-size-variable",
+            "label": "min-w-auto",
+            "value": "auto",
+            "order": 153,
+            "css_name": "min-w-auto"
+        },
+        "sk-var-min-w-px": {
+            "id": "sk-var-min-w-px",
+            "type": "global-size-variable",
+            "label": "min-w-px",
+            "value": "1px",
+            "order": 154,
+            "css_name": "min-w-px"
+        },
+        "sk-var-min-w-1-2": {
+            "id": "sk-var-min-w-1-2",
+            "type": "global-size-variable",
+            "label": "min-w-1-2",
+            "value": "50%",
+            "order": 155,
+            "css_name": "min-w-1-2"
+        },
+        "sk-var-min-w-1-3": {
+            "id": "sk-var-min-w-1-3",
+            "type": "global-size-variable",
+            "label": "min-w-1-3",
+            "value": "33.333%",
+            "order": 156,
+            "css_name": "min-w-1-3"
+        },
+        "sk-var-min-w-2-3": {
+            "id": "sk-var-min-w-2-3",
+            "type": "global-size-variable",
+            "label": "min-w-2-3",
+            "value": "66.666%",
+            "order": 157,
+            "css_name": "min-w-2-3"
+        },
+        "sk-var-min-w-1-4": {
+            "id": "sk-var-min-w-1-4",
+            "type": "global-size-variable",
+            "label": "min-w-1-4",
+            "value": "25%",
+            "order": 158,
+            "css_name": "min-w-1-4"
+        },
+        "sk-var-min-w-3-4": {
+            "id": "sk-var-min-w-3-4",
+            "type": "global-size-variable",
+            "label": "min-w-3-4",
+            "value": "75%",
+            "order": 159,
+            "css_name": "min-w-3-4"
+        },
+        "sk-var-min-w-screen": {
+            "id": "sk-var-min-w-screen",
+            "type": "global-size-variable",
+            "label": "min-w-screen",
+            "value": "100vw",
+            "order": 160,
+            "css_name": "min-w-screen"
+        },
+        "sk-var-min-w-3xs": {
+            "id": "sk-var-min-w-3xs",
+            "type": "global-size-variable",
+            "label": "min-w-3xs",
+            "value": "16rem",
+            "order": 161,
+            "css_name": "min-w-3xs"
+        },
+        "sk-var-min-w-2xs": {
+            "id": "sk-var-min-w-2xs",
+            "type": "global-size-variable",
+            "label": "min-w-2xs",
+            "value": "18rem",
+            "order": 162,
+            "css_name": "min-w-2xs"
+        },
+        "sk-var-min-w-xs": {
+            "id": "sk-var-min-w-xs",
+            "type": "global-size-variable",
+            "label": "min-w-xs",
+            "value": "20rem",
+            "order": 163,
+            "css_name": "min-w-xs"
+        },
+        "sk-var-min-w-sm": {
+            "id": "sk-var-min-w-sm",
+            "type": "global-size-variable",
+            "label": "min-w-sm",
+            "value": "24rem",
+            "order": 164,
+            "css_name": "min-w-sm"
+        },
+        "sk-var-min-w-md": {
+            "id": "sk-var-min-w-md",
+            "type": "global-size-variable",
+            "label": "min-w-md",
+            "value": "28rem",
+            "order": 165,
+            "css_name": "min-w-md"
+        },
+        "sk-var-min-w-lg": {
+            "id": "sk-var-min-w-lg",
+            "type": "global-size-variable",
+            "label": "min-w-lg",
+            "value": "32rem",
+            "order": 166,
+            "css_name": "min-w-lg"
+        },
+        "sk-var-min-w-xl": {
+            "id": "sk-var-min-w-xl",
+            "type": "global-size-variable",
+            "label": "min-w-xl",
+            "value": "36rem",
+            "order": 167,
+            "css_name": "min-w-xl"
+        },
+        "sk-var-min-w-2xl": {
+            "id": "sk-var-min-w-2xl",
+            "type": "global-size-variable",
+            "label": "min-w-2xl",
+            "value": "42rem",
+            "order": 168,
+            "css_name": "min-w-2xl"
+        },
+        "sk-var-min-w-3xl": {
+            "id": "sk-var-min-w-3xl",
+            "type": "global-size-variable",
+            "label": "min-w-3xl",
+            "value": "48rem",
+            "order": 169,
+            "css_name": "min-w-3xl"
+        },
+        "sk-var-min-w-4xl": {
+            "id": "sk-var-min-w-4xl",
+            "type": "global-size-variable",
+            "label": "min-w-4xl",
+            "value": "56rem",
+            "order": 170,
+            "css_name": "min-w-4xl"
+        },
+        "sk-var-min-w-5xl": {
+            "id": "sk-var-min-w-5xl",
+            "type": "global-size-variable",
+            "label": "min-w-5xl",
+            "value": "64rem",
+            "order": 171,
+            "css_name": "min-w-5xl"
+        },
+        "sk-var-min-w-6xl": {
+            "id": "sk-var-min-w-6xl",
+            "type": "global-size-variable",
+            "label": "min-w-6xl",
+            "value": "72rem",
+            "order": 172,
+            "css_name": "min-w-6xl"
+        },
+        "sk-var-min-w-7xl": {
+            "id": "sk-var-min-w-7xl",
+            "type": "global-size-variable",
+            "label": "min-w-7xl",
+            "value": "80rem",
+            "order": 173,
+            "css_name": "min-w-7xl"
+        },
+        "sk-var-max-w-full": {
+            "id": "sk-var-max-w-full",
+            "type": "global-size-variable",
+            "label": "max-w-full",
+            "value": "100%",
+            "order": 174,
+            "css_name": "max-w-full"
+        },
+        "sk-var-max-w-auto": {
+            "id": "sk-var-max-w-auto",
+            "type": "global-size-variable",
+            "label": "max-w-auto",
+            "value": "none",
+            "order": 175,
+            "css_name": "max-w-auto"
+        },
+        "sk-var-max-w-px": {
+            "id": "sk-var-max-w-px",
+            "type": "global-size-variable",
+            "label": "max-w-px",
+            "value": "1px",
+            "order": 176,
+            "css_name": "max-w-px"
+        },
+        "sk-var-max-w-1-2": {
+            "id": "sk-var-max-w-1-2",
+            "type": "global-size-variable",
+            "label": "max-w-1-2",
+            "value": "50%",
+            "order": 177,
+            "css_name": "max-w-1-2"
+        },
+        "sk-var-max-w-1-3": {
+            "id": "sk-var-max-w-1-3",
+            "type": "global-size-variable",
+            "label": "max-w-1-3",
+            "value": "33.333%",
+            "order": 178,
+            "css_name": "max-w-1-3"
+        },
+        "sk-var-max-w-2-3": {
+            "id": "sk-var-max-w-2-3",
+            "type": "global-size-variable",
+            "label": "max-w-2-3",
+            "value": "66.666%",
+            "order": 179,
+            "css_name": "max-w-2-3"
+        },
+        "sk-var-max-w-1-4": {
+            "id": "sk-var-max-w-1-4",
+            "type": "global-size-variable",
+            "label": "max-w-1-4",
+            "value": "25%",
+            "order": 180,
+            "css_name": "max-w-1-4"
+        },
+        "sk-var-max-w-3-4": {
+            "id": "sk-var-max-w-3-4",
+            "type": "global-size-variable",
+            "label": "max-w-3-4",
+            "value": "75%",
+            "order": 181,
+            "css_name": "max-w-3-4"
+        },
+        "sk-var-max-w-screen": {
+            "id": "sk-var-max-w-screen",
+            "type": "global-size-variable",
+            "label": "max-w-screen",
+            "value": "100vw",
+            "order": 182,
+            "css_name": "max-w-screen"
+        },
+        "sk-var-max-w-3xs": {
+            "id": "sk-var-max-w-3xs",
+            "type": "global-size-variable",
+            "label": "max-w-3xs",
+            "value": "16rem",
+            "order": 183,
+            "css_name": "max-w-3xs"
+        },
+        "sk-var-max-w-2xs": {
+            "id": "sk-var-max-w-2xs",
+            "type": "global-size-variable",
+            "label": "max-w-2xs",
+            "value": "18rem",
+            "order": 184,
+            "css_name": "max-w-2xs"
+        },
+        "sk-var-max-w-xs": {
+            "id": "sk-var-max-w-xs",
+            "type": "global-size-variable",
+            "label": "max-w-xs",
+            "value": "20rem",
+            "order": 185,
+            "css_name": "max-w-xs"
+        },
+        "sk-var-max-w-sm": {
+            "id": "sk-var-max-w-sm",
+            "type": "global-size-variable",
+            "label": "max-w-sm",
+            "value": "24rem",
+            "order": 186,
+            "css_name": "max-w-sm"
+        },
+        "sk-var-max-w-md": {
+            "id": "sk-var-max-w-md",
+            "type": "global-size-variable",
+            "label": "max-w-md",
+            "value": "28rem",
+            "order": 187,
+            "css_name": "max-w-md"
+        },
+        "sk-var-max-w-lg": {
+            "id": "sk-var-max-w-lg",
+            "type": "global-size-variable",
+            "label": "max-w-lg",
+            "value": "32rem",
+            "order": 188,
+            "css_name": "max-w-lg"
+        },
+        "sk-var-max-w-xl": {
+            "id": "sk-var-max-w-xl",
+            "type": "global-size-variable",
+            "label": "max-w-xl",
+            "value": "36rem",
+            "order": 189,
+            "css_name": "max-w-xl"
+        },
+        "sk-var-max-w-2xl": {
+            "id": "sk-var-max-w-2xl",
+            "type": "global-size-variable",
+            "label": "max-w-2xl",
+            "value": "42rem",
+            "order": 190,
+            "css_name": "max-w-2xl"
+        },
+        "sk-var-max-w-3xl": {
+            "id": "sk-var-max-w-3xl",
+            "type": "global-size-variable",
+            "label": "max-w-3xl",
+            "value": "48rem",
+            "order": 191,
+            "css_name": "max-w-3xl"
+        },
+        "sk-var-max-w-4xl": {
+            "id": "sk-var-max-w-4xl",
+            "type": "global-size-variable",
+            "label": "max-w-4xl",
+            "value": "56rem",
+            "order": 192,
+            "css_name": "max-w-4xl"
+        },
+        "sk-var-max-w-5xl": {
+            "id": "sk-var-max-w-5xl",
+            "type": "global-size-variable",
+            "label": "max-w-5xl",
+            "value": "64rem",
+            "order": 193,
+            "css_name": "max-w-5xl"
+        },
+        "sk-var-max-w-6xl": {
+            "id": "sk-var-max-w-6xl",
+            "type": "global-size-variable",
+            "label": "max-w-6xl",
+            "value": "72rem",
+            "order": 194,
+            "css_name": "max-w-6xl"
+        },
+        "sk-var-max-w-7xl": {
+            "id": "sk-var-max-w-7xl",
+            "type": "global-size-variable",
+            "label": "max-w-7xl",
+            "value": "80rem",
+            "order": 195,
+            "css_name": "max-w-7xl"
+        },
+        "sk-var-h-full": {
+            "id": "sk-var-h-full",
+            "type": "global-size-variable",
+            "label": "h-full",
+            "value": "100%",
+            "order": 196,
+            "css_name": "h-full"
+        },
+        "sk-var-h-auto": {
+            "id": "sk-var-h-auto",
+            "type": "global-size-variable",
+            "label": "h-auto",
+            "value": "auto",
+            "order": 197,
+            "css_name": "h-auto"
+        },
+        "sk-var-h-screen": {
+            "id": "sk-var-h-screen",
+            "type": "global-size-variable",
+            "label": "h-screen",
+            "value": "100vh",
+            "order": 198,
+            "css_name": "h-screen"
+        },
+        "sk-var-h-px": {
+            "id": "sk-var-h-px",
+            "type": "global-size-variable",
+            "label": "h-px",
+            "value": "1px",
+            "order": 199,
+            "css_name": "h-px"
+        },
+        "sk-var-h-3xs": {
+            "id": "sk-var-h-3xs",
+            "type": "global-size-variable",
+            "label": "h-3xs",
+            "value": "16rem",
+            "order": 200,
+            "css_name": "h-3xs"
+        },
+        "sk-var-h-2xs": {
+            "id": "sk-var-h-2xs",
+            "type": "global-size-variable",
+            "label": "h-2xs",
+            "value": "18rem",
+            "order": 201,
+            "css_name": "h-2xs"
+        },
+        "sk-var-h-xs": {
+            "id": "sk-var-h-xs",
+            "type": "global-size-variable",
+            "label": "h-xs",
+            "value": "20rem",
+            "order": 202,
+            "css_name": "h-xs"
+        },
+        "sk-var-h-sm": {
+            "id": "sk-var-h-sm",
+            "type": "global-size-variable",
+            "label": "h-sm",
+            "value": "24rem",
+            "order": 203,
+            "css_name": "h-sm"
+        },
+        "sk-var-h-md": {
+            "id": "sk-var-h-md",
+            "type": "global-size-variable",
+            "label": "h-md",
+            "value": "28rem",
+            "order": 204,
+            "css_name": "h-md"
+        },
+        "sk-var-h-lg": {
+            "id": "sk-var-h-lg",
+            "type": "global-size-variable",
+            "label": "h-lg",
+            "value": "32rem",
+            "order": 205,
+            "css_name": "h-lg"
+        },
+        "sk-var-h-xl": {
+            "id": "sk-var-h-xl",
+            "type": "global-size-variable",
+            "label": "h-xl",
+            "value": "36rem",
+            "order": 206,
+            "css_name": "h-xl"
+        },
+        "sk-var-h-2xl": {
+            "id": "sk-var-h-2xl",
+            "type": "global-size-variable",
+            "label": "h-2xl",
+            "value": "42rem",
+            "order": 207,
+            "css_name": "h-2xl"
+        },
+        "sk-var-h-3xl": {
+            "id": "sk-var-h-3xl",
+            "type": "global-size-variable",
+            "label": "h-3xl",
+            "value": "48rem",
+            "order": 208,
+            "css_name": "h-3xl"
+        },
+        "sk-var-h-4xl": {
+            "id": "sk-var-h-4xl",
+            "type": "global-size-variable",
+            "label": "h-4xl",
+            "value": "56rem",
+            "order": 209,
+            "css_name": "h-4xl"
+        },
+        "sk-var-h-5xl": {
+            "id": "sk-var-h-5xl",
+            "type": "global-size-variable",
+            "label": "h-5xl",
+            "value": "64rem",
+            "order": 210,
+            "css_name": "h-5xl"
+        },
+        "sk-var-h-6xl": {
+            "id": "sk-var-h-6xl",
+            "type": "global-size-variable",
+            "label": "h-6xl",
+            "value": "72rem",
+            "order": 211,
+            "css_name": "h-6xl"
+        },
+        "sk-var-h-7xl": {
+            "id": "sk-var-h-7xl",
+            "type": "global-size-variable",
+            "label": "h-7xl",
+            "value": "80rem",
+            "order": 212,
+            "css_name": "h-7xl"
+        },
+        "sk-var-h-1-2": {
+            "id": "sk-var-h-1-2",
+            "type": "global-size-variable",
+            "label": "h-1-2",
+            "value": "50%",
+            "order": 213,
+            "css_name": "h-1-2"
+        },
+        "sk-var-h-1-3": {
+            "id": "sk-var-h-1-3",
+            "type": "global-size-variable",
+            "label": "h-1-3",
+            "value": "33.333%",
+            "order": 214,
+            "css_name": "h-1-3"
+        },
+        "sk-var-h-2-3": {
+            "id": "sk-var-h-2-3",
+            "type": "global-size-variable",
+            "label": "h-2-3",
+            "value": "66.666%",
+            "order": 215,
+            "css_name": "h-2-3"
+        },
+        "sk-var-h-1-4": {
+            "id": "sk-var-h-1-4",
+            "type": "global-size-variable",
+            "label": "h-1-4",
+            "value": "25%",
+            "order": 216,
+            "css_name": "h-1-4"
+        },
+        "sk-var-h-3-4": {
+            "id": "sk-var-h-3-4",
+            "type": "global-size-variable",
+            "label": "h-3-4",
+            "value": "75%",
+            "order": 217,
+            "css_name": "h-3-4"
+        },
+        "sk-var-min-h-screen": {
+            "id": "sk-var-min-h-screen",
+            "type": "global-size-variable",
+            "label": "min-h-screen",
+            "value": "100vh",
+            "order": 218,
+            "css_name": "min-h-screen"
+        },
+        "sk-var-min-h-full": {
+            "id": "sk-var-min-h-full",
+            "type": "global-size-variable",
+            "label": "min-h-full",
+            "value": "100%",
+            "order": 219,
+            "css_name": "min-h-full"
+        },
+        "sk-var-min-h-auto": {
+            "id": "sk-var-min-h-auto",
+            "type": "global-size-variable",
+            "label": "min-h-auto",
+            "value": "auto",
+            "order": 220,
+            "css_name": "min-h-auto"
+        },
+        "sk-var-min-h-px": {
+            "id": "sk-var-min-h-px",
+            "type": "global-size-variable",
+            "label": "min-h-px",
+            "value": "1px",
+            "order": 221,
+            "css_name": "min-h-px"
+        },
+        "sk-var-min-h-3xs": {
+            "id": "sk-var-min-h-3xs",
+            "type": "global-size-variable",
+            "label": "min-h-3xs",
+            "value": "16rem",
+            "order": 222,
+            "css_name": "min-h-3xs"
+        },
+        "sk-var-min-h-2xs": {
+            "id": "sk-var-min-h-2xs",
+            "type": "global-size-variable",
+            "label": "min-h-2xs",
+            "value": "18rem",
+            "order": 223,
+            "css_name": "min-h-2xs"
+        },
+        "sk-var-min-h-xs": {
+            "id": "sk-var-min-h-xs",
+            "type": "global-size-variable",
+            "label": "min-h-xs",
+            "value": "20rem",
+            "order": 224,
+            "css_name": "min-h-xs"
+        },
+        "sk-var-min-h-sm": {
+            "id": "sk-var-min-h-sm",
+            "type": "global-size-variable",
+            "label": "min-h-sm",
+            "value": "24rem",
+            "order": 225,
+            "css_name": "min-h-sm"
+        },
+        "sk-var-min-h-md": {
+            "id": "sk-var-min-h-md",
+            "type": "global-size-variable",
+            "label": "min-h-md",
+            "value": "28rem",
+            "order": 226,
+            "css_name": "min-h-md"
+        },
+        "sk-var-min-h-lg": {
+            "id": "sk-var-min-h-lg",
+            "type": "global-size-variable",
+            "label": "min-h-lg",
+            "value": "32rem",
+            "order": 227,
+            "css_name": "min-h-lg"
+        },
+        "sk-var-min-h-xl": {
+            "id": "sk-var-min-h-xl",
+            "type": "global-size-variable",
+            "label": "min-h-xl",
+            "value": "36rem",
+            "order": 228,
+            "css_name": "min-h-xl"
+        },
+        "sk-var-min-h-2xl": {
+            "id": "sk-var-min-h-2xl",
+            "type": "global-size-variable",
+            "label": "min-h-2xl",
+            "value": "42rem",
+            "order": 229,
+            "css_name": "min-h-2xl"
+        },
+        "sk-var-min-h-3xl": {
+            "id": "sk-var-min-h-3xl",
+            "type": "global-size-variable",
+            "label": "min-h-3xl",
+            "value": "48rem",
+            "order": 230,
+            "css_name": "min-h-3xl"
+        },
+        "sk-var-min-h-4xl": {
+            "id": "sk-var-min-h-4xl",
+            "type": "global-size-variable",
+            "label": "min-h-4xl",
+            "value": "56rem",
+            "order": 231,
+            "css_name": "min-h-4xl"
+        },
+        "sk-var-min-h-5xl": {
+            "id": "sk-var-min-h-5xl",
+            "type": "global-size-variable",
+            "label": "min-h-5xl",
+            "value": "64rem",
+            "order": 232,
+            "css_name": "min-h-5xl"
+        },
+        "sk-var-min-h-6xl": {
+            "id": "sk-var-min-h-6xl",
+            "type": "global-size-variable",
+            "label": "min-h-6xl",
+            "value": "72rem",
+            "order": 233,
+            "css_name": "min-h-6xl"
+        },
+        "sk-var-min-h-7xl": {
+            "id": "sk-var-min-h-7xl",
+            "type": "global-size-variable",
+            "label": "min-h-7xl",
+            "value": "80rem",
+            "order": 234,
+            "css_name": "min-h-7xl"
+        },
+        "sk-var-min-h-1-2": {
+            "id": "sk-var-min-h-1-2",
+            "type": "global-size-variable",
+            "label": "min-h-1-2",
+            "value": "50%",
+            "order": 235,
+            "css_name": "min-h-1-2"
+        },
+        "sk-var-min-h-1-3": {
+            "id": "sk-var-min-h-1-3",
+            "type": "global-size-variable",
+            "label": "min-h-1-3",
+            "value": "33.333%",
+            "order": 236,
+            "css_name": "min-h-1-3"
+        },
+        "sk-var-min-h-2-3": {
+            "id": "sk-var-min-h-2-3",
+            "type": "global-size-variable",
+            "label": "min-h-2-3",
+            "value": "66.666%",
+            "order": 237,
+            "css_name": "min-h-2-3"
+        },
+        "sk-var-min-h-1-4": {
+            "id": "sk-var-min-h-1-4",
+            "type": "global-size-variable",
+            "label": "min-h-1-4",
+            "value": "25%",
+            "order": 238,
+            "css_name": "min-h-1-4"
+        },
+        "sk-var-min-h-3-4": {
+            "id": "sk-var-min-h-3-4",
+            "type": "global-size-variable",
+            "label": "min-h-3-4",
+            "value": "75%",
+            "order": 239,
+            "css_name": "min-h-3-4"
+        },
+        "sk-var-max-h-full": {
+            "id": "sk-var-max-h-full",
+            "type": "global-size-variable",
+            "label": "max-h-full",
+            "value": "100%",
+            "order": 240,
+            "css_name": "max-h-full"
+        },
+        "sk-var-max-h-auto": {
+            "id": "sk-var-max-h-auto",
+            "type": "global-size-variable",
+            "label": "max-h-auto",
+            "value": "none",
+            "order": 241,
+            "css_name": "max-h-auto"
+        },
+        "sk-var-max-h-screen": {
+            "id": "sk-var-max-h-screen",
+            "type": "global-size-variable",
+            "label": "max-h-screen",
+            "value": "100vh",
+            "order": 242,
+            "css_name": "max-h-screen"
+        },
+        "sk-var-max-h-px": {
+            "id": "sk-var-max-h-px",
+            "type": "global-size-variable",
+            "label": "max-h-px",
+            "value": "1px",
+            "order": 243,
+            "css_name": "max-h-px"
+        },
+        "sk-var-max-h-3xs": {
+            "id": "sk-var-max-h-3xs",
+            "type": "global-size-variable",
+            "label": "max-h-3xs",
+            "value": "16rem",
+            "order": 244,
+            "css_name": "max-h-3xs"
+        },
+        "sk-var-max-h-2xs": {
+            "id": "sk-var-max-h-2xs",
+            "type": "global-size-variable",
+            "label": "max-h-2xs",
+            "value": "18rem",
+            "order": 245,
+            "css_name": "max-h-2xs"
+        },
+        "sk-var-max-h-xs": {
+            "id": "sk-var-max-h-xs",
+            "type": "global-size-variable",
+            "label": "max-h-xs",
+            "value": "20rem",
+            "order": 246,
+            "css_name": "max-h-xs"
+        },
+        "sk-var-max-h-sm": {
+            "id": "sk-var-max-h-sm",
+            "type": "global-size-variable",
+            "label": "max-h-sm",
+            "value": "24rem",
+            "order": 247,
+            "css_name": "max-h-sm"
+        },
+        "sk-var-max-h-md": {
+            "id": "sk-var-max-h-md",
+            "type": "global-size-variable",
+            "label": "max-h-md",
+            "value": "28rem",
+            "order": 248,
+            "css_name": "max-h-md"
+        },
+        "sk-var-max-h-lg": {
+            "id": "sk-var-max-h-lg",
+            "type": "global-size-variable",
+            "label": "max-h-lg",
+            "value": "32rem",
+            "order": 249,
+            "css_name": "max-h-lg"
+        },
+        "sk-var-max-h-xl": {
+            "id": "sk-var-max-h-xl",
+            "type": "global-size-variable",
+            "label": "max-h-xl",
+            "value": "36rem",
+            "order": 250,
+            "css_name": "max-h-xl"
+        },
+        "sk-var-max-h-2xl": {
+            "id": "sk-var-max-h-2xl",
+            "type": "global-size-variable",
+            "label": "max-h-2xl",
+            "value": "42rem",
+            "order": 251,
+            "css_name": "max-h-2xl"
+        },
+        "sk-var-max-h-3xl": {
+            "id": "sk-var-max-h-3xl",
+            "type": "global-size-variable",
+            "label": "max-h-3xl",
+            "value": "48rem",
+            "order": 252,
+            "css_name": "max-h-3xl"
+        },
+        "sk-var-max-h-4xl": {
+            "id": "sk-var-max-h-4xl",
+            "type": "global-size-variable",
+            "label": "max-h-4xl",
+            "value": "56rem",
+            "order": 253,
+            "css_name": "max-h-4xl"
+        },
+        "sk-var-max-h-5xl": {
+            "id": "sk-var-max-h-5xl",
+            "type": "global-size-variable",
+            "label": "max-h-5xl",
+            "value": "64rem",
+            "order": 254,
+            "css_name": "max-h-5xl"
+        },
+        "sk-var-max-h-6xl": {
+            "id": "sk-var-max-h-6xl",
+            "type": "global-size-variable",
+            "label": "max-h-6xl",
+            "value": "72rem",
+            "order": 255,
+            "css_name": "max-h-6xl"
+        },
+        "sk-var-max-h-7xl": {
+            "id": "sk-var-max-h-7xl",
+            "type": "global-size-variable",
+            "label": "max-h-7xl",
+            "value": "80rem",
+            "order": 256,
+            "css_name": "max-h-7xl"
+        },
+        "sk-var-max-h-1-2": {
+            "id": "sk-var-max-h-1-2",
+            "type": "global-size-variable",
+            "label": "max-h-1-2",
+            "value": "50%",
+            "order": 257,
+            "css_name": "max-h-1-2"
+        },
+        "sk-var-max-h-1-3": {
+            "id": "sk-var-max-h-1-3",
+            "type": "global-size-variable",
+            "label": "max-h-1-3",
+            "value": "33.333%",
+            "order": 258,
+            "css_name": "max-h-1-3"
+        },
+        "sk-var-max-h-2-3": {
+            "id": "sk-var-max-h-2-3",
+            "type": "global-size-variable",
+            "label": "max-h-2-3",
+            "value": "66.666%",
+            "order": 259,
+            "css_name": "max-h-2-3"
+        },
+        "sk-var-max-h-1-4": {
+            "id": "sk-var-max-h-1-4",
+            "type": "global-size-variable",
+            "label": "max-h-1-4",
+            "value": "25%",
+            "order": 260,
+            "css_name": "max-h-1-4"
+        },
+        "sk-var-max-h-3-4": {
+            "id": "sk-var-max-h-3-4",
+            "type": "global-size-variable",
+            "label": "max-h-3-4",
+            "value": "75%",
+            "order": 261,
+            "css_name": "max-h-3-4"
+        },
+        "sk-var-basis-auto": {
+            "id": "sk-var-basis-auto",
+            "type": "global-size-variable",
+            "label": "basis-auto",
+            "value": "auto",
+            "order": 262,
+            "css_name": "basis-auto"
+        },
+        "sk-var-basis-full": {
+            "id": "sk-var-basis-full",
+            "type": "global-size-variable",
+            "label": "basis-full",
+            "value": "100%",
+            "order": 263,
+            "css_name": "basis-full"
+        },
+        "sk-var-basis-0": {
+            "id": "sk-var-basis-0",
+            "type": "global-size-variable",
+            "label": "basis-0",
+            "value": "0px",
+            "order": 264,
+            "css_name": "basis-0"
+        },
+        "sk-var-basis-px": {
+            "id": "sk-var-basis-px",
+            "type": "global-size-variable",
+            "label": "basis-px",
+            "value": "1px",
+            "order": 265,
+            "css_name": "basis-px"
+        },
+        "sk-var-basis-1-2": {
+            "id": "sk-var-basis-1-2",
+            "type": "global-size-variable",
+            "label": "basis-1-2",
+            "value": "50%",
+            "order": 266,
+            "css_name": "basis-1-2"
+        },
+        "sk-var-basis-1-3": {
+            "id": "sk-var-basis-1-3",
+            "type": "global-size-variable",
+            "label": "basis-1-3",
+            "value": "33.333%",
+            "order": 267,
+            "css_name": "basis-1-3"
+        },
+        "sk-var-basis-2-3": {
+            "id": "sk-var-basis-2-3",
+            "type": "global-size-variable",
+            "label": "basis-2-3",
+            "value": "66.666%",
+            "order": 268,
+            "css_name": "basis-2-3"
+        },
+        "sk-var-basis-1-4": {
+            "id": "sk-var-basis-1-4",
+            "type": "global-size-variable",
+            "label": "basis-1-4",
+            "value": "25%",
+            "order": 269,
+            "css_name": "basis-1-4"
+        },
+        "sk-var-basis-3-4": {
+            "id": "sk-var-basis-3-4",
+            "type": "global-size-variable",
+            "label": "basis-3-4",
+            "value": "75%",
+            "order": 270,
+            "css_name": "basis-3-4"
+        },
+        "sk-var-border-0": {
+            "id": "sk-var-border-0",
+            "type": "global-size-variable",
+            "label": "border-0",
+            "value": "0px",
+            "order": 271,
+            "css_name": "border-0"
+        },
+        "sk-var-border-1": {
+            "id": "sk-var-border-1",
+            "type": "global-custom-size-variable",
+            "label": "border-1",
+            "value": "clamp(0.0625rem, calc(0.053rem + 0.023vw), 0.078rem)",
+            "order": 272,
+            "css_name": "border-1"
+        },
+        "sk-var-border-2": {
+            "id": "sk-var-border-2",
+            "type": "global-custom-size-variable",
+            "label": "border-2",
+            "value": "clamp(0.125rem, calc(0.107rem + 0.046vw), 0.156rem)",
+            "order": 273,
+            "css_name": "border-2"
+        },
+        "sk-var-border-4": {
+            "id": "sk-var-border-4",
+            "type": "global-custom-size-variable",
+            "label": "border-4",
+            "value": "clamp(0.25rem, calc(0.21rem + 0.09vw), 0.31rem)",
+            "order": 274,
+            "css_name": "border-4"
+        },
+        "sk-var-border-8": {
+            "id": "sk-var-border-8",
+            "type": "global-custom-size-variable",
+            "label": "border-8",
+            "value": "clamp(0.5rem, calc(0.43rem + 0.18vw), 0.63rem)",
+            "order": 275,
+            "css_name": "border-8"
+        },
+        "sk-var-border-10": {
+            "id": "sk-var-border-10",
+            "type": "global-custom-size-variable",
+            "label": "border-10",
+            "value": "clamp(0.625rem, calc(0.53rem + 0.22vw), 0.78rem)",
+            "order": 276,
+            "css_name": "border-10"
+        },
+        "sk-var-border-15": {
+            "id": "sk-var-border-15",
+            "type": "global-custom-size-variable",
+            "label": "border-15",
+            "value": "clamp(0.94rem, calc(0.8rem + 0.33vw), 1.17rem)",
+            "order": 277,
+            "css_name": "border-15"
+        },
+        "sk-var-border-20": {
+            "id": "sk-var-border-20",
+            "type": "global-custom-size-variable",
+            "label": "border-20",
+            "value": "clamp(1.25rem, calc(1.07rem + 0.44vw), 1.56rem)",
+            "order": 278,
+            "css_name": "border-20"
+        },
+        "sk-var-rounded-none": {
+            "id": "sk-var-rounded-none",
+            "type": "global-size-variable",
+            "label": "rounded-none",
+            "value": "0px",
+            "order": 279,
+            "css_name": "rounded-none"
+        },
+        "sk-var-rounded-sm": {
+            "id": "sk-var-rounded-sm",
+            "type": "global-size-variable",
+            "label": "rounded-sm",
+            "value": "4px",
+            "order": 280,
+            "css_name": "rounded-sm"
+        },
+        "sk-var-rounded": {
+            "id": "sk-var-rounded",
+            "type": "global-size-variable",
+            "label": "rounded",
+            "value": "6px",
+            "order": 281,
+            "css_name": "rounded"
+        },
+        "sk-var-rounded-lg": {
+            "id": "sk-var-rounded-lg",
+            "type": "global-size-variable",
+            "label": "rounded-lg",
+            "value": "8px",
+            "order": 282,
+            "css_name": "rounded-lg"
+        },
+        "sk-var-rounded-xl": {
+            "id": "sk-var-rounded-xl",
+            "type": "global-size-variable",
+            "label": "rounded-xl",
+            "value": "12px",
+            "order": 283,
+            "css_name": "rounded-xl"
+        },
+        "sk-var-rounded-2xl": {
+            "id": "sk-var-rounded-2xl",
+            "type": "global-size-variable",
+            "label": "rounded-2xl",
+            "value": "16px",
+            "order": 284,
+            "css_name": "rounded-2xl"
+        },
+        "sk-var-rounded-full": {
+            "id": "sk-var-rounded-full",
+            "type": "global-size-variable",
+            "label": "rounded-full",
+            "value": "9999px",
+            "order": 285,
+            "css_name": "rounded-full"
+        },
+        "sk-var-border-radius-sm": {
+            "id": "sk-var-border-radius-sm",
+            "type": "global-custom-size-variable",
+            "label": "border-radius-sm",
+            "value": "clamp(0.25rem, calc(0.21rem + 0.09vw), 0.31rem)",
+            "order": 286,
+            "css_name": "border-radius-sm"
+        },
+        "sk-var-border-radius-md": {
+            "id": "sk-var-border-radius-md",
+            "type": "global-custom-size-variable",
+            "label": "border-radius-md",
+            "value": "clamp(0.5rem, calc(0.43rem + 0.18vw), 0.63rem)",
+            "order": 287,
+            "css_name": "border-radius-md"
+        },
+        "sk-var-border-radius-lg": {
+            "id": "sk-var-border-radius-lg",
+            "type": "global-custom-size-variable",
+            "label": "border-radius-lg",
+            "value": "clamp(0.75rem, calc(0.64rem + 0.27vw), 0.94rem)",
+            "order": 288,
+            "css_name": "border-radius-lg"
+        },
+        "sk-var-shadow-sm-x": {
+            "id": "sk-var-shadow-sm-x",
+            "type": "global-size-variable",
+            "label": "shadow-sm-x",
+            "value": "0px",
+            "order": 289,
+            "css_name": "shadow-sm-x"
+        },
+        "sk-var-shadow-sm-y": {
+            "id": "sk-var-shadow-sm-y",
+            "type": "global-size-variable",
+            "label": "shadow-sm-y",
+            "value": "1px",
+            "order": 290,
+            "css_name": "shadow-sm-y"
+        },
+        "sk-var-shadow-sm-blur": {
+            "id": "sk-var-shadow-sm-blur",
+            "type": "global-size-variable",
+            "label": "shadow-sm-blur",
+            "value": "2px",
+            "order": 291,
+            "css_name": "shadow-sm-blur"
+        },
+        "sk-var-shadow-sm-spread": {
+            "id": "sk-var-shadow-sm-spread",
+            "type": "global-size-variable",
+            "label": "shadow-sm-spread",
+            "value": "0px",
+            "order": 292,
+            "css_name": "shadow-sm-spread"
+        },
+        "sk-var-shadow-sm-color": {
+            "id": "sk-var-shadow-sm-color",
+            "type": "global-color-variable",
+            "label": "shadow-sm-color",
+            "value": "rgba(17, 24, 39, 0.18)",
+            "order": 293,
+            "css_name": "shadow-sm-color"
+        },
+        "sk-var-shadow-md-x": {
+            "id": "sk-var-shadow-md-x",
+            "type": "global-size-variable",
+            "label": "shadow-md-x",
+            "value": "0px",
+            "order": 294,
+            "css_name": "shadow-md-x"
+        },
+        "sk-var-shadow-md-y": {
+            "id": "sk-var-shadow-md-y",
+            "type": "global-size-variable",
+            "label": "shadow-md-y",
+            "value": "6px",
+            "order": 295,
+            "css_name": "shadow-md-y"
+        },
+        "sk-var-shadow-md-blur": {
+            "id": "sk-var-shadow-md-blur",
+            "type": "global-size-variable",
+            "label": "shadow-md-blur",
+            "value": "12px",
+            "order": 296,
+            "css_name": "shadow-md-blur"
+        },
+        "sk-var-shadow-md-spread": {
+            "id": "sk-var-shadow-md-spread",
+            "type": "global-size-variable",
+            "label": "shadow-md-spread",
+            "value": "-2px",
+            "order": 297,
+            "css_name": "shadow-md-spread"
+        },
+        "sk-var-shadow-md-color": {
+            "id": "sk-var-shadow-md-color",
+            "type": "global-color-variable",
+            "label": "shadow-md-color",
+            "value": "rgba(17, 24, 39, 0.22)",
+            "order": 298,
+            "css_name": "shadow-md-color"
+        },
+        "sk-var-shadow-lg-x": {
+            "id": "sk-var-shadow-lg-x",
+            "type": "global-size-variable",
+            "label": "shadow-lg-x",
+            "value": "0px",
+            "order": 299,
+            "css_name": "shadow-lg-x"
+        },
+        "sk-var-shadow-lg-y": {
+            "id": "sk-var-shadow-lg-y",
+            "type": "global-size-variable",
+            "label": "shadow-lg-y",
+            "value": "12px",
+            "order": 300,
+            "css_name": "shadow-lg-y"
+        },
+        "sk-var-shadow-lg-blur": {
+            "id": "sk-var-shadow-lg-blur",
+            "type": "global-size-variable",
+            "label": "shadow-lg-blur",
+            "value": "24px",
+            "order": 301,
+            "css_name": "shadow-lg-blur"
+        },
+        "sk-var-shadow-lg-spread": {
+            "id": "sk-var-shadow-lg-spread",
+            "type": "global-size-variable",
+            "label": "shadow-lg-spread",
+            "value": "-6px",
+            "order": 302,
+            "css_name": "shadow-lg-spread"
+        },
+        "sk-var-shadow-lg-color": {
+            "id": "sk-var-shadow-lg-color",
+            "type": "global-color-variable",
+            "label": "shadow-lg-color",
+            "value": "rgba(17, 24, 39, 0.24)",
+            "order": 303,
+            "css_name": "shadow-lg-color"
+        },
+        "sk-var-shadow-xl-x": {
+            "id": "sk-var-shadow-xl-x",
+            "type": "global-size-variable",
+            "label": "shadow-xl-x",
+            "value": "0px",
+            "order": 304,
+            "css_name": "shadow-xl-x"
+        },
+        "sk-var-shadow-xl-y": {
+            "id": "sk-var-shadow-xl-y",
+            "type": "global-size-variable",
+            "label": "shadow-xl-y",
+            "value": "20px",
+            "order": 305,
+            "css_name": "shadow-xl-y"
+        },
+        "sk-var-shadow-xl-blur": {
+            "id": "sk-var-shadow-xl-blur",
+            "type": "global-size-variable",
+            "label": "shadow-xl-blur",
+            "value": "38px",
+            "order": 306,
+            "css_name": "shadow-xl-blur"
+        },
+        "sk-var-shadow-xl-spread": {
+            "id": "sk-var-shadow-xl-spread",
+            "type": "global-size-variable",
+            "label": "shadow-xl-spread",
+            "value": "-10px",
+            "order": 307,
+            "css_name": "shadow-xl-spread"
+        },
+        "sk-var-shadow-xl-color": {
+            "id": "sk-var-shadow-xl-color",
+            "type": "global-color-variable",
+            "label": "shadow-xl-color",
+            "value": "rgba(17, 24, 39, 0.26)",
+            "order": 308,
+            "css_name": "shadow-xl-color"
+        },
+        "sk-var-shadow-panel-x": {
+            "id": "sk-var-shadow-panel-x",
+            "type": "global-size-variable",
+            "label": "shadow-panel-x",
+            "value": "0px",
+            "order": 309,
+            "css_name": "shadow-panel-x"
+        },
+        "sk-var-shadow-panel-y": {
+            "id": "sk-var-shadow-panel-y",
+            "type": "global-size-variable",
+            "label": "shadow-panel-y",
+            "value": "28px",
+            "order": 310,
+            "css_name": "shadow-panel-y"
+        },
+        "sk-var-shadow-panel-blur": {
+            "id": "sk-var-shadow-panel-blur",
+            "type": "global-size-variable",
+            "label": "shadow-panel-blur",
+            "value": "56px",
+            "order": 311,
+            "css_name": "shadow-panel-blur"
+        },
+        "sk-var-shadow-panel-spread": {
+            "id": "sk-var-shadow-panel-spread",
+            "type": "global-size-variable",
+            "label": "shadow-panel-spread",
+            "value": "-14px",
+            "order": 312,
+            "css_name": "shadow-panel-spread"
+        },
+        "sk-var-shadow-panel-color": {
+            "id": "sk-var-shadow-panel-color",
+            "type": "global-color-variable",
+            "label": "shadow-panel-color",
+            "value": "rgba(17, 24, 39, 0.28)",
+            "order": 313,
+            "css_name": "shadow-panel-color"
+        },
+        "sk-var-shadow-primary-color": {
+            "id": "sk-var-shadow-primary-color",
+            "type": "global-color-variable",
+            "label": "shadow-primary-color",
+            "value": "rgba(7, 64, 249, 0.26)",
+            "order": 314,
+            "css_name": "shadow-primary-color"
+        },
+        "sk-var-shadow-secondary-color": {
+            "id": "sk-var-shadow-secondary-color",
+            "type": "global-color-variable",
+            "label": "shadow-secondary-color",
+            "value": "rgba(170, 235, 253, 0.46)",
+            "order": 315,
+            "css_name": "shadow-secondary-color"
+        },
+        "sk-var-shadow-neutral-color": {
+            "id": "sk-var-shadow-neutral-color",
+            "type": "global-color-variable",
+            "label": "shadow-neutral-color",
+            "value": "rgba(107, 114, 128, 0.28)",
+            "order": 316,
+            "css_name": "shadow-neutral-color"
+        },
+        "sk-var-shadow-success-color": {
+            "id": "sk-var-shadow-success-color",
+            "type": "global-color-variable",
+            "label": "shadow-success-color",
+            "value": "rgba(61, 193, 60, 0.26)",
+            "order": 317,
+            "css_name": "shadow-success-color"
+        },
+        "sk-var-shadow-warning-color": {
+            "id": "sk-var-shadow-warning-color",
+            "type": "global-color-variable",
+            "label": "shadow-warning-color",
+            "value": "rgba(244, 187, 27, 0.3)",
+            "order": 318,
+            "css_name": "shadow-warning-color"
+        },
+        "sk-var-shadow-error-color": {
+            "id": "sk-var-shadow-error-color",
+            "type": "global-color-variable",
+            "label": "shadow-error-color",
+            "value": "rgba(241, 55, 55, 0.26)",
+            "order": 319,
+            "css_name": "shadow-error-color"
+        },
+        "sk-var-inset-shadow-sm-x": {
+            "id": "sk-var-inset-shadow-sm-x",
+            "type": "global-size-variable",
+            "label": "inset-shadow-sm-x",
+            "value": "0px",
+            "order": 320,
+            "css_name": "inset-shadow-sm-x"
+        },
+        "sk-var-inset-shadow-sm-y": {
+            "id": "sk-var-inset-shadow-sm-y",
+            "type": "global-size-variable",
+            "label": "inset-shadow-sm-y",
+            "value": "1px",
+            "order": 321,
+            "css_name": "inset-shadow-sm-y"
+        },
+        "sk-var-inset-shadow-sm-blur": {
+            "id": "sk-var-inset-shadow-sm-blur",
+            "type": "global-size-variable",
+            "label": "inset-shadow-sm-blur",
+            "value": "2px",
+            "order": 322,
+            "css_name": "inset-shadow-sm-blur"
+        },
+        "sk-var-inset-shadow-sm-spread": {
+            "id": "sk-var-inset-shadow-sm-spread",
+            "type": "global-size-variable",
+            "label": "inset-shadow-sm-spread",
+            "value": "0px",
+            "order": 323,
+            "css_name": "inset-shadow-sm-spread"
+        },
+        "sk-var-inset-shadow-sm-color": {
+            "id": "sk-var-inset-shadow-sm-color",
+            "type": "global-color-variable",
+            "label": "inset-shadow-sm-color",
+            "value": "rgba(17, 24, 39, 0.16)",
+            "order": 324,
+            "css_name": "inset-shadow-sm-color"
+        },
+        "sk-var-inset-shadow-md-x": {
+            "id": "sk-var-inset-shadow-md-x",
+            "type": "global-size-variable",
+            "label": "inset-shadow-md-x",
+            "value": "0px",
+            "order": 325,
+            "css_name": "inset-shadow-md-x"
+        },
+        "sk-var-inset-shadow-md-y": {
+            "id": "sk-var-inset-shadow-md-y",
+            "type": "global-size-variable",
+            "label": "inset-shadow-md-y",
+            "value": "2px",
+            "order": 326,
+            "css_name": "inset-shadow-md-y"
+        },
+        "sk-var-inset-shadow-md-blur": {
+            "id": "sk-var-inset-shadow-md-blur",
+            "type": "global-size-variable",
+            "label": "inset-shadow-md-blur",
+            "value": "6px",
+            "order": 327,
+            "css_name": "inset-shadow-md-blur"
+        },
+        "sk-var-inset-shadow-md-spread": {
+            "id": "sk-var-inset-shadow-md-spread",
+            "type": "global-size-variable",
+            "label": "inset-shadow-md-spread",
+            "value": "0px",
+            "order": 328,
+            "css_name": "inset-shadow-md-spread"
+        },
+        "sk-var-inset-shadow-md-color": {
+            "id": "sk-var-inset-shadow-md-color",
+            "type": "global-color-variable",
+            "label": "inset-shadow-md-color",
+            "value": "rgba(17, 24, 39, 0.18)",
+            "order": 329,
+            "css_name": "inset-shadow-md-color"
+        },
+        "sk-var-inset-shadow-lg-x": {
+            "id": "sk-var-inset-shadow-lg-x",
+            "type": "global-size-variable",
+            "label": "inset-shadow-lg-x",
+            "value": "0px",
+            "order": 330,
+            "css_name": "inset-shadow-lg-x"
+        },
+        "sk-var-inset-shadow-lg-y": {
+            "id": "sk-var-inset-shadow-lg-y",
+            "type": "global-size-variable",
+            "label": "inset-shadow-lg-y",
+            "value": "4px",
+            "order": 331,
+            "css_name": "inset-shadow-lg-y"
+        },
+        "sk-var-inset-shadow-lg-blur": {
+            "id": "sk-var-inset-shadow-lg-blur",
+            "type": "global-size-variable",
+            "label": "inset-shadow-lg-blur",
+            "value": "10px",
+            "order": 332,
+            "css_name": "inset-shadow-lg-blur"
+        },
+        "sk-var-inset-shadow-lg-spread": {
+            "id": "sk-var-inset-shadow-lg-spread",
+            "type": "global-size-variable",
+            "label": "inset-shadow-lg-spread",
+            "value": "1px",
+            "order": 333,
+            "css_name": "inset-shadow-lg-spread"
+        },
+        "sk-var-inset-shadow-lg-color": {
+            "id": "sk-var-inset-shadow-lg-color",
+            "type": "global-color-variable",
+            "label": "inset-shadow-lg-color",
+            "value": "rgba(17, 24, 39, 0.2)",
+            "order": 334,
+            "css_name": "inset-shadow-lg-color"
+        },
+        "sk-var-inset-shadow-xl-x": {
+            "id": "sk-var-inset-shadow-xl-x",
+            "type": "global-size-variable",
+            "label": "inset-shadow-xl-x",
+            "value": "0px",
+            "order": 335,
+            "css_name": "inset-shadow-xl-x"
+        },
+        "sk-var-inset-shadow-xl-y": {
+            "id": "sk-var-inset-shadow-xl-y",
+            "type": "global-size-variable",
+            "label": "inset-shadow-xl-y",
+            "value": "8px",
+            "order": 336,
+            "css_name": "inset-shadow-xl-y"
+        },
+        "sk-var-inset-shadow-xl-blur": {
+            "id": "sk-var-inset-shadow-xl-blur",
+            "type": "global-size-variable",
+            "label": "inset-shadow-xl-blur",
+            "value": "18px",
+            "order": 337,
+            "css_name": "inset-shadow-xl-blur"
+        },
+        "sk-var-inset-shadow-xl-spread": {
+            "id": "sk-var-inset-shadow-xl-spread",
+            "type": "global-size-variable",
+            "label": "inset-shadow-xl-spread",
+            "value": "2px",
+            "order": 338,
+            "css_name": "inset-shadow-xl-spread"
+        },
+        "sk-var-inset-shadow-xl-color": {
+            "id": "sk-var-inset-shadow-xl-color",
+            "type": "global-color-variable",
+            "label": "inset-shadow-xl-color",
+            "value": "rgba(17, 24, 39, 0.22)",
+            "order": 339,
+            "css_name": "inset-shadow-xl-color"
+        },
+        "sk-var-inset-shadow-primary-color": {
+            "id": "sk-var-inset-shadow-primary-color",
+            "type": "global-color-variable",
+            "label": "inset-shadow-primary-color",
+            "value": "rgba(7, 64, 249, 0.22)",
+            "order": 340,
+            "css_name": "inset-shadow-primary-color"
+        },
+        "sk-var-inset-shadow-secondary-color": {
+            "id": "sk-var-inset-shadow-secondary-color",
+            "type": "global-color-variable",
+            "label": "inset-shadow-secondary-color",
+            "value": "rgba(170, 235, 253, 0.38)",
+            "order": 341,
+            "css_name": "inset-shadow-secondary-color"
+        },
+        "sk-var-inset-shadow-neutral-color": {
+            "id": "sk-var-inset-shadow-neutral-color",
+            "type": "global-color-variable",
+            "label": "inset-shadow-neutral-color",
+            "value": "rgba(107, 114, 128, 0.24)",
+            "order": 342,
+            "css_name": "inset-shadow-neutral-color"
+        },
+        "sk-var-inset-shadow-success-color": {
+            "id": "sk-var-inset-shadow-success-color",
+            "type": "global-color-variable",
+            "label": "inset-shadow-success-color",
+            "value": "rgba(61, 193, 60, 0.22)",
+            "order": 343,
+            "css_name": "inset-shadow-success-color"
+        },
+        "sk-var-inset-shadow-warning-color": {
+            "id": "sk-var-inset-shadow-warning-color",
+            "type": "global-color-variable",
+            "label": "inset-shadow-warning-color",
+            "value": "rgba(244, 187, 27, 0.26)",
+            "order": 344,
+            "css_name": "inset-shadow-warning-color"
+        },
+        "sk-var-inset-shadow-error-color": {
+            "id": "sk-var-inset-shadow-error-color",
+            "type": "global-color-variable",
+            "label": "inset-shadow-error-color",
+            "value": "rgba(241, 55, 55, 0.22)",
+            "order": 345,
+            "css_name": "inset-shadow-error-color"
+        },
+        "sk-var-filter-blur-sm": {
+            "id": "sk-var-filter-blur-sm",
+            "type": "global-size-variable",
+            "label": "filter-blur-sm",
+            "value": "4px",
+            "order": 346,
+            "css_name": "filter-blur-sm"
+        },
+        "sk-var-filter-blur": {
+            "id": "sk-var-filter-blur",
+            "type": "global-size-variable",
+            "label": "filter-blur",
+            "value": "8px",
+            "order": 347,
+            "css_name": "filter-blur"
+        },
+        "sk-var-filter-blur-md": {
+            "id": "sk-var-filter-blur-md",
+            "type": "global-size-variable",
+            "label": "filter-blur-md",
+            "value": "12px",
+            "order": 348,
+            "css_name": "filter-blur-md"
+        },
+        "sk-var-filter-blur-lg": {
+            "id": "sk-var-filter-blur-lg",
+            "type": "global-size-variable",
+            "label": "filter-blur-lg",
+            "value": "16px",
+            "order": 349,
+            "css_name": "filter-blur-lg"
+        },
+        "sk-var-filter-blur-xl": {
+            "id": "sk-var-filter-blur-xl",
+            "type": "global-size-variable",
+            "label": "filter-blur-xl",
+            "value": "24px",
+            "order": 350,
+            "css_name": "filter-blur-xl"
+        },
+        "sk-var-filter-intensity-0": {
+            "id": "sk-var-filter-intensity-0",
+            "type": "global-size-variable",
+            "label": "filter-intensity-0",
+            "value": "0%",
+            "order": 351,
+            "css_name": "filter-intensity-0"
+        },
+        "sk-var-filter-intensity-50": {
+            "id": "sk-var-filter-intensity-50",
+            "type": "global-size-variable",
+            "label": "filter-intensity-50",
+            "value": "50%",
+            "order": 352,
+            "css_name": "filter-intensity-50"
+        },
+        "sk-var-filter-intensity-75": {
+            "id": "sk-var-filter-intensity-75",
+            "type": "global-size-variable",
+            "label": "filter-intensity-75",
+            "value": "75%",
+            "order": 353,
+            "css_name": "filter-intensity-75"
+        },
+        "sk-var-filter-intensity-90": {
+            "id": "sk-var-filter-intensity-90",
+            "type": "global-size-variable",
+            "label": "filter-intensity-90",
+            "value": "90%",
+            "order": 354,
+            "css_name": "filter-intensity-90"
+        },
+        "sk-var-filter-intensity-100": {
+            "id": "sk-var-filter-intensity-100",
+            "type": "global-size-variable",
+            "label": "filter-intensity-100",
+            "value": "100%",
+            "order": 355,
+            "css_name": "filter-intensity-100"
+        },
+        "sk-var-filter-intensity-110": {
+            "id": "sk-var-filter-intensity-110",
+            "type": "global-size-variable",
+            "label": "filter-intensity-110",
+            "value": "110%",
+            "order": 356,
+            "css_name": "filter-intensity-110"
+        },
+        "sk-var-filter-intensity-125": {
+            "id": "sk-var-filter-intensity-125",
+            "type": "global-size-variable",
+            "label": "filter-intensity-125",
+            "value": "125%",
+            "order": 357,
+            "css_name": "filter-intensity-125"
+        },
+        "sk-var-filter-intensity-150": {
+            "id": "sk-var-filter-intensity-150",
+            "type": "global-size-variable",
+            "label": "filter-intensity-150",
+            "value": "150%",
+            "order": 358,
+            "css_name": "filter-intensity-150"
+        },
+        "sk-var-filter-intensity-200": {
+            "id": "sk-var-filter-intensity-200",
+            "type": "global-size-variable",
+            "label": "filter-intensity-200",
+            "value": "200%",
+            "order": 359,
+            "css_name": "filter-intensity-200"
+        },
+        "sk-var-filter-hue-15": {
+            "id": "sk-var-filter-hue-15",
+            "type": "global-size-variable",
+            "label": "filter-hue-15",
+            "value": "15deg",
+            "order": 360,
+            "css_name": "filter-hue-15"
+        },
+        "sk-var-filter-hue-30": {
+            "id": "sk-var-filter-hue-30",
+            "type": "global-size-variable",
+            "label": "filter-hue-30",
+            "value": "30deg",
+            "order": 361,
+            "css_name": "filter-hue-30"
+        },
+        "sk-var-filter-hue-60": {
+            "id": "sk-var-filter-hue-60",
+            "type": "global-size-variable",
+            "label": "filter-hue-60",
+            "value": "60deg",
+            "order": 362,
+            "css_name": "filter-hue-60"
+        },
+        "sk-var-filter-hue-90": {
+            "id": "sk-var-filter-hue-90",
+            "type": "global-size-variable",
+            "label": "filter-hue-90",
+            "value": "90deg",
+            "order": 363,
+            "css_name": "filter-hue-90"
+        },
+        "sk-var-filter-hue-180": {
+            "id": "sk-var-filter-hue-180",
+            "type": "global-size-variable",
+            "label": "filter-hue-180",
+            "value": "180deg",
+            "order": 364,
+            "css_name": "filter-hue-180"
+        }
+    },
+    "order": [
+        "sk-var-color-white",
+        "sk-var-color-black",
+        "sk-var-color-gray-dark",
+        "sk-var-color-gray",
+        "sk-var-color-text-gray-light",
+        "sk-var-color-bg-gray-light",
+        "sk-var-color-border-gray-light",
+        "sk-var-color-primary-l-5",
+        "sk-var-color-primary-l-4",
+        "sk-var-color-primary-l-3",
+        "sk-var-color-primary-l-2",
+        "sk-var-color-primary-l-1",
+        "sk-var-color-primary",
+        "sk-var-color-primary-d-1",
+        "sk-var-color-primary-d-2",
+        "sk-var-color-primary-d-3",
+        "sk-var-color-primary-d-4",
+        "sk-var-color-primary-d-5",
+        "sk-var-color-secondary-l-5",
+        "sk-var-color-secondary-l-4",
+        "sk-var-color-secondary-l-3",
+        "sk-var-color-secondary-l-2",
+        "sk-var-color-secondary-l-1",
+        "sk-var-color-secondary",
+        "sk-var-color-secondary-d-1",
+        "sk-var-color-secondary-d-2",
+        "sk-var-color-secondary-d-3",
+        "sk-var-color-secondary-d-4",
+        "sk-var-color-secondary-d-5",
+        "sk-var-color-neutral-l-5",
+        "sk-var-color-neutral-l-4",
+        "sk-var-color-neutral-l-3",
+        "sk-var-color-neutral-l-2",
+        "sk-var-color-neutral-l-1",
+        "sk-var-color-neutral",
+        "sk-var-color-neutral-d-1",
+        "sk-var-color-neutral-d-2",
+        "sk-var-color-neutral-d-3",
+        "sk-var-color-neutral-d-4",
+        "sk-var-color-neutral-d-5",
+        "sk-var-color-success-l-5",
+        "sk-var-color-success-l-4",
+        "sk-var-color-success-l-3",
+        "sk-var-color-success-l-2",
+        "sk-var-color-success-l-1",
+        "sk-var-color-success",
+        "sk-var-color-success-d-1",
+        "sk-var-color-success-d-2",
+        "sk-var-color-success-d-3",
+        "sk-var-color-success-d-4",
+        "sk-var-color-success-d-5",
+        "sk-var-color-warning-l-5",
+        "sk-var-color-warning-l-4",
+        "sk-var-color-warning-l-3",
+        "sk-var-color-warning-l-2",
+        "sk-var-color-warning-l-1",
+        "sk-var-color-warning",
+        "sk-var-color-warning-d-1",
+        "sk-var-color-warning-d-2",
+        "sk-var-color-warning-d-3",
+        "sk-var-color-warning-d-4",
+        "sk-var-color-warning-d-5",
+        "sk-var-color-error-l-5",
+        "sk-var-color-error-l-4",
+        "sk-var-color-error-l-3",
+        "sk-var-color-error-l-2",
+        "sk-var-color-error-l-1",
+        "sk-var-color-error",
+        "sk-var-color-error-d-1",
+        "sk-var-color-error-d-2",
+        "sk-var-color-error-d-3",
+        "sk-var-color-error-d-4",
+        "sk-var-color-error-d-5",
+        "sk-var-space-auto",
+        "sk-var-space-0",
+        "sk-var-space-px",
+        "sk-var-space-1",
+        "sk-var-space-2",
+        "sk-var-space-3",
+        "sk-var-space-4",
+        "sk-var-space-6",
+        "sk-var-space-8",
+        "sk-var-space-12",
+        "sk-var-space-neg-px",
+        "sk-var-space-neg-1",
+        "sk-var-space-neg-2",
+        "sk-var-space-neg-3",
+        "sk-var-space-neg-4",
+        "sk-var-space-neg-6",
+        "sk-var-space-neg-8",
+        "sk-var-space-neg-12",
+        "sk-var-gap-10",
+        "sk-var-gap-14",
+        "sk-var-gap-16",
+        "sk-var-gap-18",
+        "sk-var-gap-20",
+        "sk-var-gap-22",
+        "sk-var-gap-24",
+        "sk-var-font-family-sans",
+        "sk-var-font-family-mono",
+        "sk-var-font-size-2xs",
+        "sk-var-font-size-xs",
+        "sk-var-font-size-sm",
+        "sk-var-font-size-base",
+        "sk-var-font-size-lg",
+        "sk-var-font-size-xl",
+        "sk-var-font-size-2xl",
+        "sk-var-font-size-3xl",
+        "sk-var-font-size-4xl",
+        "sk-var-font-size-5xl",
+        "sk-var-font-size-6xl",
+        "sk-var-font-size-7xl",
+        "sk-var-font-size-8xl",
+        "sk-var-font-size-9xl",
+        "sk-var-leading-tight",
+        "sk-var-leading-snug",
+        "sk-var-leading-normal",
+        "sk-var-leading-relaxed",
+        "sk-var-leading-loose",
+        "sk-var-tracking-tightest",
+        "sk-var-tracking-extra-tight",
+        "sk-var-tracking-tighter",
+        "sk-var-tracking-tight",
+        "sk-var-tracking-normal",
+        "sk-var-tracking-wide",
+        "sk-var-tracking-wider",
+        "sk-var-tracking-widest",
+        "sk-var-tracking-extra-wide",
+        "sk-var-tracking-ultra-wide",
+        "sk-var-w-full",
+        "sk-var-w-auto",
+        "sk-var-w-px",
+        "sk-var-w-1-2",
+        "sk-var-w-1-3",
+        "sk-var-w-2-3",
+        "sk-var-w-1-4",
+        "sk-var-w-3-4",
+        "sk-var-w-screen",
+        "sk-var-w-3xs",
+        "sk-var-w-2xs",
+        "sk-var-w-xs",
+        "sk-var-w-sm",
+        "sk-var-w-md",
+        "sk-var-w-lg",
+        "sk-var-w-xl",
+        "sk-var-w-2xl",
+        "sk-var-w-3xl",
+        "sk-var-w-4xl",
+        "sk-var-w-5xl",
+        "sk-var-w-6xl",
+        "sk-var-w-7xl",
+        "sk-var-min-w-full",
+        "sk-var-min-w-auto",
+        "sk-var-min-w-px",
+        "sk-var-min-w-1-2",
+        "sk-var-min-w-1-3",
+        "sk-var-min-w-2-3",
+        "sk-var-min-w-1-4",
+        "sk-var-min-w-3-4",
+        "sk-var-min-w-screen",
+        "sk-var-min-w-3xs",
+        "sk-var-min-w-2xs",
+        "sk-var-min-w-xs",
+        "sk-var-min-w-sm",
+        "sk-var-min-w-md",
+        "sk-var-min-w-lg",
+        "sk-var-min-w-xl",
+        "sk-var-min-w-2xl",
+        "sk-var-min-w-3xl",
+        "sk-var-min-w-4xl",
+        "sk-var-min-w-5xl",
+        "sk-var-min-w-6xl",
+        "sk-var-min-w-7xl",
+        "sk-var-max-w-full",
+        "sk-var-max-w-auto",
+        "sk-var-max-w-px",
+        "sk-var-max-w-1-2",
+        "sk-var-max-w-1-3",
+        "sk-var-max-w-2-3",
+        "sk-var-max-w-1-4",
+        "sk-var-max-w-3-4",
+        "sk-var-max-w-screen",
+        "sk-var-max-w-3xs",
+        "sk-var-max-w-2xs",
+        "sk-var-max-w-xs",
+        "sk-var-max-w-sm",
+        "sk-var-max-w-md",
+        "sk-var-max-w-lg",
+        "sk-var-max-w-xl",
+        "sk-var-max-w-2xl",
+        "sk-var-max-w-3xl",
+        "sk-var-max-w-4xl",
+        "sk-var-max-w-5xl",
+        "sk-var-max-w-6xl",
+        "sk-var-max-w-7xl",
+        "sk-var-h-full",
+        "sk-var-h-auto",
+        "sk-var-h-screen",
+        "sk-var-h-px",
+        "sk-var-h-3xs",
+        "sk-var-h-2xs",
+        "sk-var-h-xs",
+        "sk-var-h-sm",
+        "sk-var-h-md",
+        "sk-var-h-lg",
+        "sk-var-h-xl",
+        "sk-var-h-2xl",
+        "sk-var-h-3xl",
+        "sk-var-h-4xl",
+        "sk-var-h-5xl",
+        "sk-var-h-6xl",
+        "sk-var-h-7xl",
+        "sk-var-h-1-2",
+        "sk-var-h-1-3",
+        "sk-var-h-2-3",
+        "sk-var-h-1-4",
+        "sk-var-h-3-4",
+        "sk-var-min-h-screen",
+        "sk-var-min-h-full",
+        "sk-var-min-h-auto",
+        "sk-var-min-h-px",
+        "sk-var-min-h-3xs",
+        "sk-var-min-h-2xs",
+        "sk-var-min-h-xs",
+        "sk-var-min-h-sm",
+        "sk-var-min-h-md",
+        "sk-var-min-h-lg",
+        "sk-var-min-h-xl",
+        "sk-var-min-h-2xl",
+        "sk-var-min-h-3xl",
+        "sk-var-min-h-4xl",
+        "sk-var-min-h-5xl",
+        "sk-var-min-h-6xl",
+        "sk-var-min-h-7xl",
+        "sk-var-min-h-1-2",
+        "sk-var-min-h-1-3",
+        "sk-var-min-h-2-3",
+        "sk-var-min-h-1-4",
+        "sk-var-min-h-3-4",
+        "sk-var-max-h-full",
+        "sk-var-max-h-auto",
+        "sk-var-max-h-screen",
+        "sk-var-max-h-px",
+        "sk-var-max-h-3xs",
+        "sk-var-max-h-2xs",
+        "sk-var-max-h-xs",
+        "sk-var-max-h-sm",
+        "sk-var-max-h-md",
+        "sk-var-max-h-lg",
+        "sk-var-max-h-xl",
+        "sk-var-max-h-2xl",
+        "sk-var-max-h-3xl",
+        "sk-var-max-h-4xl",
+        "sk-var-max-h-5xl",
+        "sk-var-max-h-6xl",
+        "sk-var-max-h-7xl",
+        "sk-var-max-h-1-2",
+        "sk-var-max-h-1-3",
+        "sk-var-max-h-2-3",
+        "sk-var-max-h-1-4",
+        "sk-var-max-h-3-4",
+        "sk-var-basis-auto",
+        "sk-var-basis-full",
+        "sk-var-basis-0",
+        "sk-var-basis-px",
+        "sk-var-basis-1-2",
+        "sk-var-basis-1-3",
+        "sk-var-basis-2-3",
+        "sk-var-basis-1-4",
+        "sk-var-basis-3-4",
+        "sk-var-border-0",
+        "sk-var-border-1",
+        "sk-var-border-2",
+        "sk-var-border-4",
+        "sk-var-border-8",
+        "sk-var-border-10",
+        "sk-var-border-15",
+        "sk-var-border-20",
+        "sk-var-rounded-none",
+        "sk-var-rounded-sm",
+        "sk-var-rounded",
+        "sk-var-rounded-lg",
+        "sk-var-rounded-xl",
+        "sk-var-rounded-2xl",
+        "sk-var-rounded-full",
+        "sk-var-border-radius-sm",
+        "sk-var-border-radius-md",
+        "sk-var-border-radius-lg",
+        "sk-var-shadow-sm-x",
+        "sk-var-shadow-sm-y",
+        "sk-var-shadow-sm-blur",
+        "sk-var-shadow-sm-spread",
+        "sk-var-shadow-sm-color",
+        "sk-var-shadow-md-x",
+        "sk-var-shadow-md-y",
+        "sk-var-shadow-md-blur",
+        "sk-var-shadow-md-spread",
+        "sk-var-shadow-md-color",
+        "sk-var-shadow-lg-x",
+        "sk-var-shadow-lg-y",
+        "sk-var-shadow-lg-blur",
+        "sk-var-shadow-lg-spread",
+        "sk-var-shadow-lg-color",
+        "sk-var-shadow-xl-x",
+        "sk-var-shadow-xl-y",
+        "sk-var-shadow-xl-blur",
+        "sk-var-shadow-xl-spread",
+        "sk-var-shadow-xl-color",
+        "sk-var-shadow-panel-x",
+        "sk-var-shadow-panel-y",
+        "sk-var-shadow-panel-blur",
+        "sk-var-shadow-panel-spread",
+        "sk-var-shadow-panel-color",
+        "sk-var-shadow-primary-color",
+        "sk-var-shadow-secondary-color",
+        "sk-var-shadow-neutral-color",
+        "sk-var-shadow-success-color",
+        "sk-var-shadow-warning-color",
+        "sk-var-shadow-error-color",
+        "sk-var-inset-shadow-sm-x",
+        "sk-var-inset-shadow-sm-y",
+        "sk-var-inset-shadow-sm-blur",
+        "sk-var-inset-shadow-sm-spread",
+        "sk-var-inset-shadow-sm-color",
+        "sk-var-inset-shadow-md-x",
+        "sk-var-inset-shadow-md-y",
+        "sk-var-inset-shadow-md-blur",
+        "sk-var-inset-shadow-md-spread",
+        "sk-var-inset-shadow-md-color",
+        "sk-var-inset-shadow-lg-x",
+        "sk-var-inset-shadow-lg-y",
+        "sk-var-inset-shadow-lg-blur",
+        "sk-var-inset-shadow-lg-spread",
+        "sk-var-inset-shadow-lg-color",
+        "sk-var-inset-shadow-xl-x",
+        "sk-var-inset-shadow-xl-y",
+        "sk-var-inset-shadow-xl-blur",
+        "sk-var-inset-shadow-xl-spread",
+        "sk-var-inset-shadow-xl-color",
+        "sk-var-inset-shadow-primary-color",
+        "sk-var-inset-shadow-secondary-color",
+        "sk-var-inset-shadow-neutral-color",
+        "sk-var-inset-shadow-success-color",
+        "sk-var-inset-shadow-warning-color",
+        "sk-var-inset-shadow-error-color",
+        "sk-var-filter-blur-sm",
+        "sk-var-filter-blur",
+        "sk-var-filter-blur-md",
+        "sk-var-filter-blur-lg",
+        "sk-var-filter-blur-xl",
+        "sk-var-filter-intensity-0",
+        "sk-var-filter-intensity-50",
+        "sk-var-filter-intensity-75",
+        "sk-var-filter-intensity-90",
+        "sk-var-filter-intensity-100",
+        "sk-var-filter-intensity-110",
+        "sk-var-filter-intensity-125",
+        "sk-var-filter-intensity-150",
+        "sk-var-filter-intensity-200",
+        "sk-var-filter-hue-15",
+        "sk-var-filter-hue-30",
+        "sk-var-filter-hue-60",
+        "sk-var-filter-hue-90",
+        "sk-var-filter-hue-180"
+    ]
 }

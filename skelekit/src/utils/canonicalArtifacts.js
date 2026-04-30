@@ -760,6 +760,9 @@ const applyClassPropHeuristics = (className, props, variableLookup) => {
     nextProps['border-color'] =
       nextProps['border-color'] ||
       buildValueToken('var(--border-black)', variableLookup, VARIABLE_TYPES.COLOR);
+    if (nextProps['border-color']?.value === 'var(--border-black)') {
+      nextProps['border-color'] = { $$type: 'color', value: '#000000' };
+    }
     nextProps['border-style'] =
       nextProps['border-style'] || { $$type: 'string', value: 'solid' };
   }
@@ -1037,12 +1040,21 @@ const isCustomSizeValue = (value) =>
 const isSizeValue = (value) =>
   /^-?\d*\.?\d+(px|em|rem|%|pt|pc|cm|mm|in|ex|ch|vw|vh|vmin|vmax)$/i.test(
     value
-  ) || value.toLowerCase() === 'auto';
+  ) ||
+  ['auto', 'none'].includes(value.toLowerCase());
 
 const isFontValue = (value) => {
   if (!value || isCssFunctionValue(value) || isSizeValue(value)) {
     return false;
   }
 
-  return value.includes(',') || /[A-Za-z]/.test(value);
+  if (value.includes(',')) {
+    return true;
+  }
+
+  return (
+    ['sans', 'serif', 'mono', 'monospace', 'cursive', 'fantasy'].some(
+      (keyword) => value.toLowerCase().includes(keyword)
+    ) || /^["']?[a-zA-Z][a-zA-Z\s-]*["']?$/.test(value)
+  );
 };

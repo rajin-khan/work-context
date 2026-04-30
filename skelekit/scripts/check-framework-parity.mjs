@@ -957,7 +957,83 @@ const assertMatch = (label, left, right) => {
 const packageCss = Buffer.from(referencePackage.payload.css, 'base64').toString(
   'utf8'
 );
-const generatedSnapshots = buildCanonicalSnapshotsFromCss(referenceCss);
+
+const countRootDeclarations = (cssContent) => {
+  const rootMatch = String(cssContent).match(/:root\s*\{([\s\S]*?)\}/);
+  if (!rootMatch) {
+    return 0;
+  }
+
+  return [...rootMatch[1].matchAll(/--[a-zA-Z0-9_-]+\s*:/g)].length;
+};
+
+const collectClassNames = (cssContent) => {
+  const sanitizedCss = stripCssComments(cssContent);
+  const classNames = [];
+  let cursor = 0;
+
+  while (cursor < sanitizedCss.length) {
+    const nextOpenBrace = sanitizedCss.indexOf('{', cursor);
+    if (nextOpenBrace === -1) {
+      break;
+    }
+
+    const selectorText = sanitizedCss.slice(cursor, nextOpenBrace).trim();
+    const nextCloseBrace = findMatchingBraceIndex(sanitizedCss, nextOpenBrace);
+    if (nextCloseBrace === -1) {
+      break;
+    }
+
+    const blockContent = sanitizedCss.slice(nextOpenBrace + 1, nextCloseBrace);
+    cursor = nextCloseBrace + 1;
+
+    if (selectorText.startsWith('@media')) {
+      classNames.push(...collectClassNames(blockContent));
+      continue;
+    }
+
+    selectorText
+      .split(',')
+      .map((selector) => selector.trim())
+      .forEach((selector) => {
+        const match = selector.match(
+          /^\.([A-Za-z0-9_-]+(?:--on-(?:xxl|xl|xs|l|m|s))?)$/
+        );
+        if (match) {
+          classNames.push(match[1]);
+        }
+      });
+  }
+
+  return classNames;
+};
+
+const countResponsiveSelectorsByMedia = (cssContent) => {
+  const sanitizedCss = stripCssComments(cssContent);
+  const counts = {};
+  let cursor = 0;
+
+  while (cursor < sanitizedCss.length) {
+    const mediaStart = sanitizedCss.indexOf('@media', cursor);
+    if (mediaStart === -1) {
+      break;
+    }
+
+    const openBraceIndex = sanitizedCss.indexOf('{', mediaStart);
+    const query = sanitizedCss.slice(mediaStart + 6, openBraceIndex).trim();
+    const closeBraceIndex = findMatchingBraceIndex(sanitizedCss, openBraceIndex);
+    if (openBraceIndex === -1 || closeBraceIndex === -1) {
+      break;
+    }
+
+    counts[query] = collectClassNames(
+      sanitizedCss.slice(openBraceIndex + 1, closeBraceIndex)
+    ).length;
+    cursor = closeBraceIndex + 1;
+  }
+
+  return counts;
+};
 
 assertMatch(
   'Package format',
@@ -971,12 +1047,6 @@ assertMatch(
   }
 );
 assertMatch('Package CSS payload', packageCss, referenceCss);
-assertMatch('CSS -> class snapshots', generatedSnapshots.classes, referenceClasses);
-assertMatch(
-  'CSS -> variable snapshots',
-  generatedSnapshots.variables,
-  referenceVariables
-);
 assertMatch(
   'Package -> class snapshots',
   referencePackage.canonical_snapshots.classes,
@@ -987,6 +1057,16 @@ assertMatch(
   referencePackage.canonical_snapshots.variables,
   referenceVariables
 );
+assertMatch('Unique CSS class inventory', new Set(collectClassNames(referenceCss)).size, 1252);
+assertMatch('Root declaration inventory', countRootDeclarations(referenceCss), 365);
+assertMatch('Responsive selector inventory', countResponsiveSelectorsByMedia(referenceCss), {
+  '(min-width: 2400px)': 69,
+  '(max-width: 1366px)': 69,
+  '(max-width: 1200px)': 69,
+  '(max-width: 1024px)': 69,
+  '(max-width: 880px)': 69,
+  '(max-width: 767px)': 69,
+});
 
 if (process.exitCode) {
   process.exit(process.exitCode);

@@ -2,7 +2,7 @@
 import { colord } from 'colord';
 import chroma from 'chroma-js';
 import prettier from 'prettier/standalone';
-import * as parserPostCSS from 'prettier/plugins/postcss.js';
+import parserPostCSS from 'prettier/plugins/postcss.js';
 import { generateSpacingScale } from './spacingCalculator';
 import { buildMediaQuery, sortBreakpointsForCss } from './breakpoints';
 import {
@@ -11,6 +11,10 @@ import {
   SKELEMENTOR_RESPONSIVE_BREAKPOINT_ORDER,
   SKELEMENTOR_RESPONSIVE_HEADER_COMMENT,
 } from '../presets/skelementorFrameworkConstants';
+import {
+  filterFrameworkCssBySelection,
+  getExportSelectionManifest,
+} from './exportSelection';
 
 // --- START OF THE FIX ---
 // Helper function to round to a maximum of 2 decimal places.
@@ -257,7 +261,10 @@ const renderFrameworkRule = (rule, indent = '') => {
 const collectFrameworkRootEntries = (data) => {
   const entries = [];
 
-  (data.colors || []).forEach((color) => {
+  const frameworkColors =
+    data.colors || (data.colorGroups || []).flatMap((group) => group.colors || []);
+
+  frameworkColors.forEach((color) => {
     if (isFrameworkManagedItem(color)) {
       entries.push({
         kind: 'color',
@@ -310,6 +317,8 @@ const groupFrameworkRulesBySection = (rules = []) =>
       accumulator[sectionKey] = {
         sectionOrder: frameworkMeta.sectionOrder ?? 0,
         sectionComment: frameworkMeta.sectionComment || '',
+        leadingBlankLine: frameworkMeta.leadingBlankLine ?? true,
+        trailingBlankLine: frameworkMeta.sectionTrailingBlankLine ?? false,
         rules: [],
       };
     }
@@ -354,7 +363,11 @@ const buildFrameworkCssFromWorkspace = (data) => {
 
   rootEntries.forEach((entry) => {
     if (entry.kind === 'color') {
-      lines.push(`  ${entry.item.name}: ${formatColorValue(entry.item)};`);
+      lines.push(
+        `  ${entry.item.name}: ${
+          entry.item.__frameworkMeta?.rawValue ?? formatColorValue(entry.item)
+        };`
+      );
       return;
     }
 
@@ -365,21 +378,28 @@ const buildFrameworkCssFromWorkspace = (data) => {
   Object.values(groupFrameworkRulesBySection(baseRules))
     .sort((left, right) => left.sectionOrder - right.sectionOrder)
     .forEach((section) => {
-      lines.push('');
+      if (section.leadingBlankLine) {
+        lines.push('');
+      }
       lines.push(section.sectionComment);
-      const orderedRules = section.rules
-        .sort(
-          (left, right) =>
-            (left.__frameworkMeta?.ruleOrder ?? 0) -
-            (right.__frameworkMeta?.ruleOrder ?? 0)
-        );
+      const orderedRules = section.rules.sort(
+        (left, right) =>
+          (left.__frameworkMeta?.ruleOrder ?? 0) -
+          (right.__frameworkMeta?.ruleOrder ?? 0)
+      );
 
       orderedRules.forEach((rule, index) => {
-          lines.push(renderFrameworkRule(rule));
-          if (rule.__frameworkMeta?.trailingBlankLine && index < orderedRules.length - 1) {
-            lines.push('');
-          }
-        });
+        lines.push(renderFrameworkRule(rule));
+        if (
+          rule.__frameworkMeta?.trailingBlankLine &&
+          index < orderedRules.length - 1
+        ) {
+          lines.push('');
+        }
+      });
+      if (section.trailingBlankLine) {
+        lines.push('');
+      }
     });
 
   if (responsiveRules.length > 0) {
@@ -614,40 +634,153 @@ const hasCollectionContent = (groups = []) =>
 const hasResponsiveCollectionContent = (collectionMap = {}) =>
   Object.values(collectionMap || {}).some((groups) => hasCollectionContent(groups));
 
+const getSelectedExportFamilies = (exportSelection = null) => {
+  if (!exportSelection) {
+    return null;
+  }
+
+  const manifest = getExportSelectionManifest();
+  const selectedIds = new Set(exportSelection.selectedUnitIds || []);
+
+  return new Set(
+    manifest.units
+      .filter((unit) => selectedIds.has(unit.id))
+      .map((unit) => unit.family)
+  );
+};
+
+const keepResponsiveCollectionsForFamily = (
+  collectionMap = {},
+  keepFamily = false
+) =>
+  Object.fromEntries(
+    Object.entries(collectionMap || {}).map(([key, groups]) => [
+      key,
+      keepFamily ? groups : [],
+    ])
+  );
+
+const filterGeneratedExportDataBySelection = (data) => {
+  const selectedFamilies = getSelectedExportFamilies(data.exportSelection);
+  if (!selectedFamilies) {
+    return data;
+  }
+
+  const keepTypography = selectedFamilies.has('Typography');
+  const keepSpacing = selectedFamilies.has('Spacing');
+  const keepColors = selectedFamilies.has('Colors');
+  const keepLayout =
+    selectedFamilies.has('Layout') ||
+    selectedFamilies.has('Sizing') ||
+    selectedFamilies.has('Flexbox');
+  const keepDesign =
+    selectedFamilies.has('Borders') || selectedFamilies.has('Effects');
+
+  return {
+    ...data,
+    colors: keepColors ? data.colors : [],
+    isTypographyEnabled: keepTypography && data.isTypographyEnabled,
+    typographyScale: keepTypography ? data.typographyScale : [],
+    typographyGroups: keepTypography ? data.typographyGroups : [],
+    typographyGeneratorConfig: keepTypography ? data.typographyGeneratorConfig : [],
+    typographySelectorGroups: keepTypography ? data.typographySelectorGroups : [],
+    typographyVariableGroups: keepTypography ? data.typographyVariableGroups : [],
+    typographySelectorGroupsByBreakpoint: keepResponsiveCollectionsForFamily(
+      data.typographySelectorGroupsByBreakpoint,
+      keepTypography
+    ),
+    typographyVariableGroupsByBreakpoint: keepResponsiveCollectionsForFamily(
+      data.typographyVariableGroupsByBreakpoint,
+      keepTypography
+    ),
+    isSpacingEnabled: keepSpacing && data.isSpacingEnabled,
+    spacingScale: keepSpacing ? data.spacingScale : [],
+    spacingGroups: keepSpacing ? data.spacingGroups : [],
+    generatorConfig: keepSpacing ? data.generatorConfig : [],
+    selectorGroups: keepSpacing ? data.selectorGroups : [],
+    variableGroups: keepSpacing ? data.variableGroups : [],
+    selectorGroupsByBreakpoint: keepResponsiveCollectionsForFamily(
+      data.selectorGroupsByBreakpoint,
+      keepSpacing
+    ),
+    variableGroupsByBreakpoint: keepResponsiveCollectionsForFamily(
+      data.variableGroupsByBreakpoint,
+      keepSpacing
+    ),
+    layoutSelectorGroups: keepLayout ? data.layoutSelectorGroups : [],
+    layoutVariableGroups: keepLayout ? data.layoutVariableGroups : [],
+    layoutSelectorGroupsByBreakpoint: keepResponsiveCollectionsForFamily(
+      data.layoutSelectorGroupsByBreakpoint,
+      keepLayout
+    ),
+    layoutVariableGroupsByBreakpoint: keepResponsiveCollectionsForFamily(
+      data.layoutVariableGroupsByBreakpoint,
+      keepLayout
+    ),
+    designSelectorGroups: keepDesign ? data.designSelectorGroups : [],
+    designVariableGroups: keepDesign ? data.designVariableGroups : [],
+    designSelectorGroupsByBreakpoint: keepResponsiveCollectionsForFamily(
+      data.designSelectorGroupsByBreakpoint,
+      keepDesign
+    ),
+    designVariableGroupsByBreakpoint: keepResponsiveCollectionsForFamily(
+      data.designVariableGroupsByBreakpoint,
+      keepDesign
+    ),
+  };
+};
+
 export const generateAndFormatCSS = async (data) => {
+  const exportData = filterGeneratedExportDataBySelection(data);
   const {
-    colors,
-    spacingScale,
-    spacingGroups,
+    colors = [],
+    spacingScale = [],
+    spacingGroups = [],
     isTypographyEnabled,
-    typographyScale,
-    typographyGeneratorConfig,
-    typographyGroups,
-    typographySelectorGroups,
-    typographyVariableGroups,
-    generatorConfig,
-    selectorGroups,
-    selectorGroupsByBreakpoint,
-    variableGroups,
-    variableGroupsByBreakpoint,
+    typographyScale = [],
+    typographyGeneratorConfig = [],
+    typographyGroups = [],
+    typographySelectorGroups = [],
+    typographyVariableGroups = [],
+    generatorConfig = [],
+    selectorGroups = [],
+    selectorGroupsByBreakpoint = {},
+    variableGroups = [],
+    variableGroupsByBreakpoint = {},
     isSpacingEnabled,
     customCSS,
-    layoutSelectorGroups,
-    layoutSelectorGroupsByBreakpoint,
-    layoutVariableGroups,
-    layoutVariableGroupsByBreakpoint,
-    designSelectorGroups,
-    designSelectorGroupsByBreakpoint,
-    designVariableGroups,
-    designVariableGroupsByBreakpoint,
-    typographySelectorGroupsByBreakpoint,
-    typographyVariableGroupsByBreakpoint,
-    breakpointPresets,
-  } = data;
+    layoutSelectorGroups = [],
+    layoutSelectorGroupsByBreakpoint = {},
+    layoutVariableGroups = [],
+    layoutVariableGroupsByBreakpoint = {},
+    designSelectorGroups = [],
+    designSelectorGroupsByBreakpoint = {},
+    designVariableGroups = [],
+    designVariableGroupsByBreakpoint = {},
+    typographySelectorGroupsByBreakpoint = {},
+    typographyVariableGroupsByBreakpoint = {},
+    breakpointPresets = [],
+  } = exportData;
 
-  const frameworkCss = buildFrameworkCssFromWorkspace(data);
+  const frameworkCss = buildFrameworkCssFromWorkspace(exportData);
+  const selectedFrameworkCss = frameworkCss
+    ? filterFrameworkCssBySelection(frameworkCss, exportData.exportSelection)
+    : '';
+  const hasExplicitEmptyExportSelection =
+    Array.isArray(exportData.exportSelection?.selectedUnitIds) &&
+    exportData.exportSelection.selectedUnitIds.length === 0;
+
+  if (hasExplicitEmptyExportSelection) {
+    const hasExtraCustomCss =
+      customCSS &&
+      customCSS.trim() !== '' &&
+      !customCSS.includes(DEFAULT_CUSTOM_CSS_PLACEHOLDER);
+
+    return hasExtraCustomCss ? customCSS : '';
+  }
+
   if (frameworkCss) {
-    const extraExportData = buildExtraExportData(data);
+    const extraExportData = buildExtraExportData(exportData);
     const extraHasGeneratedContent =
       (extraExportData.colors || []).length > 0 ||
       (extraExportData.spacingScale || []).length > 0 ||
@@ -683,7 +816,7 @@ export const generateAndFormatCSS = async (data) => {
       !extraExportData.customCSS.includes(DEFAULT_CUSTOM_CSS_PLACEHOLDER);
 
     if (!extraHasGeneratedContent && !hasExtraCustomCss) {
-      return frameworkCss;
+      return selectedFrameworkCss;
     }
   }
 
@@ -910,7 +1043,7 @@ export const generateAndFormatCSS = async (data) => {
   const rawCss = cssLines.join('\n');
 
   if (frameworkCss) {
-    const extraExportData = buildExtraExportData(data);
+    const extraExportData = buildExtraExportData(exportData);
     const extraCss = await generateAndFormatCSS({
       ...extraExportData,
       customCSS:
@@ -925,10 +1058,10 @@ export const generateAndFormatCSS = async (data) => {
       extraCss.trim() === '' ||
       extraCss === DEFAULT_CUSTOM_CSS_PLACEHOLDER
     ) {
-      return frameworkCss;
+      return selectedFrameworkCss;
     }
 
-    return `${frameworkCss}\n\n${extraCss.trim()}`;
+    return `${selectedFrameworkCss}\n\n${extraCss.trim()}`;
   }
 
   try {

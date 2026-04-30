@@ -3,6 +3,7 @@ import {
   getReferenceCanonicalSnapshots,
   matchResponsiveLabel,
 } from '../utils/canonicalArtifacts';
+import { buildDefaultExportSelection } from '../utils/exportSelection';
 import {
   DEFAULT_PAGE_VIEWPORT_BY_PAGE,
   buildDefaultBreakpointPresets,
@@ -31,8 +32,19 @@ const RESPONSIVE_COLLECTION_KEYS = [
 ];
 
 const COLOR_GROUPS = {
+  '--color-white': 'Base Colors',
+  '--color-black': 'Base Colors',
+  '--color-gray-dark': 'Base Colors',
+  '--color-gray': 'Base Colors',
+  '--color-text-gray-light': 'Base Colors',
+  '--color-bg-gray-light': 'Base Colors',
+  '--color-border-gray-light': 'Base Colors',
   '--color-primary': 'Brand Colors',
   '--color-secondary': 'Brand Colors',
+  '--color-neutral': 'Brand Colors',
+  '--color-success': 'Brand Colors',
+  '--color-warning': 'Brand Colors',
+  '--color-error': 'Brand Colors',
   '--color-accent': 'Brand Colors',
   '--color-surface': 'Surface Colors',
   '--color-surface-2': 'Surface Colors',
@@ -74,12 +86,17 @@ const VARIABLE_GROUP_DEFINITIONS = [
   {
     collectionKey: 'layoutVariableGroups',
     groupName: 'Width Tokens',
-    test: (name) => /^--(?:w-|max-w-)/.test(name),
+    test: (name) => /^--(?:w-|min-w-|max-w-)/.test(name),
   },
   {
     collectionKey: 'layoutVariableGroups',
     groupName: 'Height Tokens',
-    test: (name) => /^--(?:h-|min-h-)/.test(name),
+    test: (name) => /^--(?:h-|min-h-|max-h-)/.test(name),
+  },
+  {
+    collectionKey: 'layoutVariableGroups',
+    groupName: 'Flex Basis Tokens',
+    test: (name) => /^--basis-/.test(name),
   },
   {
     collectionKey: 'designVariableGroups',
@@ -106,6 +123,16 @@ const VARIABLE_GROUP_DEFINITIONS = [
     collectionKey: 'designVariableGroups',
     groupName: 'Radius Tokens',
     test: (name) => /^--(?:rounded(?:-.+)?|border-radius-.+)$/.test(name),
+  },
+  {
+    collectionKey: 'designVariableGroups',
+    groupName: 'Shadow Tokens',
+    test: (name) => /^--(?:shadow|inset-shadow)-/.test(name),
+  },
+  {
+    collectionKey: 'designVariableGroups',
+    groupName: 'Filter Tokens',
+    test: (name) => /^--filter-/.test(name),
   },
 ];
 
@@ -272,7 +299,9 @@ const parseSectionBodies = (cssBlock, createId) => {
   let cursor = 0;
 
   while (cursor < cssBlock.length) {
+    const whitespaceStart = cursor;
     cursor = skipWhitespace(cssBlock, cursor);
+    const leadingWhitespace = cssBlock.slice(whitespaceStart, cursor);
     if (cursor >= cssBlock.length) {
       break;
     }
@@ -305,9 +334,12 @@ const parseSectionBodies = (cssBlock, createId) => {
       }
     }
 
-    const body = cssBlock.slice(bodyStart, bodyEnd).trim();
+    const rawBody = cssBlock.slice(bodyStart, bodyEnd);
+    const body = rawBody.trim();
     sections.push({
       comment,
+      leadingBlankLine: sections.length === 0 || /\n\s*\n/.test(leadingWhitespace),
+      trailingBlankLine: /\n\s*\n\s*$/.test(rawBody),
       rules: parseRuleBlocks(body, createId),
     });
     cursor = bodyEnd;
@@ -360,6 +392,7 @@ const parseMediaBlocks = (responsiveCss, createId) => {
 };
 
 const createEmptyWorkspaceShape = () => ({
+  workspaceSource: 'skelementor-preset',
   activePage: 'Colors',
   colorGroups: [],
   isSpacingEnabled: true,
@@ -392,11 +425,15 @@ const createEmptyWorkspaceShape = () => ({
   pageViewportByPage: {
     ...DEFAULT_PAGE_VIEWPORT_BY_PAGE,
   },
+  exportSelection: buildDefaultExportSelection(),
   customCSS: PLACEHOLDER_CUSTOM_CSS,
 });
 
 const findVariableGroupDefinition = (name) =>
-  VARIABLE_GROUP_DEFINITIONS.find((definition) => definition.test(name));
+  VARIABLE_GROUP_DEFINITIONS.find((definition) => definition.test(name)) || {
+    collectionKey: 'designVariableGroups',
+    groupName: 'Framework Tokens',
+  };
 
 const findOrCreateNamedColorGroup = (workspace, groupMap, createId, groupName) => {
   const existing = groupMap[groupName];
@@ -619,7 +656,40 @@ const assignFrameworkVariable = (
         border: false,
         fill: false,
       },
-      __frameworkMeta: frameworkMeta,
+      __frameworkMeta: {
+        ...frameworkMeta,
+        rawValue: rootVariable.value,
+      },
+    });
+    return;
+  }
+
+  if (/^--color-/.test(rootVariable.name)) {
+    const colorGroup = findOrCreateNamedColorGroup(
+      workspace,
+      colorGroupMap,
+      createId,
+      'Semantic Color Tokens'
+    );
+    colorGroup.colors.push({
+      id: createId('ske-color'),
+      name: rootVariable.name,
+      value: rootVariable.value,
+      format: 'HEX',
+      shadesConfig: { enabled: false, count: 8, palette: [] },
+      tintsConfig: { enabled: false, count: 8, palette: [] },
+      transparentConfig: { enabled: false },
+      shadowConfig: { enabled: false },
+      utilityConfig: {
+        text: false,
+        background: false,
+        border: false,
+        fill: false,
+      },
+      __frameworkMeta: {
+        ...frameworkMeta,
+        rawValue: rootVariable.value,
+      },
     });
     return;
   }
@@ -666,6 +736,8 @@ const assignFrameworkSection = (
         type: SKELEMENTOR_FRAMEWORK_TYPE,
         sectionComment: section.comment,
         sectionOrder,
+        leadingBlankLine: section.leadingBlankLine ?? true,
+        sectionTrailingBlankLine: section.trailingBlankLine ?? false,
         ruleOrder: rule.__frameworkMeta?.ruleOrder ?? ruleOrder,
         ...(breakpointMeta || {}),
       },
