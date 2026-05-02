@@ -51,8 +51,11 @@ try {
     { generateAndFormatCSS },
     {
       buildAllExportSelection,
+      buildDynamicExportSelection,
       buildDefaultExportSelection,
+      FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE,
       getExportSelectionManifest,
+      getFrameworkDynamicExportSelectionManifest,
       getSelectedExportStats,
     },
     { buildSkelePackageV2 },
@@ -86,11 +89,51 @@ try {
     ...workspace,
     colors: (workspace.colorGroups || []).flatMap((group) => group.colors || []),
   };
+  const frameworkDynamicManifest =
+    getFrameworkDynamicExportSelectionManifest(baseExportData);
+  const frameworkDynamicClasses = new Set(
+    frameworkDynamicManifest.units.flatMap((unit) => unit.classNames)
+  );
 
   assertCondition(
     'Manifest class inventory',
     manifest.totalClassCount === 1252 && uniqueClasses.size === 1252,
     `${manifest.totalClassCount} total, ${uniqueClasses.size} unique`
+  );
+  assertCondition(
+    'Preset dynamic families match sidebar',
+    JSON.stringify(frameworkDynamicManifest.families) ===
+      JSON.stringify([
+        'Colors',
+        'Typography',
+        'Spacing',
+        'Layouts',
+        'Design',
+        'Components',
+      ]),
+    JSON.stringify(frameworkDynamicManifest.families)
+  );
+  assertCondition(
+    'Preset dynamic manifest hides scale and generator rows',
+    frameworkDynamicManifest.units.every(
+      (unit) =>
+        !unit.kind.includes('generator') && !unit.kind.includes('scale')
+    )
+  );
+  assertCondition(
+    'Preset dynamic manifest exposes selector and variable rows',
+    frameworkDynamicManifest.units.some((unit) =>
+      unit.kind.includes('selector-group')
+    ) &&
+      frameworkDynamicManifest.units.some((unit) =>
+        unit.kind.includes('variable-group')
+      )
+  );
+  assertCondition(
+    'Preset dynamic manifest maps all classes',
+    frameworkDynamicManifest.totalClassCount === 1252 &&
+      frameworkDynamicClasses.size === 1252,
+    `${frameworkDynamicManifest.totalClassCount} total, ${frameworkDynamicClasses.size} unique`
   );
   assertCondition(
     'Responsive classes are folded into base families',
@@ -114,6 +157,26 @@ try {
     exportSelection: buildAllExportSelection(),
   });
   assertCondition('Select all parity', allCss === referenceCss);
+  const frameworkDynamicAllCss = await generateAndFormatCSS({
+    ...baseExportData,
+    exportSelection: buildDynamicExportSelection(frameworkDynamicManifest),
+  });
+  assertCondition(
+    'Framework dynamic select all parity',
+    frameworkDynamicAllCss === referenceCss
+  );
+  const frameworkDynamicEmptyCss = await generateAndFormatCSS({
+    ...baseExportData,
+    exportSelection: {
+      version: frameworkDynamicManifest.version,
+      mode: FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE,
+      selectedUnitIds: [],
+    },
+  });
+  assertCondition(
+    'Framework dynamic empty selection removes generated CSS',
+    frameworkDynamicEmptyCss === ''
+  );
 
   const defaultCss = await generateAndFormatCSS({
     ...baseExportData,

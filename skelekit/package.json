@@ -9,6 +9,7 @@
     "check:framework": "node scripts/check-framework-parity.mjs",
     "check:framework-export": "node scripts/check-framework-export.mjs",
     "check:export-selection": "node scripts/check-export-selection.mjs",
+    "check:dynamic-export-selection": "node scripts/check-dynamic-export-selection.mjs",
     "check:export-audit": "node scripts/check-export-audit.mjs",
     "lint": "eslint .",
     "preview": "vite preview"

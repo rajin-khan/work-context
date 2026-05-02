@@ -1,6 +1,9 @@
 import referenceClassSnapshot from '../framework/reference/global-classes.json';
+import { generateSpacingScale } from './spacingCalculator';
 
 export const EXPORT_SELECTION_VERSION = 1;
+export const DYNAMIC_EXPORT_SELECTION_MODE = 'dynamic-workspace';
+export const FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE = 'framework-dynamic-workspace';
 
 const RESPONSIVE_SUFFIX_PATTERN = /--on-(xxl|xl|xs|l|m|s)$/;
 const TYPOGRAPHY_TEXT_SIZES = new Set([
@@ -63,6 +66,15 @@ const FAMILY_ORDER = [
   'Layout',
   'Flexbox',
   'Effects',
+  'Components',
+];
+
+const DYNAMIC_FAMILY_ORDER = [
+  'Colors',
+  'Typography',
+  'Spacing',
+  'Layouts',
+  'Design',
   'Components',
 ];
 
@@ -300,6 +312,491 @@ export const getExportSelectionManifest = () => {
   return cachedManifest;
 };
 
+const countColorUtilityClasses = (color = {}) => {
+  const baseCount = 1;
+  const shadeCount = color.shadesConfig?.enabled
+    ? color.shadesConfig?.palette?.length || 0
+    : 0;
+  const tintCount = color.tintsConfig?.enabled
+    ? color.tintsConfig?.palette?.length || 0
+    : 0;
+  const transparentCount = color.transparentConfig?.enabled ? 10 : 0;
+  const shadowCount = color.shadowConfig?.enabled ? 10 : 0;
+  const variantCount = baseCount + shadeCount + tintCount + transparentCount + shadowCount;
+  const enabledUtilityCount = [
+    color.utilityConfig?.text,
+    color.utilityConfig?.background,
+    color.utilityConfig?.border,
+    color.utilityConfig?.fill,
+  ].filter(Boolean).length;
+
+  return variantCount * enabledUtilityCount;
+};
+
+const normalizeLabel = (value, fallback) =>
+  String(value || '').trim() || fallback;
+
+const dynamicUnit = ({
+  family,
+  id,
+  label,
+  kind,
+  itemCount = 0,
+  classCount = 0,
+}) => ({
+  id: `dynamic:${kind}:${id}`,
+  family,
+  label,
+  kind,
+  sourceId: id,
+  classNames: Array.from({ length: classCount }, (_, index) => `${id}-${index}`),
+  itemCount: classCount || itemCount,
+  isOptional: false,
+  defaultSelected: true,
+});
+
+const frameworkDynamicUnit = ({
+  family,
+  id,
+  label,
+  kind = 'framework-concept',
+  classNames = [],
+  variableNames = [],
+}) => ({
+  id: `framework:${id}`,
+  family,
+  label,
+  kind,
+  sourceId: id,
+  classNames: [...new Set(classNames)].sort(),
+  variableNames: [...new Set(variableNames)].sort(),
+  itemCount: new Set(classNames).size,
+  isOptional: false,
+  defaultSelected: true,
+});
+
+const countRules = (group) => group?.rules?.length || 0;
+const countVariables = (group) => group?.variables?.length || 0;
+
+export const getDynamicExportSelectionManifest = (data = {}) => {
+  const units = [];
+
+  (data.colorGroups || []).forEach((group, index) => {
+    const classCount = (group.colors || []).reduce(
+      (total, color) => total + countColorUtilityClasses(color),
+      0
+    );
+    units.push(
+      dynamicUnit({
+        family: 'Colors',
+        id: group.id,
+        label: normalizeLabel(group.name, `Color Group ${index + 1}`),
+        kind: 'color-group',
+        itemCount: group.colors?.length || 0,
+        classCount,
+      })
+    );
+  });
+
+  if (
+    (data.typographyGroups || []).length > 0 ||
+    (data.typographyGeneratorConfig || []).length > 0
+  ) {
+    units.push(
+      dynamicUnit({
+        family: 'Typography',
+        id: 'generated',
+        label: 'Generated Utilities',
+        kind: 'typography-generated',
+        itemCount:
+          (data.typographyGroups || []).reduce(
+            (total, group) => total + generateSpacingScale(group.settings).length,
+            0
+          ) +
+          (data.typographyGeneratorConfig || []).length,
+      })
+    );
+  }
+  (data.typographySelectorGroups || []).forEach((group, index) => {
+    units.push(
+      dynamicUnit({
+        family: 'Typography',
+        id: group.id,
+        label: normalizeLabel(group.name, `Typography Selectors ${index + 1}`),
+        kind: 'typography-selector-group',
+        itemCount: countRules(group),
+      })
+    );
+  });
+  (data.typographyVariableGroups || []).forEach((group, index) => {
+    units.push(
+      dynamicUnit({
+        family: 'Typography',
+        id: group.id,
+        label: normalizeLabel(group.name, `Typography Variables ${index + 1}`),
+        kind: 'typography-variable-group',
+        itemCount: countVariables(group),
+      })
+    );
+  });
+
+  if (
+    (data.spacingGroups || []).length > 0 ||
+    (data.generatorConfig || []).length > 0
+  ) {
+    units.push(
+      dynamicUnit({
+        family: 'Spacing',
+        id: 'generated',
+        label: 'Generated Utilities',
+        kind: 'spacing-generated',
+        itemCount:
+          (data.spacingGroups || []).reduce(
+            (total, group) => total + generateSpacingScale(group.settings).length,
+            0
+          ) +
+          (data.generatorConfig || []).length,
+      })
+    );
+  }
+  (data.selectorGroups || []).forEach((group, index) => {
+    units.push(
+      dynamicUnit({
+        family: 'Spacing',
+        id: group.id,
+        label: normalizeLabel(group.name, `Spacing Selectors ${index + 1}`),
+        kind: 'spacing-selector-group',
+        itemCount: countRules(group),
+      })
+    );
+  });
+  (data.variableGroups || []).forEach((group, index) => {
+    units.push(
+      dynamicUnit({
+        family: 'Spacing',
+        id: group.id,
+        label: normalizeLabel(group.name, `Spacing Variables ${index + 1}`),
+        kind: 'spacing-variable-group',
+        itemCount: countVariables(group),
+      })
+    );
+  });
+
+  (data.layoutSelectorGroups || []).forEach((group, index) => {
+    units.push(
+      dynamicUnit({
+        family: 'Layouts',
+        id: group.id,
+        label: normalizeLabel(group.name, `Layout Selectors ${index + 1}`),
+        kind: 'layout-selector-group',
+        itemCount: countRules(group),
+      })
+    );
+  });
+  (data.layoutVariableGroups || []).forEach((group, index) => {
+    units.push(
+      dynamicUnit({
+        family: 'Layouts',
+        id: group.id,
+        label: normalizeLabel(group.name, `Layout Variables ${index + 1}`),
+        kind: 'layout-variable-group',
+        itemCount: countVariables(group),
+      })
+    );
+  });
+
+  (data.designSelectorGroups || []).forEach((group, index) => {
+    units.push(
+      dynamicUnit({
+        family: group.name === 'COMPONENT PRESETS' ? 'Components' : 'Design',
+        id: group.id,
+        label: normalizeLabel(group.name, `Design Selectors ${index + 1}`),
+        kind:
+          group.name === 'COMPONENT PRESETS'
+            ? 'component-selector-group'
+            : 'design-selector-group',
+        itemCount: countRules(group),
+      })
+    );
+  });
+  (data.designVariableGroups || []).forEach((group, index) => {
+    units.push(
+      dynamicUnit({
+        family: 'Design',
+        id: group.id,
+        label: normalizeLabel(group.name, `Design Variables ${index + 1}`),
+        kind: 'design-variable-group',
+        itemCount: countVariables(group),
+      })
+    );
+  });
+
+  (data.components || []).forEach((component, index) => {
+    units.push(
+      dynamicUnit({
+        family: 'Components',
+        id: component.id,
+        label: normalizeLabel(component.name, `Component ${index + 1}`),
+        kind: 'component',
+        classCount:
+          1 +
+          Object.keys(component.states || {}).length +
+          (component.modifiers || []).reduce(
+            (total, modifier) =>
+              total + 1 + Object.keys(modifier.states || {}).length,
+            0
+          ),
+      })
+    );
+  });
+
+  const families = DYNAMIC_FAMILY_ORDER.filter((family) =>
+    units.some((unit) => unit.family === family)
+  );
+
+  return {
+    version: EXPORT_SELECTION_VERSION,
+    mode: DYNAMIC_EXPORT_SELECTION_MODE,
+    totalClassCount: units.reduce(
+      (total, unit) => total + (unit.classNames.length || unit.itemCount || 0),
+      0
+    ),
+    families,
+    units,
+  };
+};
+
+const normalizeFrameworkClassName = (className) =>
+  className.replace(RESPONSIVE_SUFFIX_PATTERN, '');
+
+const frameworkColorKeyForClass = (className) => {
+  const normalized = normalizeFrameworkClassName(className);
+  if (normalized.startsWith('text-')) {
+    return matchColorKey(normalized.slice(5));
+  }
+  if (normalized.startsWith('bg-')) {
+    return matchColorKey(normalized.slice(3));
+  }
+  if (normalized.startsWith('border-')) {
+    return matchColorKey(normalized.slice(7));
+  }
+  return null;
+};
+
+const classNamesFromRules = (rules = []) =>
+  rules.flatMap((rule) =>
+    splitSelectors(rule.selector || '')
+      .map(classNameFromSelector)
+      .filter(Boolean)
+  );
+
+const variableNamesFromGroup = (group = {}) =>
+  (group.variables || []).map((variable) => variable.name).filter(Boolean);
+
+const addResponsiveClassNamesToBaseUnits = (units) => {
+  const baseClassToUnits = new Map();
+  units.forEach((unit) => {
+    unit.classNames = unit.classNames || [];
+    unit.classNames.forEach((className) => {
+      if (RESPONSIVE_SUFFIX_PATTERN.test(className)) {
+        return;
+      }
+      const entries = baseClassToUnits.get(className) || [];
+      entries.push(unit);
+      baseClassToUnits.set(className, entries);
+    });
+  });
+
+  classLabels.forEach((className) => {
+    if (!RESPONSIVE_SUFFIX_PATTERN.test(className)) {
+      return;
+    }
+
+    const baseClassName = normalizeFrameworkClassName(className);
+    (baseClassToUnits.get(baseClassName) || []).forEach((unit) => {
+      unit.classNames.push(className);
+    });
+  });
+};
+
+const getFrameworkDynamicFallbackManifest = () => {
+  const baseManifest = getExportSelectionManifest();
+  const units = baseManifest.units.map((unit) =>
+    frameworkDynamicUnit({
+      family:
+        unit.family === 'Layout' ||
+        unit.family === 'Sizing' ||
+        unit.family === 'Flexbox'
+          ? 'Layouts'
+          : unit.family === 'Borders' || unit.family === 'Effects'
+            ? 'Design'
+            : unit.family,
+      id: normalizeUnitId(unit.family, unit.label),
+      label: unit.label,
+      kind: 'framework-selector-group',
+      classNames: unit.classNames,
+    })
+  );
+
+  return {
+    version: EXPORT_SELECTION_VERSION,
+    mode: FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE,
+    totalClassCount: classLabels.length,
+    families: DYNAMIC_FAMILY_ORDER.filter((family) =>
+      units.some((unit) => unit.family === family)
+    ),
+    units,
+  };
+};
+
+export const getFrameworkDynamicExportSelectionManifest = (data = null) => {
+  if (!data) {
+    return getFrameworkDynamicFallbackManifest();
+  }
+
+  const rawUnits = [];
+
+  (data.colorGroups || []).forEach((group, index) => {
+    const colorKeys = new Set(
+      (group.colors || []).flatMap((color) => {
+        const key = String(color.name || '')
+          .replace(/^--(?:color-)?/, '')
+          .replace(/^text-/, '')
+          .replace(/^bg-/, '')
+          .replace(/^border-/, '');
+        return [key];
+      })
+    );
+    rawUnits.push({
+      family: 'Colors',
+      id: `color-group-${group.id}`,
+      label: normalizeLabel(group.name, `Color Group ${index + 1}`),
+      kind: 'framework-color-group',
+      classNames: classLabels.filter((className) => {
+        const colorKey = frameworkColorKeyForClass(className);
+        return colorKey && colorKeys.has(colorKey);
+      }),
+      variableNames: (group.colors || []).map((color) => color.name).filter(Boolean),
+    });
+  });
+
+  [
+    ['Typography', 'typography-selector-group', data.typographySelectorGroups || []],
+    ['Spacing', 'spacing-selector-group', data.selectorGroups || []],
+    ['Layouts', 'layout-selector-group', data.layoutSelectorGroups || []],
+    ['Design', 'design-selector-group', data.designSelectorGroups || []],
+  ].forEach(([family, kind, groups]) => {
+    groups.forEach((group, index) => {
+      const isComponentPreset = group.name === 'COMPONENT PRESETS';
+      rawUnits.push({
+        family: isComponentPreset ? 'Components' : family,
+        id: `${kind}-${group.id}`,
+        label: normalizeLabel(group.name, `${family} Selectors ${index + 1}`),
+        kind: isComponentPreset ? 'component-selector-group' : kind,
+        classNames: classNamesFromRules(group.rules),
+      });
+    });
+  });
+
+  [
+    ['Typography', 'typography-variable-group', data.typographyVariableGroups || []],
+    ['Spacing', 'spacing-variable-group', data.variableGroups || []],
+    ['Layouts', 'layout-variable-group', data.layoutVariableGroups || []],
+    ['Design', 'design-variable-group', data.designVariableGroups || []],
+  ].forEach(([family, kind, groups]) => {
+    groups.forEach((group, index) => {
+      rawUnits.push({
+        family,
+        id: `${kind}-${group.id}`,
+        label: normalizeLabel(group.name, `${family} Variables ${index + 1}`),
+        kind,
+        variableNames: variableNamesFromGroup(group),
+      });
+    });
+  });
+
+  addResponsiveClassNamesToBaseUnits(rawUnits);
+
+  const units = rawUnits.map(frameworkDynamicUnit);
+  const mappedClassNames = new Set(units.flatMap((unit) => unit.classNames));
+  const unmappedClassNames = classLabels.filter(
+    (className) => !mappedClassNames.has(className)
+  );
+  if (unmappedClassNames.length > 0) {
+    units.push(
+      frameworkDynamicUnit({
+        family: 'Design',
+        id: 'framework-other',
+        label: 'Other Generated Utilities',
+        kind: 'framework-generated',
+        classNames: unmappedClassNames,
+      })
+    );
+  }
+
+  units.sort((left, right) => {
+    const familyDelta =
+      DYNAMIC_FAMILY_ORDER.indexOf(left.family) -
+      DYNAMIC_FAMILY_ORDER.indexOf(right.family);
+    if (familyDelta !== 0) {
+      return familyDelta;
+    }
+    return left.label.localeCompare(right.label);
+  });
+
+  return {
+    version: EXPORT_SELECTION_VERSION,
+    mode: FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE,
+    totalClassCount: classLabels.length,
+    families: DYNAMIC_FAMILY_ORDER.filter((family) =>
+      units.some((unit) => unit.family === family)
+    ),
+    units,
+  };
+};
+
+export const buildDynamicExportSelection = (manifest = null) => ({
+  version: EXPORT_SELECTION_VERSION,
+  mode: manifest?.mode || DYNAMIC_EXPORT_SELECTION_MODE,
+  deselectedUnitIds: [],
+});
+
+export const buildEmptyDynamicExportSelection = (manifest = null) => ({
+  version: EXPORT_SELECTION_VERSION,
+  mode: manifest?.mode || DYNAMIC_EXPORT_SELECTION_MODE,
+  deselectedUnitIds: [],
+  selectedUnitIds: [],
+});
+
+export const getSelectedUnitIdsForManifest = (
+  exportSelection = null,
+  manifest = getExportSelectionManifest()
+) => {
+  if (!exportSelection) {
+    return new Set(manifest.units.map((unit) => unit.id));
+  }
+
+  if (
+    exportSelection.mode === DYNAMIC_EXPORT_SELECTION_MODE ||
+    exportSelection.mode === FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE
+  ) {
+    if (Array.isArray(exportSelection.selectedUnitIds)) {
+      return new Set(exportSelection.selectedUnitIds);
+    }
+
+    const deselectedIds = new Set(exportSelection.deselectedUnitIds || []);
+    return new Set(
+      manifest.units
+        .filter((unit) => !deselectedIds.has(unit.id))
+        .map((unit) => unit.id)
+    );
+  }
+
+  return new Set(
+    exportSelection.selectedUnitIds || manifest.units.map((unit) => unit.id)
+  );
+};
+
 export const buildDefaultExportSelection = () => ({
   version: EXPORT_SELECTION_VERSION,
   selectedUnitIds: getExportSelectionManifest()
@@ -321,14 +818,16 @@ export const buildRequiredExportSelection = () => ({
     .map((unit) => unit.id),
 });
 
-export const getSelectedExportStats = (exportSelection = null) => {
-  const manifest = getExportSelectionManifest();
-  const selectedIds = new Set(
-    exportSelection?.selectedUnitIds || manifest.units.map((unit) => unit.id)
-  );
+export const getSelectedExportStats = (
+  exportSelection = null,
+  manifest = getExportSelectionManifest()
+) => {
+  const selectedIds = getSelectedUnitIdsForManifest(exportSelection, manifest);
   const selectedClassCount = manifest.units.reduce(
     (total, unit) =>
-      selectedIds.has(unit.id) ? total + unit.classNames.length : total,
+      selectedIds.has(unit.id)
+        ? total + (unit.classNames.length || unit.itemCount || 0)
+        : total,
     0
   );
 
@@ -343,10 +842,11 @@ export const getSelectedExportStats = (exportSelection = null) => {
 };
 
 export const getSelectedClassNames = (exportSelection = null) => {
-  const manifest = getExportSelectionManifest();
-  const selectedIds = new Set(
-    exportSelection?.selectedUnitIds || manifest.units.map((unit) => unit.id)
-  );
+  const manifest =
+    exportSelection?.mode === FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE
+      ? getFrameworkDynamicExportSelectionManifest(exportSelection.__manifestData)
+      : getExportSelectionManifest();
+  const selectedIds = getSelectedUnitIdsForManifest(exportSelection, manifest);
 
   return new Set(
     manifest.units.flatMap((unit) =>
@@ -355,9 +855,35 @@ export const getSelectedClassNames = (exportSelection = null) => {
   );
 };
 
+const getSelectedFrameworkVariableNames = (exportSelection = null) => {
+  if (exportSelection?.mode !== FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE) {
+    return new Set();
+  }
+
+  const manifest = getFrameworkDynamicExportSelectionManifest(
+    exportSelection.__manifestData
+  );
+  const selectedIds = getSelectedUnitIdsForManifest(exportSelection, manifest);
+  return new Set(
+    manifest.units.flatMap((unit) =>
+      selectedIds.has(unit.id) ? unit.variableNames || [] : []
+    )
+  );
+};
+
 export const isAllExportSelected = (exportSelection = null) => {
   if (!exportSelection) {
     return true;
+  }
+
+  if (
+    exportSelection.mode === DYNAMIC_EXPORT_SELECTION_MODE ||
+    exportSelection.mode === FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE
+  ) {
+    return (
+      !Array.isArray(exportSelection.selectedUnitIds) &&
+      (exportSelection.deselectedUnitIds || []).length === 0
+    );
   }
 
   return (
@@ -537,6 +1063,9 @@ export const filterFrameworkCssBySelection = (cssContent, exportSelection) => {
   const beforeRoot = cssContent.slice(0, rootMatch.index).trimEnd();
   const afterRoot = cssContent.slice(rootMatch.index + rootMatch[0].length);
   const filteredRules = filterCssRules(afterRoot, selectedClassNames);
+  getSelectedFrameworkVariableNames(exportSelection).forEach((variableName) => {
+    filteredRules.requiredVariables.add(variableName.replace(/^--/, ''));
+  });
   const rootDeclarations = parseRootDeclarations(rootMatch[1]);
   expandVariableDependencies(rootDeclarations, filteredRules.requiredVariables);
 

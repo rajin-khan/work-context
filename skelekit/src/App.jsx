@@ -25,7 +25,11 @@ import {
   replaceResponsiveCollection,
 } from './utils/breakpoints';
 import { migrateWorkspaceData } from './utils/workspaceMigration';
-import { buildDefaultExportSelection } from './utils/exportSelection';
+import {
+  buildDynamicExportSelection,
+  FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE,
+  getFrameworkDynamicExportSelectionManifest,
+} from './utils/exportSelection';
 import { SKELEMENTOR_FRAMEWORK_TYPE } from './presets/skelementorFrameworkConstants';
 import { nanoid } from 'nanoid';
 import LoadingScreen from './pages/LoadingScreen';
@@ -168,8 +172,11 @@ function App() {
         setCustomCSS(parsedData.customCSS || '/* Your custom styles go here */');
         setExportSelection(
           nextWorkspaceSource === SKELEMENTOR_WORKSPACE_SOURCE
-            ? parsedData.exportSelection || buildDefaultExportSelection()
-            : undefined
+            ? parsedData.exportSelection?.mode ===
+              FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE
+              ? parsedData.exportSelection
+              : buildDynamicExportSelection(getFrameworkDynamicExportSelectionManifest())
+            : parsedData.exportSelection
         );
         setWorkspaceSource(nextWorkspaceSource);
         
@@ -379,7 +386,11 @@ function App() {
         workspace.pageViewportByPage || DEFAULT_PAGE_VIEWPORT_BY_PAGE
       );
       setCustomCSS(workspace.customCSS || '/* Your custom styles go here */');
-      setExportSelection(workspace.exportSelection || buildDefaultExportSelection());
+      setExportSelection(
+        workspace.exportSelection?.mode === FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE
+          ? workspace.exportSelection
+          : buildDynamicExportSelection(getFrameworkDynamicExportSelectionManifest())
+      );
       setWorkspaceSource(SKELEMENTOR_WORKSPACE_SOURCE);
     }
     // If 'blank', we just reset the state to defaults
@@ -1386,9 +1397,14 @@ function App() {
       designSelectorGroupsByBreakpoint,
       designVariableGroups,
       designVariableGroupsByBreakpoint,
+      components,
       breakpointPresets,
       exportSelection,
-      isExportSelectionEnabled: workspaceSource === SKELEMENTOR_WORKSPACE_SOURCE,
+      isExportSelectionEnabled: true,
+      exportSelectionMode:
+        workspaceSource === SKELEMENTOR_WORKSPACE_SOURCE
+          ? 'framework-dynamic'
+          : 'dynamic',
       setExportSelection,
     }),
     [
@@ -1418,6 +1434,7 @@ function App() {
       designSelectorGroupsByBreakpoint,
       designVariableGroups,
       designVariableGroupsByBreakpoint,
+      components,
       breakpointPresets,
       exportSelection,
       workspaceSource,

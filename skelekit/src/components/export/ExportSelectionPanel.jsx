@@ -3,19 +3,37 @@ import { Check, ChevronDown, Minus } from 'lucide-react';
 import {
   buildAllExportSelection,
   buildDefaultExportSelection,
+  buildDynamicExportSelection,
+  buildEmptyDynamicExportSelection,
   buildRequiredExportSelection,
+  DYNAMIC_EXPORT_SELECTION_MODE,
+  FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE,
   getExportSelectionManifest,
   getSelectedExportStats,
+  getSelectedUnitIdsForManifest,
 } from '../../utils/exportSelection';
 
-const ExportSelectionPanel = memo(({ exportSelection, onExportSelectionChange }) => {
-  const manifest = useMemo(() => getExportSelectionManifest(), []);
-  const selection = exportSelection || buildAllExportSelection();
+const ExportSelectionPanel = memo(({
+  exportSelection,
+  manifest: providedManifest,
+  mode = 'skelementor',
+  onExportSelectionChange,
+}) => {
+  const fallbackManifest = useMemo(() => getExportSelectionManifest(), []);
+  const manifest = providedManifest || fallbackManifest;
+  const isDynamicMode =
+    manifest.mode === DYNAMIC_EXPORT_SELECTION_MODE ||
+    manifest.mode === FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE ||
+    mode === 'dynamic' ||
+    mode === 'framework-dynamic';
+  const selection =
+    exportSelection ||
+    (isDynamicMode ? buildDynamicExportSelection(manifest) : buildAllExportSelection());
   const selectedIds = useMemo(
-    () => new Set(selection.selectedUnitIds || []),
-    [selection.selectedUnitIds]
+    () => getSelectedUnitIdsForManifest(selection, manifest),
+    [manifest, selection]
   );
-  const stats = getSelectedExportStats(selection);
+  const stats = getSelectedExportStats(selection, manifest);
   const [openFamilies, setOpenFamilies] = useState(() =>
     new Set(['Typography', 'Spacing', 'Colors'])
   );
@@ -30,6 +48,23 @@ const ExportSelectionPanel = memo(({ exportSelection, onExportSelectionChange })
   );
 
   const emitSelection = (nextIds) => {
+    if (isDynamicMode) {
+      if (nextIds.size === 0) {
+        onExportSelectionChange(buildEmptyDynamicExportSelection(manifest));
+        return;
+      }
+
+      const deselectedUnitIds = manifest.units
+        .filter((unit) => !nextIds.has(unit.id))
+        .map((unit) => unit.id);
+      onExportSelectionChange({
+        version: manifest.version,
+        mode: manifest.mode || DYNAMIC_EXPORT_SELECTION_MODE,
+        deselectedUnitIds,
+      });
+      return;
+    }
+
     onExportSelectionChange({
       version: manifest.version,
       selectedUnitIds: [...nextIds],
@@ -80,32 +115,47 @@ const ExportSelectionPanel = memo(({ exportSelection, onExportSelectionChange })
               Customize export
             </h3>
             <p className="mt-1 text-xs text-neutral-500">
-              {stats.selectedClassCount} of {stats.totalClassCount} classes selected
+              {stats.selectedClassCount} of {stats.totalClassCount}{' '}
+              {isDynamicMode ? 'items' : 'classes'} selected
             </p>
           </div>
         </div>
 
-        <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className={`mt-3 grid gap-2 ${isDynamicMode ? 'grid-cols-2' : 'grid-cols-3'}`}>
+          {!isDynamicMode && (
+            <button
+              type="button"
+              onClick={() => onExportSelectionChange(buildDefaultExportSelection())}
+              className="rounded-md border border-neutral-200 bg-white px-2 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
+            >
+              Default
+            </button>
+          )}
           <button
             type="button"
-            onClick={() => onExportSelectionChange(buildDefaultExportSelection())}
-            className="rounded-md border border-neutral-200 bg-white px-2 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
-          >
-            Default
-          </button>
-          <button
-            type="button"
-            onClick={() => onExportSelectionChange(buildAllExportSelection())}
+            onClick={() =>
+              onExportSelectionChange(
+                isDynamicMode
+                  ? buildDynamicExportSelection(manifest)
+                  : buildAllExportSelection()
+              )
+            }
             className="rounded-md border border-neutral-200 bg-white px-2 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
           >
             Select all
           </button>
           <button
             type="button"
-            onClick={() => onExportSelectionChange(buildRequiredExportSelection())}
+            onClick={() =>
+              onExportSelectionChange(
+                isDynamicMode
+                  ? buildEmptyDynamicExportSelection(manifest)
+                  : buildRequiredExportSelection()
+              )
+            }
             className="rounded-md border border-neutral-200 bg-white px-2 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
           >
-            Required
+            {isDynamicMode ? 'Clear generated' : 'Required'}
           </button>
         </div>
       </div>
@@ -119,12 +169,13 @@ const ExportSelectionPanel = memo(({ exportSelection, onExportSelectionChange })
             const classCount = units.reduce(
               (total, unit) =>
                 selectedIds.has(unit.id)
-                  ? total + unit.classNames.length
+                  ? total + (unit.classNames.length || unit.itemCount || 0)
                   : total,
               0
             );
             const totalClassCount = units.reduce(
-              (total, unit) => total + unit.classNames.length,
+              (total, unit) =>
+                total + (unit.classNames.length || unit.itemCount || 0),
               0
             );
             const allSelected = selectedCount === units.length;
@@ -186,7 +237,7 @@ const ExportSelectionPanel = memo(({ exportSelection, onExportSelectionChange })
                               {unit.label}
                             </span>
                             <span className="block text-xs text-neutral-500">
-                              {unit.classNames.length} classes
+                              {unit.classNames.length || unit.itemCount || 0} items
                               {unit.isOptional ? ' · optional' : ''}
                             </span>
                           </span>

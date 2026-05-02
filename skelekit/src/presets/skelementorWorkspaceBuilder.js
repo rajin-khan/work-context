@@ -3,7 +3,10 @@ import {
   getReferenceCanonicalSnapshots,
   matchResponsiveLabel,
 } from '../utils/canonicalArtifacts';
-import { buildDefaultExportSelection } from '../utils/exportSelection';
+import {
+  buildDynamicExportSelection,
+  getFrameworkDynamicExportSelectionManifest,
+} from '../utils/exportSelection';
 import {
   DEFAULT_PAGE_VIEWPORT_BY_PAGE,
   buildDefaultBreakpointPresets,
@@ -425,7 +428,9 @@ const createEmptyWorkspaceShape = () => ({
   pageViewportByPage: {
     ...DEFAULT_PAGE_VIEWPORT_BY_PAGE,
   },
-  exportSelection: buildDefaultExportSelection(),
+  exportSelection: buildDynamicExportSelection(
+    getFrameworkDynamicExportSelectionManifest()
+  ),
   customCSS: PLACEHOLDER_CUSTOM_CSS,
 });
 

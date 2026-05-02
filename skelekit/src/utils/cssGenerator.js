@@ -12,8 +12,12 @@ import {
   SKELEMENTOR_RESPONSIVE_HEADER_COMMENT,
 } from '../presets/skelementorFrameworkConstants';
 import {
+  DYNAMIC_EXPORT_SELECTION_MODE,
+  FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE,
   filterFrameworkCssBySelection,
+  getDynamicExportSelectionManifest,
   getExportSelectionManifest,
+  getSelectedUnitIdsForManifest,
 } from './exportSelection';
 
 // --- START OF THE FIX ---
@@ -136,6 +140,116 @@ const buildSelectorBlocks = (groups = []) => {
   });
 
   return blocks;
+};
+
+const buildComponentBlocks = (components = []) => {
+  const createRule = (selector, styles = []) => {
+    const properties = (styles || [])
+      .map(({ prop, value }) => (prop && value ? `  ${prop}: ${value};` : ''))
+      .filter(Boolean);
+
+    return properties.length > 0
+      ? `${selector} {\n${properties.join('\n')}\n}`
+      : null;
+  };
+
+  return (components || []).flatMap((component) => {
+    const blocks = [];
+    if (!component?.name) {
+      return blocks;
+    }
+
+    const baseSelector = `.${component.name}`;
+    const baseBlock = createRule(baseSelector, component.styles);
+    if (baseBlock) {
+      blocks.push(baseBlock);
+    }
+
+    if (component.states && component.type !== 'checkbox' && component.type !== 'radio') {
+      Object.entries(component.states).forEach(([state, styles]) => {
+        const stateBlock = createRule(`${baseSelector}:${state}`, styles);
+        if (stateBlock) {
+          blocks.push(stateBlock);
+        }
+      });
+    }
+
+    (component.modifiers || []).forEach((modifier) => {
+      const selector = modifier.tag
+        ? `${baseSelector} .${modifier.name}`
+        : `${baseSelector}.${modifier.name}`;
+      const modifierBlock = createRule(selector, modifier.styles);
+      if (modifierBlock) {
+        blocks.push(modifierBlock);
+      }
+
+      Object.entries(modifier.states || {}).forEach(([state, styles]) => {
+        const stateBlock = createRule(`${selector}:${state}`, styles);
+        if (stateBlock) {
+          blocks.push(stateBlock);
+        }
+      });
+    });
+
+    if (component.type === 'dropdown') {
+      const menuModifier = (component.modifiers || []).find(
+        (modifier) => modifier.name === 'menu'
+      );
+      if (menuModifier) {
+        blocks.push(`.${component.name}:hover .${menuModifier.name} {\n  display: block;\n}`);
+      }
+    }
+
+    if (component.type === 'checkbox' || component.type === 'radio') {
+      const isCheckbox = component.type === 'checkbox';
+      const inputModName = isCheckbox ? 'checkbox-input' : 'radio-input';
+      const boxModName = isCheckbox ? 'checkbox-box' : 'radio-dot';
+      const checkModName = isCheckbox ? 'checkbox-check' : 'radio-dot-inner';
+      const inputMod = (component.modifiers || []).find(
+        (modifier) => modifier.name === inputModName
+      );
+      const boxMod = (component.modifiers || []).find(
+        (modifier) => modifier.name === boxModName
+      );
+      const checkMod = (component.modifiers || []).find(
+        (modifier) => modifier.name === checkModName
+      );
+
+      if (inputMod && boxMod && component.states?.checked) {
+        const boxStyles = component.states.checked.filter(
+          (style) =>
+            style.target === (isCheckbox ? 'box' : 'dot') &&
+            style.prop &&
+            style.value
+        );
+        const boxBlock = createRule(
+          `${baseSelector} .${inputMod.name}:checked + .${boxMod.name}`,
+          boxStyles
+        );
+        if (boxBlock) {
+          blocks.push(boxBlock);
+        }
+      }
+
+      if (inputMod && boxMod && checkMod && component.states?.checked) {
+        const checkStyles = component.states.checked.filter(
+          (style) =>
+            style.target === (isCheckbox ? 'check' : 'dot-inner') &&
+            style.prop &&
+            style.value
+        );
+        const checkBlock = createRule(
+          `${baseSelector} .${inputMod.name}:checked + .${boxMod.name} .${checkMod.name}`,
+          checkStyles
+        );
+        if (checkBlock) {
+          blocks.push(checkBlock);
+        }
+      }
+    }
+
+    return blocks;
+  });
 };
 
 const indentBlock = (block, depth = 1) =>
@@ -614,6 +728,7 @@ const buildExtraExportData = (data) => {
     designSelectorGroupsByBreakpoint,
     designVariableGroups,
     designVariableGroupsByBreakpoint,
+    components: data.components || [],
   };
 };
 
@@ -634,8 +749,395 @@ const hasCollectionContent = (groups = []) =>
 const hasResponsiveCollectionContent = (collectionMap = {}) =>
   Object.values(collectionMap || {}).some((groups) => hasCollectionContent(groups));
 
+const collectVarRefsFromValue = (value) =>
+  [...String(value || '').matchAll(/var\(--([a-zA-Z0-9_-]+)\)/g)].map(
+    (match) => `--${match[1]}`
+  );
+
+const collectVarRefsFromGroups = (groups = []) =>
+  groups.flatMap((group) =>
+    (group.rules || []).flatMap((rule) =>
+      (rule.properties || []).flatMap((property) =>
+        collectVarRefsFromValue(property.value)
+      )
+    )
+  );
+
+const collectVarRefsFromVariableGroups = (groups = []) =>
+  groups.flatMap((group) =>
+    (group.variables || []).flatMap((variable) =>
+      collectVarRefsFromValue(buildVariableValue(variable))
+    )
+  );
+
+const collectVarRefsFromComponents = (components = []) =>
+  components.flatMap((component) => {
+    const refs = [];
+    const collectStyles = (styles = []) => {
+      styles.forEach((style) => {
+        refs.push(...collectVarRefsFromValue(style.value));
+      });
+    };
+
+    collectStyles(component.styles);
+    Object.values(component.states || {}).forEach(collectStyles);
+    (component.modifiers || []).forEach((modifier) => {
+      collectStyles(modifier.styles);
+      Object.values(modifier.states || {}).forEach(collectStyles);
+    });
+
+    return refs;
+  });
+
+const collectGeneratedColorVariableNames = (color = {}) => {
+  const names = [color.name].filter(Boolean);
+  if (color.shadesConfig?.enabled && color.shadesConfig?.palette?.length > 0) {
+    color.shadesConfig.palette.forEach((_, index) => {
+      names.push(`${color.name}-d-${index + 1}`);
+    });
+  }
+  if (color.tintsConfig?.enabled && color.tintsConfig?.palette?.length > 0) {
+    color.tintsConfig.palette.forEach((_, index) => {
+      names.push(`${color.name}-l-${index + 1}`);
+    });
+  }
+  if (color.transparentConfig?.enabled) {
+    alphaSteps.forEach((step) => names.push(`${color.name}-t-${step}`));
+  }
+  if (color.shadowConfig?.enabled) {
+    const colorBaseName = color.name.replace(/^--/, '');
+    alphaSteps.forEach((step) => names.push(`--shadow-${colorBaseName}-${step}`));
+  }
+  return names;
+};
+
+const disableColorUtilities = (color) => ({
+  ...color,
+  utilityConfig: {
+    text: false,
+    background: false,
+    border: false,
+    fill: false,
+  },
+});
+
+const mergeColorGroupsForRequiredVariables = (
+  selectedGroups = [],
+  allGroups = [],
+  requiredVariableNames = new Set()
+) => {
+  const selectedGroupIds = new Set(selectedGroups.map((group) => group.id));
+  const nextGroups = selectedGroups.map((group) => ({ ...group }));
+
+  allGroups.forEach((group) => {
+    if (selectedGroupIds.has(group.id)) {
+      return;
+    }
+
+    const requiredColors = (group.colors || []).filter((color) =>
+      collectGeneratedColorVariableNames(color).some((name) =>
+        requiredVariableNames.has(name)
+      )
+    );
+
+    if (requiredColors.length > 0) {
+      nextGroups.push({
+        ...group,
+        colors: requiredColors.map(disableColorUtilities),
+      });
+    }
+  });
+
+  return nextGroups;
+};
+
+const filterVariableGroupsForSelection = (
+  groups = [],
+  selectedGroupIds = new Set(),
+  requiredVariableNames = new Set()
+) =>
+  groups
+    .map((group) => {
+      if (selectedGroupIds.has(group.id)) {
+        return group;
+      }
+
+      const variables = (group.variables || []).filter((variable) =>
+        requiredVariableNames.has(variable.name)
+      );
+
+      return variables.length > 0 ? { ...group, variables } : null;
+    })
+    .filter(Boolean);
+
+const collectScaleVariableNames = (groups = []) =>
+  groups.flatMap((group) => generateSpacingScale(group.settings).map((item) => item.name));
+
+const filterScaleGroupsForSelection = (
+  groups = [],
+  selectedGroupIds = new Set(),
+  requiredVariableNames = new Set()
+) =>
+  groups.filter(
+    (group) =>
+      selectedGroupIds.has(group.id) ||
+      generateSpacingScale(group.settings).some((item) =>
+        requiredVariableNames.has(item.name)
+      )
+  );
+
+const filterResponsiveGroupMapByIds = (collectionMap = {}, selectedGroupIds) =>
+  Object.fromEntries(
+    Object.entries(collectionMap || {}).map(([breakpointId, groups]) => [
+      breakpointId,
+      (groups || []).filter((group) => selectedGroupIds.has(group.id)),
+    ])
+  );
+
+const expandRequiredVariableNames = (data, requiredVariableNames) => {
+  let changed = true;
+  const allVariableGroups = [
+    ...(data.typographyVariableGroups || []),
+    ...(data.variableGroups || []),
+    ...(data.layoutVariableGroups || []),
+    ...(data.designVariableGroups || []),
+  ];
+
+  while (changed) {
+    changed = false;
+    allVariableGroups.forEach((group) => {
+      (group.variables || []).forEach((variable) => {
+        if (!requiredVariableNames.has(variable.name)) {
+          return;
+        }
+
+        collectVarRefsFromValue(buildVariableValue(variable)).forEach((name) => {
+          if (!requiredVariableNames.has(name)) {
+            requiredVariableNames.add(name);
+            changed = true;
+          }
+        });
+      });
+    });
+  }
+};
+
+const filterGeneratedExportDataByDynamicSelection = (data) => {
+  if (data.exportSelection?.mode !== DYNAMIC_EXPORT_SELECTION_MODE) {
+    return data;
+  }
+
+  const manifest = getDynamicExportSelectionManifest(data);
+  const selectedIds = getSelectedUnitIdsForManifest(data.exportSelection, manifest);
+  const selectedSourceIdsByKind = manifest.units.reduce((accumulator, unit) => {
+    if (!selectedIds.has(unit.id)) {
+      return accumulator;
+    }
+
+    if (!accumulator[unit.kind]) {
+      accumulator[unit.kind] = new Set();
+    }
+    accumulator[unit.kind].add(unit.sourceId);
+    return accumulator;
+  }, {});
+  const ids = (kind) => selectedSourceIdsByKind[kind] || new Set();
+
+  const keepTypographyGenerated = ids('typography-generated').size > 0;
+  const keepSpacingGenerated = ids('spacing-generated').size > 0;
+  const selectedTypographyScaleIds = keepTypographyGenerated
+    ? new Set((data.typographyGroups || []).map((group) => group.id))
+    : new Set();
+  const selectedSpacingScaleIds = keepSpacingGenerated
+    ? new Set((data.spacingGroups || []).map((group) => group.id))
+    : new Set();
+
+  const filtered = {
+    ...data,
+    colorGroups: (data.colorGroups || []).filter((group) =>
+      ids('color-group').has(group.id)
+    ),
+    colors: (data.colorGroups || [])
+      .filter((group) => ids('color-group').has(group.id))
+      .flatMap((group) => group.colors || []),
+    typographyGroups: filterScaleGroupsForSelection(
+      data.typographyGroups || [],
+      selectedTypographyScaleIds
+    ),
+    typographyGeneratorConfig: (data.typographyGeneratorConfig || []).filter(
+      (config) => selectedTypographyScaleIds.has(config.scaleGroupId)
+    ),
+    typographySelectorGroups: (data.typographySelectorGroups || []).filter((group) =>
+      ids('typography-selector-group').has(group.id)
+    ),
+    typographyVariableGroups: (data.typographyVariableGroups || []).filter((group) =>
+      ids('typography-variable-group').has(group.id)
+    ),
+    selectorGroups: (data.selectorGroups || []).filter((group) =>
+      ids('spacing-selector-group').has(group.id)
+    ),
+    variableGroups: (data.variableGroups || []).filter((group) =>
+      ids('spacing-variable-group').has(group.id)
+    ),
+    spacingGroups: filterScaleGroupsForSelection(
+      data.spacingGroups || [],
+      selectedSpacingScaleIds
+    ),
+    generatorConfig: (data.generatorConfig || []).filter(
+      (config) => selectedSpacingScaleIds.has(config.scaleGroupId)
+    ),
+    layoutSelectorGroups: (data.layoutSelectorGroups || []).filter((group) =>
+      ids('layout-selector-group').has(group.id)
+    ),
+    layoutVariableGroups: (data.layoutVariableGroups || []).filter((group) =>
+      ids('layout-variable-group').has(group.id)
+    ),
+    designSelectorGroups: (data.designSelectorGroups || []).filter((group) =>
+      ids('design-selector-group').has(group.id) ||
+      ids('component-selector-group').has(group.id)
+    ),
+    designVariableGroups: (data.designVariableGroups || []).filter((group) =>
+      ids('design-variable-group').has(group.id)
+    ),
+    components: (data.components || []).filter((component) =>
+      ids('component').has(component.id)
+    ),
+    selectorGroupsByBreakpoint: filterResponsiveGroupMapByIds(
+      data.selectorGroupsByBreakpoint,
+      ids('spacing-selector-group')
+    ),
+    variableGroupsByBreakpoint: filterResponsiveGroupMapByIds(
+      data.variableGroupsByBreakpoint,
+      ids('spacing-variable-group')
+    ),
+    typographySelectorGroupsByBreakpoint: filterResponsiveGroupMapByIds(
+      data.typographySelectorGroupsByBreakpoint,
+      ids('typography-selector-group')
+    ),
+    typographyVariableGroupsByBreakpoint: filterResponsiveGroupMapByIds(
+      data.typographyVariableGroupsByBreakpoint,
+      ids('typography-variable-group')
+    ),
+    layoutSelectorGroupsByBreakpoint: filterResponsiveGroupMapByIds(
+      data.layoutSelectorGroupsByBreakpoint,
+      ids('layout-selector-group')
+    ),
+    layoutVariableGroupsByBreakpoint: filterResponsiveGroupMapByIds(
+      data.layoutVariableGroupsByBreakpoint,
+      ids('layout-variable-group')
+    ),
+    designSelectorGroupsByBreakpoint: filterResponsiveGroupMapByIds(
+      data.designSelectorGroupsByBreakpoint,
+      new Set([
+        ...ids('design-selector-group'),
+        ...ids('component-selector-group'),
+      ])
+    ),
+    designVariableGroupsByBreakpoint: filterResponsiveGroupMapByIds(
+      data.designVariableGroupsByBreakpoint,
+      ids('design-variable-group')
+    ),
+  };
+
+  const requiredVariableNames = new Set([
+    ...collectVarRefsFromGroups(filtered.typographySelectorGroups),
+    ...collectVarRefsFromGroups(filtered.selectorGroups),
+    ...collectVarRefsFromGroups(filtered.layoutSelectorGroups),
+    ...collectVarRefsFromGroups(filtered.designSelectorGroups),
+    ...collectVarRefsFromVariableGroups(filtered.typographyVariableGroups),
+    ...collectVarRefsFromVariableGroups(filtered.variableGroups),
+    ...collectVarRefsFromVariableGroups(filtered.layoutVariableGroups),
+    ...collectVarRefsFromVariableGroups(filtered.designVariableGroups),
+    ...collectVarRefsFromComponents(filtered.components),
+  ]);
+
+  Object.values(filtered.selectorGroupsByBreakpoint || {}).forEach((groups) =>
+    collectVarRefsFromGroups(groups).forEach((name) => requiredVariableNames.add(name))
+  );
+  Object.values(filtered.typographySelectorGroupsByBreakpoint || {}).forEach((groups) =>
+    collectVarRefsFromGroups(groups).forEach((name) => requiredVariableNames.add(name))
+  );
+  Object.values(filtered.layoutSelectorGroupsByBreakpoint || {}).forEach((groups) =>
+    collectVarRefsFromGroups(groups).forEach((name) => requiredVariableNames.add(name))
+  );
+  Object.values(filtered.designSelectorGroupsByBreakpoint || {}).forEach((groups) =>
+    collectVarRefsFromGroups(groups).forEach((name) => requiredVariableNames.add(name))
+  );
+
+  expandRequiredVariableNames(data, requiredVariableNames);
+
+  const typographyScaleGroups = filterScaleGroupsForSelection(
+    data.typographyGroups || [],
+    new Set(filtered.typographyGroups.map((group) => group.id)),
+    requiredVariableNames
+  );
+  const spacingScaleGroups = filterScaleGroupsForSelection(
+    data.spacingGroups || [],
+    new Set(filtered.spacingGroups.map((group) => group.id)),
+    requiredVariableNames
+  );
+
+  return {
+    ...filtered,
+    colorGroups: mergeColorGroupsForRequiredVariables(
+      filtered.colorGroups,
+      data.colorGroups || [],
+      requiredVariableNames
+    ),
+    colors: mergeColorGroupsForRequiredVariables(
+      filtered.colorGroups,
+      data.colorGroups || [],
+      requiredVariableNames
+    ).flatMap((group) => group.colors || []),
+    typographyGroups: typographyScaleGroups,
+    typographyScale: collectScaleVariableNames(typographyScaleGroups).length
+      ? typographyScaleGroups.flatMap((group) => generateSpacingScale(group.settings))
+      : [],
+    typographyVariableGroups: filterVariableGroupsForSelection(
+      data.typographyVariableGroups || [],
+      ids('typography-variable-group'),
+      requiredVariableNames
+    ),
+    spacingGroups: spacingScaleGroups,
+    spacingScale: collectScaleVariableNames(spacingScaleGroups).length
+      ? spacingScaleGroups.flatMap((group) => generateSpacingScale(group.settings))
+      : [],
+    variableGroups: filterVariableGroupsForSelection(
+      data.variableGroups || [],
+      ids('spacing-variable-group'),
+      requiredVariableNames
+    ),
+    layoutVariableGroups: filterVariableGroupsForSelection(
+      data.layoutVariableGroups || [],
+      ids('layout-variable-group'),
+      requiredVariableNames
+    ),
+    designVariableGroups: filterVariableGroupsForSelection(
+      data.designVariableGroups || [],
+      ids('design-variable-group'),
+      requiredVariableNames
+    ),
+    isTypographyEnabled:
+      data.isTypographyEnabled &&
+      (typographyScaleGroups.length > 0 ||
+        filtered.typographyGeneratorConfig.length > 0 ||
+        filtered.typographySelectorGroups.length > 0),
+    isSpacingEnabled:
+      data.isSpacingEnabled &&
+      (spacingScaleGroups.length > 0 ||
+        filtered.generatorConfig.length > 0 ||
+        filtered.selectorGroups.length > 0),
+  };
+};
+
 const getSelectedExportFamilies = (exportSelection = null) => {
   if (!exportSelection) {
+    return null;
+  }
+
+  if (
+    exportSelection.mode === DYNAMIC_EXPORT_SELECTION_MODE ||
+    exportSelection.mode === FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE
+  ) {
     return null;
   }
 
@@ -661,6 +1163,14 @@ const keepResponsiveCollectionsForFamily = (
   );
 
 const filterGeneratedExportDataBySelection = (data) => {
+  if (data.exportSelection?.mode === FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE) {
+    return data;
+  }
+
+  if (data.exportSelection?.mode === DYNAMIC_EXPORT_SELECTION_MODE) {
+    return filterGeneratedExportDataByDynamicSelection(data);
+  }
+
   const selectedFamilies = getSelectedExportFamilies(data.exportSelection);
   if (!selectedFamilies) {
     return data;
@@ -757,6 +1267,7 @@ export const generateAndFormatCSS = async (data) => {
     designSelectorGroupsByBreakpoint = {},
     designVariableGroups = [],
     designVariableGroupsByBreakpoint = {},
+    components = [],
     typographySelectorGroupsByBreakpoint = {},
     typographyVariableGroupsByBreakpoint = {},
     breakpointPresets = [],
@@ -764,7 +1275,12 @@ export const generateAndFormatCSS = async (data) => {
 
   const frameworkCss = buildFrameworkCssFromWorkspace(exportData);
   const selectedFrameworkCss = frameworkCss
-    ? filterFrameworkCssBySelection(frameworkCss, exportData.exportSelection)
+    ? filterFrameworkCssBySelection(
+        frameworkCss,
+        exportData.exportSelection?.mode === FRAMEWORK_DYNAMIC_EXPORT_SELECTION_MODE
+          ? { ...exportData.exportSelection, __manifestData: exportData }
+          : exportData.exportSelection
+      )
     : '';
   const hasExplicitEmptyExportSelection =
     Array.isArray(exportData.exportSelection?.selectedUnitIds) &&
@@ -797,6 +1313,7 @@ export const generateAndFormatCSS = async (data) => {
       hasCollectionContent(extraExportData.layoutVariableGroups) ||
       hasCollectionContent(extraExportData.designSelectorGroups) ||
       hasCollectionContent(extraExportData.designVariableGroups) ||
+      (extraExportData.components || []).length > 0 ||
       hasResponsiveCollectionContent(extraExportData.selectorGroupsByBreakpoint) ||
       hasResponsiveCollectionContent(extraExportData.variableGroupsByBreakpoint) ||
       hasResponsiveCollectionContent(
@@ -838,6 +1355,7 @@ export const generateAndFormatCSS = async (data) => {
     hasCollectionContent(layoutVariableGroups) ||
     hasCollectionContent(designSelectorGroups) ||
     hasCollectionContent(designVariableGroups) ||
+    components.length > 0 ||
     hasResponsiveCollectionContent(selectorGroupsByBreakpoint) ||
     hasResponsiveCollectionContent(variableGroupsByBreakpoint) ||
     hasResponsiveCollectionContent(typographySelectorGroupsByBreakpoint) ||
@@ -1012,6 +1530,14 @@ export const generateAndFormatCSS = async (data) => {
     const customDesignClasses = [];
     designSelectorGroups.forEach(group => { group.rules.forEach(rule => { if (rule.selector && rule.properties && rule.properties.length > 0) { const validProperties = rule.properties.filter(prop => prop.property && prop.value).map(prop => `  ${prop.property}: ${prop.value};`); if (validProperties.length > 0) { customDesignClasses.push(`${rule.selector} {\n${validProperties.join('\n')}\n}`); } } }); });
     if (customDesignClasses.length > 0) { cssLines.push('\n/* Custom Design Selectors */'); cssLines.push(...customDesignClasses); }
+  }
+
+  if (components && components.length > 0) {
+    const componentBlocks = buildComponentBlocks(components);
+    if (componentBlocks.length > 0) {
+      cssLines.push('\n/* Component Classes */');
+      cssLines.push(...componentBlocks);
+    }
   }
 
   if ([...colorTextClasses, ...backgroundClasses, ...borderClasses, ...fillClasses].length > 0) {

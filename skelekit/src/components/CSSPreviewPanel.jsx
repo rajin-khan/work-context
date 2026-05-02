@@ -14,6 +14,10 @@ import { X, Copy, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { downloadFile } from '../utils/download';
 import ExportSelectionPanel from './export/ExportSelectionPanel';
+import {
+  getDynamicExportSelectionManifest,
+  getFrameworkDynamicExportSelectionManifest,
+} from '../utils/exportSelection';
 
 const GENERATING_MESSAGE = '/* Generating CSS... */';
 const loadCSSPreviewCodeView = () => import('./export/CSSPreviewCodeView');
@@ -53,9 +57,11 @@ const CSSPreviewPanel = memo((props) => {
     designSelectorGroupsByBreakpoint,
     designVariableGroups,
     designVariableGroupsByBreakpoint,
+    components,
     breakpointPresets,
     exportSelection,
     isExportSelectionEnabled = false,
+    exportSelectionMode = 'skelementor',
     setExportSelection,
   } = props;
 
@@ -65,9 +71,12 @@ const CSSPreviewPanel = memo((props) => {
   const [isGenerating, setIsGenerating] = useState(true);
   const [isPackaging, setIsPackaging] = useState(false);
   const [activeExportTab, setActiveExportTab] = useState('customize');
+  const isDynamicExportSelection =
+    exportSelectionMode === 'dynamic' || exportSelectionMode === 'framework-dynamic';
 
   const exportData = useMemo(
     () => ({
+      colorGroups,
       colors: colorGroups.flatMap((group) => group.colors),
       spacingScale,
       spacingGroups,
@@ -94,6 +103,7 @@ const CSSPreviewPanel = memo((props) => {
       designSelectorGroupsByBreakpoint,
       designVariableGroups,
       designVariableGroupsByBreakpoint,
+      components,
       breakpointPresets,
       exportSelection: isExportSelectionEnabled ? exportSelection : undefined,
     }),
@@ -124,10 +134,21 @@ const CSSPreviewPanel = memo((props) => {
       designSelectorGroupsByBreakpoint,
       designVariableGroups,
       designVariableGroupsByBreakpoint,
+      components,
       breakpointPresets,
       exportSelection,
       isExportSelectionEnabled,
     ]
+  );
+
+  const dynamicExportManifest = useMemo(
+    () =>
+      isDynamicExportSelection
+        ? exportSelectionMode === 'framework-dynamic'
+          ? getFrameworkDynamicExportSelectionManifest(exportData)
+          : getDynamicExportSelectionManifest(exportData)
+        : null,
+    [exportData, exportSelectionMode, isDynamicExportSelection]
   );
 
   const canExport =
@@ -336,6 +357,8 @@ const CSSPreviewPanel = memo((props) => {
                     >
                       <ExportSelectionPanel
                         exportSelection={exportSelection}
+                        manifest={dynamicExportManifest}
+                        mode={exportSelectionMode}
                         onExportSelectionChange={setExportSelection}
                       />
                     </div>
